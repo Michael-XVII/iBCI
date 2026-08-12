@@ -1,0 +1,35 @@
+_target_: src.models.falcon_module.FalconLitModule
+
+task: m1
+decode_last_timestep_only: true
+predict_scaled_behavior: false
+behavior_scaling_factor: 1.0
+
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 1.0e-5
+  weight_decay: 0.0
+
+scheduler: null
+
+net:
+  _target_: src.models.components.spint.SpintModel
+  model_dim: 1024
+  num_covariates: 16
+  window_size: ${data.window_size}
+  num_heads: 64
+  num_layers: 1
+  num_id_layers: 3
+
+  use_learnable_id: true
+  learnable_id_type: "mlp"
+  learnable_rep: true
+  dropout_rate: 0.0
+  dynamic_dropout: true
+  dynamic_dropout_low: 0.0
+  dynamic_dropout_high: 1.0
+  tf_drop_rate: 0.1
+  readin_layer_type: "mlp"
+
+compile: false

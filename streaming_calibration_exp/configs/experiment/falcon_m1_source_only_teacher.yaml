@@ -1,0 +1,21 @@
+# @package _global_
+
+defaults:
+  - override /model: falcon_m1_source_only_teacher
+  - override /data: falcon_m1
+
+run_id: falcon_m1_source_only_teacher
+tags: ["m1", "teacher", "source_only", "heldin_monitor"]
+optimized_metric: val_heldin/r2_mean
+require_baseline_validation: false
+no_early_stopping: false
+
+data:
+  validation_protocol: minival
+  include_heldout_in_fit: false
+  include_heldout_in_test: false
+  random_calibration: true
+  smooth_calibration: false
+
+trainer:
+  max_epochs: 50

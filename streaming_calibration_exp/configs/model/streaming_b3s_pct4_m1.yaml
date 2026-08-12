@@ -1,0 +1,9 @@
+defaults:
+  - _streaming_base_m1
+
+_target_: src.models.streaming_calibration_module.StreamingCalibrationLitModule
+variant: B3S
+hidden_dim: 64
+side_dim: 4
+electrode_embed_dim: 0
+num_electrodes: 0

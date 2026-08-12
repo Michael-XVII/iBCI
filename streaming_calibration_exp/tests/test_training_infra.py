@@ -9,6 +9,7 @@ import torch
 from src.models.components.spint import SpintModel
 from src.models.components.streaming_encoders import EarlyPoolEncoder
 from src.models.components.streaming_spint import StreamingSpintModel
+from src.models.falcon_module import FalconLitModule
 from src.models.streaming_calibration_module import StreamingCalibrationLitModule
 from src.utils.instantiators import _collect_target_nodes, instantiate_callbacks
 
@@ -128,6 +129,44 @@ def test_support_prediction_consistency_weight_is_nonnegative():
             optimizer=None,
             support_prediction_consistency_weight=-0.1,
         )
+
+
+def test_falcon_module_validation_allows_source_only_loader():
+    module = FalconLitModule(
+        task="m1",
+        net=torch.nn.Identity(),
+        decode_last_timestep_only=True,
+        predict_scaled_behavior=False,
+        behavior_scaling_factor=1.0,
+        optimizer=None,
+        scheduler=None,
+        compile=False,
+    )
+    module.log = lambda *args, **kwargs: None
+    pred = torch.randn(4, 1, 16)
+    target = torch.randn(4, 1, 16)
+    module.val_heldin_r2["ses-20120924"].update(pred.flatten(0, 1), target.flatten(0, 1))
+
+    module.on_validation_epoch_end()
+
+
+def test_falcon_module_test_allows_source_only_loader():
+    module = FalconLitModule(
+        task="m1",
+        net=torch.nn.Identity(),
+        decode_last_timestep_only=True,
+        predict_scaled_behavior=False,
+        behavior_scaling_factor=1.0,
+        optimizer=None,
+        scheduler=None,
+        compile=False,
+    )
+    module.log = lambda *args, **kwargs: None
+    pred = torch.randn(4, 1, 16)
+    target = torch.randn(4, 1, 16)
+    module.test_heldin_r2["ses-20120924"].update(pred.flatten(0, 1), target.flatten(0, 1))
+
+    module.on_test_epoch_end()
 
 
 def test_training_step_adds_two_support_prediction_consistency():

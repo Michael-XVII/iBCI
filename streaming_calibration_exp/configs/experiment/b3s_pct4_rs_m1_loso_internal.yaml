@@ -1,0 +1,27 @@
+# @package _global_
+
+defaults:
+  - override /model: streaming_b3s_pct4_m1
+  - override /data: falcon_m1
+
+run_id: native_mua_pct4_rs_m1_loso_internal
+no_early_stopping: true
+tags: ["native-mua", "pct4-rs", "m1", "loso", "internal-only"]
+
+data:
+  validation_protocol: loso
+  loso_fold: 0
+  include_heldout_in_fit: false
+  include_heldout_in_test: false
+  side_feature_group: pct4_rs
+  random_calibration: false
+  smooth_calibration: false
+
+model:
+  freeze_decoder: true
+
+trainer:
+  max_epochs: 12
+
+callbacks:
+  early_stopping: null

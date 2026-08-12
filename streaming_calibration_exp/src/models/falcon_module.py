@@ -179,30 +179,32 @@ class FalconLitModule(pl.LightningModule):
         "Lightning hook that is called when a validation epoch ends."
         val_heldin_r2s, val_heldout_r2s = [], []
         for sess_name, sess_r2 in self.val_heldin_r2.items():
-            r2 = sess_r2.compute() if sess_r2.total > 2 else torch.tensor(-torch.inf).to(sess_r2.total)
-            val_heldin_r2s.append(r2)
-            self.log(f"val_heldin_{sess_name}/r2", r2, sync_dist=True, add_dataloader_idx=False)
+            if sess_r2.total > 2:
+                r2 = sess_r2.compute()
+                val_heldin_r2s.append(r2)
+                self.log(f"val_heldin_{sess_name}/r2", r2, sync_dist=True, add_dataloader_idx=False)
             sess_r2.reset()
-        val_heldin_r2_mean = torch.stack(val_heldin_r2s).mean()
-        val_heldin_r2_std = torch.stack(val_heldin_r2s).std()
         for sess_name, sess_r2 in self.val_heldout_r2.items():
-            r2 = sess_r2.compute() if sess_r2.total > 2 else torch.tensor(-torch.inf).to(sess_r2.total)
-            val_heldout_r2s.append(r2)
-            self.log(f"val_heldout_{sess_name}/r2", r2, sync_dist=True, add_dataloader_idx=False)
+            if sess_r2.total > 2:
+                r2 = sess_r2.compute()
+                val_heldout_r2s.append(r2)
+                self.log(f"val_heldout_{sess_name}/r2", r2, sync_dist=True, add_dataloader_idx=False)
             sess_r2.reset()
-        val_heldout_r2_mean = torch.stack(val_heldout_r2s).mean()
-        val_heldout_r2_std = torch.stack(val_heldout_r2s).std()
 
-        self.log("val_heldin/r2_mean", val_heldin_r2_mean, sync_dist=True, prog_bar=True)
-        self.log("val_heldin/r2_std", val_heldin_r2_std, sync_dist=True, prog_bar=True)
-        self.log("val_heldout/r2_mean", val_heldout_r2_mean, sync_dist=True, prog_bar=True)
-        self.log("val_heldout/r2_std", val_heldout_r2_std, sync_dist=True, prog_bar=True)
-        self.val_heldin_r2_mean_best(val_heldin_r2_mean)  # update best so far val r2
-        self.val_heldout_r2_mean_best(val_heldout_r2_mean)  # update best so far val r2
-        # log `val_r2_best` as a value through `.compute()` method, instead of as a metric object
-        # otherwise metric would be reset by lightning after each epoch
-        self.log("val_heldin/r2_mean_best", self.val_heldin_r2_mean_best.compute(), sync_dist=True, prog_bar=True)
-        self.log("val_heldout/r2_mean_best", self.val_heldout_r2_mean_best.compute(), sync_dist=True, prog_bar=True)
+        if val_heldin_r2s:
+            val_heldin_r2_mean = torch.stack(val_heldin_r2s).mean()
+            val_heldin_r2_std = torch.stack(val_heldin_r2s).std(unbiased=False)
+            self.log("val_heldin/r2_mean", val_heldin_r2_mean, sync_dist=True, prog_bar=True)
+            self.log("val_heldin/r2_std", val_heldin_r2_std, sync_dist=True, prog_bar=True)
+            self.val_heldin_r2_mean_best(val_heldin_r2_mean)  # update best so far val r2
+            self.log("val_heldin/r2_mean_best", self.val_heldin_r2_mean_best.compute(), sync_dist=True, prog_bar=True)
+        if val_heldout_r2s:
+            val_heldout_r2_mean = torch.stack(val_heldout_r2s).mean()
+            val_heldout_r2_std = torch.stack(val_heldout_r2s).std(unbiased=False)
+            self.log("val_heldout/r2_mean", val_heldout_r2_mean, sync_dist=True, prog_bar=True)
+            self.log("val_heldout/r2_std", val_heldout_r2_std, sync_dist=True, prog_bar=True)
+            self.val_heldout_r2_mean_best(val_heldout_r2_mean)  # update best so far val r2
+            self.log("val_heldout/r2_mean_best", self.val_heldout_r2_mean_best.compute(), sync_dist=True, prog_bar=True)
 
     def test_step(self, batch: Tuple[torch.Tensor, torch.Tensor], batch_idx: int, dataloader_idx: int=0) -> None:
         loss, behavior_pred, behavior_target, session_name = self.model_step(batch)
@@ -225,24 +227,28 @@ class FalconLitModule(pl.LightningModule):
         """Lightning hook that is called when a test epoch ends."""
         test_heldin_r2s, test_heldout_r2s = [], []
         for sess_name, sess_r2 in self.test_heldin_r2.items():
-            r2 = sess_r2.compute() if sess_r2.total > 2 else torch.tensor(-torch.inf).to(sess_r2.total)
-            test_heldin_r2s.append(r2)
-            self.log(f"test_heldin_{sess_name}/r2", r2, sync_dist=True, add_dataloader_idx=False)
+            if sess_r2.total > 2:
+                r2 = sess_r2.compute()
+                test_heldin_r2s.append(r2)
+                self.log(f"test_heldin_{sess_name}/r2", r2, sync_dist=True, add_dataloader_idx=False)
             sess_r2.reset()
-        test_heldin_r2_mean = torch.stack(test_heldin_r2s).mean()
-        test_heldin_r2_std = torch.stack(test_heldin_r2s).std()
         for sess_name, sess_r2 in self.test_heldout_r2.items():
-            r2 = sess_r2.compute() if sess_r2.total > 2 else torch.tensor(-torch.inf).to(sess_r2.total)
-            test_heldout_r2s.append(r2)
-            self.log(f"test_heldout_{sess_name}/r2", r2, sync_dist=True, add_dataloader_idx=False)
+            if sess_r2.total > 2:
+                r2 = sess_r2.compute()
+                test_heldout_r2s.append(r2)
+                self.log(f"test_heldout_{sess_name}/r2", r2, sync_dist=True, add_dataloader_idx=False)
             sess_r2.reset()
-        test_heldout_r2_mean = torch.stack(test_heldout_r2s).mean()
-        test_heldout_r2_std = torch.stack(test_heldout_r2s).std()
 
-        self.log("test_heldin/r2_mean", test_heldin_r2_mean, sync_dist=True, prog_bar=True)
-        self.log("test_heldin/r2_std", test_heldin_r2_std, sync_dist=True, prog_bar=True)
-        self.log("test_heldout/r2_mean", test_heldout_r2_mean, sync_dist=True, prog_bar=True)
-        self.log("test_heldout/r2_std", test_heldout_r2_std, sync_dist=True, prog_bar=True)
+        if test_heldin_r2s:
+            test_heldin_r2_mean = torch.stack(test_heldin_r2s).mean()
+            test_heldin_r2_std = torch.stack(test_heldin_r2s).std(unbiased=False)
+            self.log("test_heldin/r2_mean", test_heldin_r2_mean, sync_dist=True, prog_bar=True)
+            self.log("test_heldin/r2_std", test_heldin_r2_std, sync_dist=True, prog_bar=True)
+        if test_heldout_r2s:
+            test_heldout_r2_mean = torch.stack(test_heldout_r2s).mean()
+            test_heldout_r2_std = torch.stack(test_heldout_r2s).std(unbiased=False)
+            self.log("test_heldout/r2_mean", test_heldout_r2_mean, sync_dist=True, prog_bar=True)
+            self.log("test_heldout/r2_std", test_heldout_r2_std, sync_dist=True, prog_bar=True)
 
     def setup(self, stage: str) -> None:
         """Lightning hook that is called at the beginning of fit (train + validate), validate,
