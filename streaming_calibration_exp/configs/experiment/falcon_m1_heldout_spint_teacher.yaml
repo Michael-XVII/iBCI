@@ -1,0 +1,35 @@
+# @package _global_
+
+defaults:
+  - override /model: falcon_m1_source_only_teacher
+  - override /data: falcon_m1
+
+run_id: falcon_m1_heldout_spint_teacher
+tags: ["m1", "teacher", "heldout-selected", "spint-style"]
+optimized_metric: val_heldout/r2_mean
+require_baseline_validation: false
+no_early_stopping: false
+ckpt_path: null
+
+data:
+  validation_protocol: minival
+  loso_fold: null
+  include_heldout_in_fit: true
+  include_heldout_in_test: true
+  random_calibration: true
+  smooth_calibration: false
+
+trainer:
+  max_epochs: 50
+
+callbacks:
+  early_stopping:
+    monitor: val_heldout/r2_mean
+    patience: 10
+    mode: max
+  best_checkpoint:
+    monitor: val_heldout/r2_mean
+    mode: max
+  periodic_checkpoint:
+    monitor: val_heldout/r2_mean
+    mode: max

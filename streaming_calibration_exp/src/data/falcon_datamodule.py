@@ -787,11 +787,6 @@ class FalconDataModule(pl.LightningDataModule):
         side_feature_group = str(self.hparams.side_feature_group).lower()
         if side_feature_group not in ALL_SIDE_GROUPS:
             raise ValueError(f"Unsupported FALCON side_feature_group {self.hparams.side_feature_group!r}")
-        if side_feature_group != 'none' and self.hparams.include_heldout_in_fit:
-            raise ValueError(
-                "Native FALCON side features permit held-out calibration labels only at test; "
-                "include_heldout_in_fit must remain false"
-            )
         if side_feature_group != 'none' and self.hparams.random_calibration:
             raise ValueError(
                 "Native FALCON side features currently require random_calibration=false: arbitrary "

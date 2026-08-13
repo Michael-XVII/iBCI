@@ -1,0 +1,40 @@
+# @package _global_
+
+defaults:
+  - override /model: streaming_b3s_pct4_m1
+  - override /data: falcon_m1
+
+run_id: native_mua_pct4_z4_m1_heldout_spint
+tags: ["native-mua", "pct4-z4", "m1", "heldout-selected", "spint-style"]
+comparison_role: pct4_z4
+optimized_metric: val_heldout/r2_mean
+require_baseline_validation: false
+no_early_stopping: false
+ckpt_path: null
+
+model:
+  freeze_decoder: true
+
+data:
+  validation_protocol: minival
+  loso_fold: null
+  include_heldout_in_fit: true
+  include_heldout_in_test: true
+  random_calibration: false
+  smooth_calibration: false
+  side_feature_group: pct4_z4
+
+trainer:
+  max_epochs: 12
+
+callbacks:
+  early_stopping:
+    monitor: val_heldout/r2_mean
+    patience: 5
+    mode: max
+  best_checkpoint:
+    monitor: val_heldout/r2_mean
+    mode: max
+  periodic_checkpoint:
+    monitor: val_heldout/r2_mean
+    mode: max

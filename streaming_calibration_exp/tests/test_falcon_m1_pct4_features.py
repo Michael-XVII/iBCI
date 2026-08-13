@@ -141,3 +141,89 @@ def test_pct4_z4_exact_zero() -> None:
 def test_pct4_rejects_non_m1() -> None:
     with pytest.raises(ValueError, match="M1 only"):
         FalconDataset({}, {}, side_feature_group="pct4", smooth_calibration=False, task="m2")
+
+
+def test_datamodule_allows_pct4_heldout_validation_without_training_leakage(tmp_path, monkeypatch) -> None:
+    import src.data.falcon_datamodule as dm_mod
+
+    class DummyDataset:
+        instances = []
+
+        def __init__(self, sessions_dict, calib_sessions_dict, **kwargs):
+            self.sessions_dict = sessions_dict
+            self.calib_sessions_dict = calib_sessions_dict
+            self.split = kwargs.get("split")
+            self.side_feature_group = kwargs.get("side_feature_group")
+            self.window_indices = [(name, 0) for name in sessions_dict]
+            self.batch_size = 1
+            DummyDataset.instances.append(self)
+
+        def __len__(self):
+            return len(self.window_indices)
+
+        def native_pct4_statistics_inputs(self, session_names):
+            angles = np.asarray([0.0, np.pi / 2, np.pi, -np.pi / 2], dtype=np.float32)
+            sums = {name: np.ones((4, 2), dtype=np.float32) for name in session_names}
+            lengths = {name: np.ones(4, dtype=np.int64) for name in session_names}
+            return sums, lengths, sums, lengths, {name: angles for name in session_names}
+
+        def native_t4_statistics_inputs(self, session_names):
+            sums = {name: np.ones((4, 2), dtype=np.float32) for name in session_names}
+            lengths = {name: np.ones(4, dtype=np.int64) for name in session_names}
+            angles = {name: np.asarray([0.0, np.pi / 2, np.pi, -np.pi / 2], dtype=np.float32) for name in session_names}
+            return sums, lengths, angles
+
+        def set_native_pct4_normalization(self, mean, std):
+            self.normalization = (mean, std)
+
+        def set_native_t4_normalization(self, mean, std):
+            self.normalization = (mean, std)
+
+    class DummySampler:
+        def __init__(self, dataset, *args, **kwargs):
+            self.dataset = dataset
+            self.original_session_batch_counts = {name: 1 for name, _ in dataset.window_indices}
+            self.balance_strength = 0.0
+
+        def __len__(self):
+            return len(self.dataset.window_indices)
+
+    def fake_prepare(self, path, task, **kwargs):
+        return {
+            "neural": np.ones((4, 2), dtype=np.float32),
+            "covariates": np.ones((4, 2), dtype=np.float32),
+            "eval_mask": np.ones(4, dtype=bool),
+            "trial_change": np.asarray([True, False, True, False]),
+            "covariates_mean": np.zeros(2, dtype=np.float32),
+            "covariates_std": np.ones(2, dtype=np.float32),
+        }
+
+    monkeypatch.setattr(dm_mod, "FalconDataset", DummyDataset)
+    monkeypatch.setattr(dm_mod, "SessionBatchSampler", DummySampler)
+    monkeypatch.setattr(dm_mod, "fit_train_pct4_stats", lambda *args, **kwargs: (np.zeros(4, dtype=np.float32), np.ones(4, dtype=np.float32)))
+    monkeypatch.setattr(dm_mod.FalconDataModule, "prepare_session_data", fake_prepare)
+
+    names = ["ses-20120924", "ses-20120926", "ses-20121004"]
+    for name in names[:2]:
+        (tmp_path / f"foo_{name}_held-in-calib.nwb").touch()
+        (tmp_path / f"foo_{name}_held-in-minival.nwb").touch()
+    (tmp_path / "foo_ses-20121004_held-out-calib.nwb").touch()
+
+    dm = dm_mod.FalconDataModule(
+        task="m1",
+        data_dir=str(tmp_path),
+        batch_size=1,
+        calibration_n_trials=4,
+        random_calibration=False,
+        smooth_calibration=False,
+        include_heldout_in_fit=True,
+        include_heldout_in_test=True,
+        side_feature_group="pct4",
+        num_workers=0,
+    )
+    dm.setup("fit")
+
+    assert dm.train_session_names == ["ses-20120924", "ses-20120926"]
+    assert list(dm.train_dataset.sessions_dict) == ["ses-20120924", "ses-20120926"]
+    assert list(dm.val_heldout_dataset.sessions_dict) == ["ses-20121004"]
+    assert dm.get_split_manifest()["heldout_evaluated_in_fit"] is True

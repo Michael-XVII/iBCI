@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""CPU constructibility audit for M1-PCT4-v1 held-in calibration sessions."""
+"""CPU constructibility audit for M1-PCT4-v1 calibration sessions."""
 from __future__ import annotations
 
 import argparse
@@ -57,6 +57,7 @@ def audit_file(path: Path, support_trials: int) -> dict[str, object]:
     )
     return {
         "session": path.stem,
+        "split": "heldout" if "held-out-calib" in path.name else "heldin",
         "path": str(path),
         "support_M": int(support_trials),
         "n_trials": int(meta.target_angles.shape[0]),
@@ -81,12 +82,15 @@ def main() -> int:
     parser.add_argument("--data-dir", required=True, type=Path)
     parser.add_argument("--support-trials", default=10, type=int)
     parser.add_argument("--output-dir", default=Path("outputs/m1_pct4_v1"), type=Path)
+    parser.add_argument("--include-heldout", action="store_true", help="Also audit official M1 held-out calibration NWBs.")
     args = parser.parse_args()
 
     files = sorted(args.data_dir.rglob("*held-in-calib*.nwb"))
+    if args.include_heldout:
+        files += sorted(args.data_dir.rglob("*held-out-calib*.nwb"))
     if not files:
-        raise SystemExit(f"No held-in calibration NWB files found under {args.data_dir}")
-    rows = [audit_file(path, args.support_trials) for path in files]
+        raise SystemExit(f"No calibration NWB files found under {args.data_dir}")
+    rows = [audit_file(path, args.support_trials) for path in sorted(files)]
     for row in rows:
         if row["direction_rank"] != 3:
             raise SystemExit(f"Rank failure: {row['session']}")
@@ -95,15 +99,16 @@ def main() -> int:
         if row["n_nan"] != 0:
             raise SystemExit(f"Non-finite PCT4: {row['session']}")
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    csv_path = args.output_dir / "M1_PCT4_CPU_AUDIT.csv"
-    json_path = args.output_dir / "M1_PCT4_CPU_AUDIT.json"
+    suffix = "HELDIN_HELDOUT" if args.include_heldout else "HELDIN"
+    csv_path = args.output_dir / f"M1_PCT4_CPU_AUDIT_{suffix}.csv"
+    json_path = args.output_dir / f"M1_PCT4_CPU_AUDIT_{suffix}.json"
     fieldnames = [key for key in rows[0] if key != "first_two_rows"]
     with csv_path.open("w", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
         for row in rows:
             writer.writerow({key: row[key] for key in fieldnames})
-    payload = {"estimator_version": PCT4_ESTIMATOR_VERSION, "rows": rows}
+    payload = {"estimator_version": PCT4_ESTIMATOR_VERSION, "include_heldout": bool(args.include_heldout), "rows": rows}
     json_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
     print(f"Wrote {csv_path}")
     print(f"Wrote {json_path}")

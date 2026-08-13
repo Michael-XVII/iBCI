@@ -161,6 +161,7 @@ class StreamingCalibrationLitModule(pl.LightningModule):
       {k: R2Score(multioutput="variance_weighted") for k in DATASET_NAMES[task]["heldout"]}
     )
     self.val_heldin_r2_mean_best = MaxMetric()
+    self.val_heldout_r2_mean_best = MaxMetric()
 
     self.test_heldin_loss = MeanMetric()
     self.test_heldout_loss = MeanMetric()
@@ -621,10 +622,22 @@ class StreamingCalibrationLitModule(pl.LightningModule):
       metric.reset()
 
     if heldin_r2s:
-      heldin_mean = torch.stack(heldin_r2s).mean()
+      heldin_values = torch.stack(heldin_r2s)
+      heldin_mean = heldin_values.mean()
+      heldin_std = heldin_values.std(unbiased=False)
       self.log("val_heldin/r2_mean", heldin_mean, prog_bar=True)
+      self.log("val_heldin/r2_std", heldin_std)
       self.val_heldin_r2_mean_best(heldin_mean)
       self.log("val_heldin/r2_mean_best", self.val_heldin_r2_mean_best.compute(), prog_bar=True)
+
+    if heldout_r2s:
+      heldout_values = torch.stack(heldout_r2s)
+      heldout_mean = heldout_values.mean()
+      heldout_std = heldout_values.std(unbiased=False)
+      self.log("val_heldout/r2_mean", heldout_mean, prog_bar=True)
+      self.log("val_heldout/r2_std", heldout_std)
+      self.val_heldout_r2_mean_best(heldout_mean)
+      self.log("val_heldout/r2_mean_best", self.val_heldout_r2_mean_best.compute(), prog_bar=True)
 
   def configure_optimizers(self) -> Dict[str, Any]:
     assert self.student is not None

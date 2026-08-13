@@ -89,13 +89,34 @@ def test_native_t4_uses_heldin_calibration_only(
     assert np.asarray(dm.native_t4_normalization["mean"]).shape == (4,)
 
 
-def test_native_t4_refuses_heldout_fit_loading() -> None:
+def test_native_t4_allows_heldout_validation_without_training_leakage() -> None:
+    data_dir = Path(__file__).resolve().parents[1] / ".." / "dataset" / "ial-mohd" / "000941"
+    if not data_dir.is_dir():
+        data_dir = Path("/home/ial-mohd/dataset/ial-mohd/000941")
+    if not data_dir.is_dir():
+        pytest.skip(f"FALCON M1 data unavailable: {data_dir}")
     dm = FalconDataModule(
-        task="m2",
-        data_dir="unused",
-        side_feature_group="t4",
+        task="m1",
+        data_dir=str(data_dir),
+        heldin_session_names=[""],
+        batch_size=2,
+        window_size=100,
+        calibration_n_trials=10,
+        random_calibration=False,
+        smooth_calibration=False,
+        max_trial_length=1024,
+        interpolate_trials=True,
+        interpolate_trials_kind="cubic",
+        validation_protocol="minival",
         include_heldout_in_fit=True,
-        include_heldout_in_test=False,
+        include_heldout_in_test=True,
+        num_workers=0,
+        pin_memory=False,
+        side_feature_group="t4",
     )
-    with pytest.raises(ValueError, match="only at test"):
-        dm.setup("fit")
+    dm.setup("fit")
+    assert set(dm.train_session_names) == set(dm.train_calib_heldin_sessions)
+    assert set(dm.val_heldout_dataset.neural_data).isdisjoint(dm.train_session_names)
+    assert dm.get_split_manifest()["heldout_evaluated_in_fit"] is True
+    loaders = dm.val_dataloader()
+    assert isinstance(loaders, list) and len(loaders) == 2
