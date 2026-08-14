@@ -27,5 +27,5 @@ pin_memory: true
 sampler_seed: ${seed}
 balance_session_batches: false
 reshuffle_train_sampler_each_epoch: false
-side_feature_group: none          # none | t4 | ts4; T4 reads held-in calibration trials only
+side_feature_group: none          # none | t4 | ts4 | t4_z4; T4 reads held-in calibration trials only
 side_feature_shuffle_seed: ${seed}

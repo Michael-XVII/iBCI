@@ -41,7 +41,7 @@ from src.data.falcon_m1_pct4_features import (
 )
 
 
-T4_SIDE_GROUPS = {"t4", "ts4"}
+T4_SIDE_GROUPS = {"t4", "ts4", "t4_z4"}
 PCT4_SIDE_GROUPS = {"pct4", "pct4_rs", "pct4_ls", "pct4_z4"}
 ALL_SIDE_GROUPS = {"none"} | T4_SIDE_GROUPS | PCT4_SIDE_GROUPS
 
@@ -381,6 +381,10 @@ class FalconDataset(Dataset):
             raise RuntimeError("Native FALCON T4 statistics must be fitted from train sessions before use")
         key = (self.side_feature_group, session_name, int(start_trial_idx), int(calib_n_trials))
         if key not in self._side_feature_cache:
+            if self.side_feature_group == 't4_z4':
+                values = np.zeros((self.calib_trial_spike_sums[session_name].shape[1], T4_DIM), dtype=np.float32)
+                self._side_feature_cache[key] = values
+                return values
             stop = start_trial_idx + calib_n_trials
             raw = t4_from_trial_sums(
                 self.calib_trial_spike_sums[session_name][start_trial_idx:stop],

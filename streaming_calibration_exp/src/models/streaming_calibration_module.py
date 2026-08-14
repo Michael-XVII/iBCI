@@ -303,6 +303,7 @@ class StreamingCalibrationLitModule(pl.LightningModule):
       dynamic_dropout_high=self.teacher.dynamic_dropout_high,
       tf_drop_rate=self.teacher.tf_drop_rate,
       readin_layer_type=self.teacher.readin_layer_type,
+      cross_attention_dim_feedforward=getattr(self.teacher, "cross_attention_dim_feedforward", 2048),
     )
     decoder.load_state_dict(self.teacher.state_dict(), strict=True)
 

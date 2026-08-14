@@ -380,6 +380,7 @@ class SpintModel(nn.Module):
                  num_heads=2, num_layers=1, num_id_layers=1,
                  use_learnable_id=True, learnable_id_type='mlp', learnable_rep=True,
                  dropout_rate=0.0, dynamic_dropout=False, dynamic_dropout_low=0.0, dynamic_dropout_high=1.0, tf_drop_rate=0.1, readin_layer_type='mlp',
+                 cross_attention_dim_feedforward=2048,
                 ):
         super(SpintModel, self).__init__()
         self.model_dim = model_dim
@@ -397,6 +398,7 @@ class SpintModel(nn.Module):
         self.dynamic_dropout_low = dynamic_dropout_low
         self.dynamic_dropout_high = dynamic_dropout_high
         self.readin_layer_type = readin_layer_type
+        self.cross_attention_dim_feedforward = cross_attention_dim_feedforward
 
         self.fc_in = nn.Sequential(nn.Linear(window_size, model_dim),
                                    nn.ReLU(),
@@ -424,7 +426,13 @@ class SpintModel(nn.Module):
         else:
             self.rep = torch.arange(start=1, end=num_covariates+1).unsqueeze(0).unsqueeze(-1).repeat(1, 1, window_size)/num_covariates # 1xCxW
 
-        self.transformer = MultiLayerCrossAttention(num_layers=num_layers, d_model=model_dim, nhead=num_heads, dropout=self.tf_drop_rate)
+        self.transformer = MultiLayerCrossAttention(
+            num_layers=num_layers,
+            d_model=model_dim,
+            nhead=num_heads,
+            dim_feedforward=cross_attention_dim_feedforward,
+            dropout=self.tf_drop_rate,
+        )
         
     
     def forward(self, src, calib_trialized_neural_features=None):

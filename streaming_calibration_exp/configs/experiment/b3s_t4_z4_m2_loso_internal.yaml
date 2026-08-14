@@ -1,0 +1,12 @@
+# @package _global_
+
+defaults:
+  - b3s_t4_m2_loso_internal
+
+run_id: native_mua_t4_z4_m2_loso_internal
+tags: ["native-mua", "t4-z4", "m2", "loso", "internal-only", "decoder-lane"]
+require_baseline_validation: false
+
+data:
+  side_feature_group: t4_z4
+
