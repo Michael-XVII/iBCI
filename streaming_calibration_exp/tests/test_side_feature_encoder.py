@@ -392,10 +392,18 @@ def test_known_feature_groups_covers_waveform_and_tuning_real_groups():
     """fit_side_feature_stats/load_unit_side_features gate on this combined registry (not
     FEATURE_GROUPS alone, which is deliberately waveform-only -- see the module comment next
     to TUNING_FEATURE_NAMES) so t4/t8 pass the same validity check f1/f2 already did."""
-    from mc_maze.unit_side_features import FEATURE_GROUPS, KNOWN_FEATURE_GROUPS, TUNING_FEATURE_NAMES
+    from mc_maze.unit_side_features import (
+        FEATURE_GROUPS,
+        KNOWN_FEATURE_GROUPS,
+        TEMPLATE_RIDGE_FEATURE_NAMES,
+        TUNING_FEATURE_NAMES,
+    )
 
     assert KNOWN_FEATURE_GROUPS == (
-        frozenset(FEATURE_GROUPS) | frozenset(TUNING_FEATURE_NAMES) | frozenset({"f3"})
+        frozenset(FEATURE_GROUPS)
+        | frozenset(TUNING_FEATURE_NAMES)
+        | frozenset(TEMPLATE_RIDGE_FEATURE_NAMES)
+        | frozenset({"f3"})
     )
     assert {"f1", "f2", "f3", "t4", "t8"}.issubset(KNOWN_FEATURE_GROUPS)
     # Shuffled-control tokens are never "known" feature groups in their own right -- they
