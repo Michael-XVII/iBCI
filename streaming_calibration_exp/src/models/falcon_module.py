@@ -106,10 +106,10 @@ class FalconLitModule(pl.LightningModule):
         self.val_heldout_loss.reset()
         self.val_heldin_r2_mean_best.reset()
         self.val_heldout_r2_mean_best.reset()
-        for k in DATASET_NAMES[self.hparams.task]['heldin']:
-            self.val_heldin_r2[k].reset()
-        for k in DATASET_NAMES[self.hparams.task]['heldout']:
-            self.val_heldout_r2[k].reset()
+        for metric in self.val_heldin_r2.values():
+            metric.reset()
+        for metric in self.val_heldout_r2.values():
+            metric.reset()
 
     def model_step(
         self, batch: Tuple[torch.Tensor, torch.Tensor]) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
@@ -145,18 +145,17 @@ class FalconLitModule(pl.LightningModule):
         "Lightning hook that is called when a training epoch ends."
         train_r2s = []
         for sess_name, sess_r2 in self.train_r2.items():
-            r2 = sess_r2.compute() if sess_r2.total > 2 else torch.tensor(-torch.inf).to(sess_r2.total)
-            train_r2s.append(r2)
-            self.log(f"train_{sess_name}/r2", r2, sync_dist=True, add_dataloader_idx=False)
+            if sess_r2.total > 2:
+                r2 = sess_r2.compute()
+                train_r2s.append(r2)
+                self.log(f"train_{sess_name}/r2", r2, sync_dist=True, add_dataloader_idx=False)
             sess_r2.reset()
-        train_r2_mean = torch.stack(train_r2s).mean()
-        train_r2_std = torch.stack(train_r2s).std()
 
-        self.log("train/r2_mean", train_r2_mean, sync_dist=True, prog_bar=True)
-        self.log("train/r2_std", train_r2_std, sync_dist=True, prog_bar=True)
-
-        for sess_r2 in self.train_r2.values():
-            sess_r2.reset()
+        if train_r2s:
+            train_r2_mean = torch.stack(train_r2s).mean()
+            train_r2_std = torch.stack(train_r2s).std(unbiased=False)
+            self.log("train/r2_mean", train_r2_mean, sync_dist=True, prog_bar=True)
+            self.log("train/r2_std", train_r2_std, sync_dist=True, prog_bar=True)
 
     def validation_step(self, batch: Tuple[torch.Tensor, torch.Tensor], batch_idx: int, dataloader_idx: int=0) -> None:
         loss, behavior_pred, behavior_target, session_name = self.model_step(batch)
