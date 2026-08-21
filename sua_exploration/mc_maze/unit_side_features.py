@@ -14,6 +14,7 @@ import fcntl
 import h5py
 import numpy as np
 from pynwb import NWBHDF5IO
+from scipy.sparse.linalg import lsqr
 
 from mc_maze.multisession_datamodule import (
     _cache_key,
@@ -32,6 +33,7 @@ logger = logging.getLogger(__name__)
 # Pseudo-MUA adds its own signal-view and electrode-mapping fields below, so it
 # can never collide with a sorted-unit entry without forcing a SUA cache churn.
 FEATURE_VERSION = 1
+TEMPLATE_RIDGE_FEATURE_VERSION = 1
 # ``t4c`` changed once after a train-only input audit, before any confidence-
 # FiLM candidate was launched. Version 2 replaces the nearly duplicate
 # covariance-area coordinate with the scale-free a/c uncertainty shape. Keep
@@ -42,6 +44,8 @@ T4C_FEATURE_VERSION = 2
 # frozen before any validation decoding run; it is not tuned per held-out
 # session.  See results/sua_t4_confidence_shrinkage_audit_v1.
 T4_WIENER_SHRINK_STRENGTH = 3.0
+TEMPLATE_RIDGE_RIDGE = 1.0
+TEMPLATE_RIDGE_LABEL_SHUFFLE_SEED = 20260813
 WAVEFORM_SAMPLES = 48
 REPOL_WINDOW = 10
 NOISE_STD_EPS = 1e-6
@@ -83,6 +87,15 @@ TUNING_FEATURE_NAMES: dict[str, tuple[str, ...]] = {
         "log_residual_variance", "c_shape_log_condition_cac",
     ),
     "t8": tuple(f"dir_{k}" for k in range(TUNING_NUM_DIRECTIONS)),
+}
+TEMPLATE_RIDGE_FEATURE_NAMES: dict[str, tuple[str, ...]] = {
+    "tr4": ("template_cos_weight", "template_sin_weight", "template_norm", "support_rate"),
+    "trls4": (
+        "label_shuffled_template_cos_weight",
+        "label_shuffled_template_sin_weight",
+        "label_shuffled_template_norm",
+        "support_rate",
+    ),
 }
 # Modulation depth m = hypot(a, c) below which a unit's cosine tuning fit is treated as flat
 # (no detectable direction preference). Rates are in Hz; this mirrors the NOISE_STD_EPS /
@@ -128,6 +141,10 @@ SIDE_FEATURE_DIMS: dict[str, int] = {
     "t4cf_confidence_shuffled": 6,
     "t4cf_residual": 6,
     "t4cf_residual_shuffled": 6,
+    "tr4": 4,
+    "trs4": 4,
+    "trls4": 4,
+    "trz4": 4,
 }
 
 # Learned electrode-index embedding width for F3 (UNIT_SIDE_FEATURE_ABLATION.md section 6)
@@ -145,7 +162,10 @@ ELECTRODE_EMBED_DIM = 8
 # test_known_feature_groups_covers_waveform_and_tuning_real_groups, which asserts fs1/fs3/ts4
 # (any group that only ever appears post-resolution) are absent from this set.
 KNOWN_FEATURE_GROUPS: frozenset[str] = (
-    frozenset(FEATURE_GROUPS) | frozenset(TUNING_FEATURE_NAMES) | frozenset({"f3"})
+    frozenset(FEATURE_GROUPS)
+    | frozenset(TUNING_FEATURE_NAMES)
+    | frozenset(TEMPLATE_RIDGE_FEATURE_NAMES)
+    | frozenset({"f3"})
 )
 
 # Dimension-matched shuffled controls (UNIT_SIDE_FEATURE_ABLATION.md section 6, revised
@@ -173,6 +193,7 @@ SHUFFLED_CONTROL_BASE_FEATURE_GROUP: dict[str, str] = {
     "t4gate_shuffled": "t4gate",
     "t4anchor_shuffled": "t4anchor",
     "t4rel_membership_shuffled": "t4rel",
+    "trs4": "tr4",
 }
 
 # Group tokens whose electrode mechanism is a learned CONCAT embedding at the psi input (F3's
@@ -272,6 +293,11 @@ def confidence_component_shuffle(side_feature_group: str) -> str | None:
     return None
 
 
+def is_template_ridge_zero_control(side_feature_group: str) -> bool:
+    """True for the exact-zero Template-Ridge floor control."""
+    return side_feature_group == "trz4"
+
+
 def permute_t4c_component(features: np.ndarray, *, component: str, permutation_seed: int) -> np.ndarray:
     """Permute one component along units while retaining every component marginal."""
     if features.ndim != 2 or features.shape[1] != 6:
@@ -311,6 +337,8 @@ def base_feature_group(side_feature_group: str) -> str:
         "t4cf_residual", "t4cf_residual_shuffled",
     }:
         return "t4c" if group.startswith("t4cf") else "t4"
+    if group == "trz4":
+        return "tr4"
     return group
 
 
@@ -324,14 +352,18 @@ def side_features_use_behavior_labels(side_feature_group: str) -> bool:
     groups and ``none`` do not.
     """
 
-    return base_feature_group(side_feature_group) in TUNING_FEATURE_NAMES
+    resolved = base_feature_group(side_feature_group)
+    return resolved in TUNING_FEATURE_NAMES or resolved in TEMPLATE_RIDGE_FEATURE_NAMES
 
 
 def feature_semantics_version(side_feature_group: str) -> int:
     """Semantic/cache version for the resolved continuous feature group."""
+    resolved = base_feature_group(side_feature_group)
     return (
         T4C_FEATURE_VERSION
-        if base_feature_group(side_feature_group) == "t4c"
+        if resolved == "t4c"
+        else TEMPLATE_RIDGE_FEATURE_VERSION
+        if resolved in TEMPLATE_RIDGE_FEATURE_NAMES
         else FEATURE_VERSION
     )
 
@@ -367,6 +399,12 @@ class SideFeatureMetadata:
     # working unchanged.
     zero_modulation_unit_count: int = 0
     insufficient_direction_unit_count: int = 0
+    template_ridge_constructed_rows: int = 0
+    template_ridge_feature_count: int = 0
+    template_ridge_condition: float = 0.0
+    template_ridge_trace_hat: float = 0.0
+    template_ridge_profile_sha256: str = ""
+    template_ridge_alignment_event: str = ""
 
 
 def _pool_context_key(
@@ -449,6 +487,7 @@ def _side_stats_cache_path(
     window_size: int,
     trial_result_filter: str,
     signal_view: str = "sua",
+    template_profile_hash: str | None = None,
 ) -> Path:
     payload = {
         "cache_format_version": feature_semantics_version(feature_group),
@@ -467,6 +506,8 @@ def _side_stats_cache_path(
         payload["train_electrode_mappings"] = [
             _electrode_mapping_fingerprint(path) for path in train_files
         ]
+    if template_profile_hash is not None:
+        payload["template_profile_sha256"] = template_profile_hash
     return cache_dir / "side_feature_stats" / f"{_cache_key(payload)[:20]}.npz"
 
 
@@ -480,6 +521,7 @@ def _side_feature_cache_path(
     window_size: int,
     trial_result_filter: str,
     signal_view: str = "sua",
+    template_profile_hash: str | None = None,
 ) -> Path:
     payload = {
         "cache_format_version": feature_semantics_version(feature_group),
@@ -496,6 +538,8 @@ def _side_feature_cache_path(
     if signal_view == "pseudo_mua":
         payload["signal_view"] = signal_view
         payload["electrode_mapping"] = _electrode_mapping_fingerprint(nwb_path)
+    if template_profile_hash is not None:
+        payload["template_profile_sha256"] = template_profile_hash
     key = _cache_key(payload)[:20]
     return cache_dir / "side_features" / f"{session_name_from_path(nwb_path)}_{key}.npz"
 
@@ -975,6 +1019,267 @@ def _compute_tuning_features_uncached(
     return features, metadata
 
 
+
+def _array_sha256(array: np.ndarray) -> str:
+    value = np.asarray(array).astype(np.float32, copy=False).copy(order="C")
+    return hashlib.sha256(value.tobytes()).hexdigest()
+
+
+def _trial_alignment_time(trial: dict[str, float]) -> tuple[float, str]:
+    for key in ("go_cue_time", "target_on_time", "start_time"):
+        value = trial.get(key)
+        if value is not None and np.isfinite(value):
+            return float(value), key
+    raise ValueError("Template-Ridge trial has no finite alignment event")
+
+
+def _cursor_velocity_interpolator(nwb_path: Path):
+    with NWBHDF5IO(str(nwb_path), "r") as io:
+        nwb = io.read()
+        vel_series = nwb.processing["behavior"]["Velocity"].time_series["cursor_vel"]
+        data = np.asarray(vel_series.data[:], dtype=np.float64)
+        if vel_series.timestamps is not None:
+            timestamps = np.asarray(vel_series.timestamps[:], dtype=np.float64)
+        else:
+            timestamps = (
+                float(vel_series.starting_time)
+                + np.arange(data.shape[0], dtype=np.float64) / float(vel_series.rate)
+            )
+    return timestamps, data
+
+
+def learn_template_ridge_speed_profile(
+    train_files: Sequence[Path],
+    *,
+    pool_size: int,
+    bin_size_ms: int = 20,
+    window_size: int = 50,
+    trial_result_filter: str = "R",
+) -> dict[str, object]:
+    """Learn a source-only go-cue aligned scalar speed profile for Template-Ridge."""
+    dt = bin_size_ms / 1000.0
+    samples: list[np.ndarray] = []
+    alignment_events: dict[str, int] = {}
+    for nwb_path in train_files:
+        trials = list_datamodule_rewarded_trials(
+            nwb_path,
+            bin_size_ms=bin_size_ms,
+            window_size=window_size,
+            trial_result_filter=trial_result_filter,
+        )
+        timestamps, velocity = _cursor_velocity_interpolator(nwb_path)
+        for trial in trials[:pool_size]:
+            if trial.get("target_dir") is None:
+                continue
+            align, event_name = _trial_alignment_time(trial)
+            alignment_events[event_name] = alignment_events.get(event_name, 0) + 1
+            grid = align + np.arange(window_size, dtype=np.float64) * dt
+            if grid[-1] > float(trial["stop_time"]):
+                continue
+            vx = np.interp(grid, timestamps, velocity[:, 0])
+            vy = np.interp(grid, timestamps, velocity[:, 1])
+            speed = np.hypot(vx, vy)
+            if np.isfinite(speed).all():
+                samples.append(speed.astype(np.float64))
+    if not samples:
+        raise ValueError("Template-Ridge speed profile found no source trials")
+    raw = np.stack(samples, axis=0).mean(axis=0)
+    peak = float(np.max(raw))
+    if peak <= 1.0e-8 or not math.isfinite(peak):
+        raise ValueError("Template-Ridge speed profile has zero/nonfinite peak")
+    profile = (raw / peak).astype(np.float32)
+    return {
+        "profile": profile,
+        "profile_sha256": _array_sha256(profile),
+        "source_trial_count": len(samples),
+        "raw_peak_speed": peak,
+        "alignment_event": max(alignment_events, key=alignment_events.get),
+        "alignment_event_counts": alignment_events,
+        "source_sessions": [session_name_from_path(path) for path in train_files],
+    }
+
+
+def _binned_spike_matrix(nwb_path: Path, *, bin_size_ms: int) -> tuple[np.ndarray, np.ndarray]:
+    bin_size_s = bin_size_ms / 1000.0
+    with NWBHDF5IO(str(nwb_path), "r") as io:
+        nwb = io.read()
+        if nwb.units is None:
+            raise ValueError(f"NWB file has no units table: {nwb_path}")
+        units_df = nwb.units.to_dataframe()
+        all_spikes = np.concatenate(units_df["spike_times"].values)
+        t_min = float(all_spikes.min())
+        t_max = float(all_spikes.max())
+        bin_edges = np.arange(t_min, t_max + bin_size_s, bin_size_s)
+        counts = np.zeros((len(bin_edges) - 1, len(units_df)), dtype=np.float32)
+        for unit_idx, spike_times in enumerate(units_df["spike_times"].values):
+            counts[:, unit_idx] = np.histogram(np.asarray(spike_times, dtype=np.float64), bins=bin_edges)[0]
+    return counts, bin_edges
+
+
+def _weighted_dual_ridge(design: np.ndarray, target: np.ndarray, weights: np.ndarray, ridge: float) -> tuple[np.ndarray, float, float]:
+    if design.ndim != 2 or target.ndim != 2 or target.shape[0] != design.shape[0]:
+        raise ValueError("Template-Ridge design/target shape mismatch")
+    if weights.shape != (design.shape[0],):
+        raise ValueError("Template-Ridge weights shape mismatch")
+    keep = weights > 1.0e-8
+    x = design[keep].astype(np.float64, copy=False)
+    y = target[keep].astype(np.float64, copy=False)
+    w = weights[keep].astype(np.float64, copy=False)
+    if x.shape[0] < 4:
+        raise ValueError("Template-Ridge needs at least four weighted rows")
+    sw = np.sqrt(w)[:, None]
+    xw = x * sw
+    yw = y * sw
+    coefficients = []
+    conditions = []
+    damp = math.sqrt(float(ridge))
+    for output_idx in range(yw.shape[1]):
+        result = lsqr(
+            xw,
+            yw[:, output_idx],
+            damp=damp,
+            atol=1.0e-5,
+            btol=1.0e-5,
+            iter_lim=1000,
+        )
+        coefficients.append(result[0])
+        conditions.append(float(result[6]))
+    beta = np.stack(coefficients, axis=1)
+    condition = max(conditions) if conditions else math.inf
+    # Exact hat-matrix trace would require a dense solve; for the experiment
+    # receipt this stable rank cap records the identifiable-row scale without
+    # making the audit as expensive as training.
+    trace_hat = float(min(xw.shape))
+    return beta.astype(np.float32), condition, trace_hat
+
+
+def _compute_template_ridge_features_uncached(
+    nwb_path: Path,
+    *,
+    feature_group: str,
+    pool_size: int,
+    template_profile: np.ndarray,
+    bin_size_ms: int,
+    window_size: int,
+    trial_result_filter: str,
+    signal_view: str = "sua",
+) -> tuple[np.ndarray, SideFeatureMetadata]:
+    if feature_group not in TEMPLATE_RIDGE_FEATURE_NAMES:
+        raise ValueError(f"Unsupported Template-Ridge feature_group {feature_group!r}")
+    _validate_signal_view(signal_view)
+    if signal_view != "sua":
+        raise ValueError("Template-Ridge D-b is currently implemented for sorted SUA only")
+    profile = np.asarray(template_profile, dtype=np.float32).reshape(-1)
+    if profile.shape != (window_size,) or not np.isfinite(profile).all():
+        raise ValueError(f"Template-Ridge profile must be finite [{window_size}], got {profile.shape}")
+
+    trials = list_datamodule_rewarded_trials(
+        nwb_path,
+        bin_size_ms=bin_size_ms,
+        window_size=window_size,
+        trial_result_filter=trial_result_filter,
+    )
+    if len(trials) < pool_size:
+        raise ValueError(
+            f"{session_name_from_path(nwb_path)}: only {len(trials)} rewarded trials; pool_size={pool_size} required"
+        )
+    pool_trials = trials[:pool_size]
+    if feature_group == "trls4":
+        valid_indices = [i for i, trial in enumerate(pool_trials) if trial.get("target_dir") is not None]
+        permutation = np.asarray(valid_indices, dtype=np.int64)
+        digest = hashlib.sha256(
+            f"template-ridge-label-shuffle-v1:{TEMPLATE_RIDGE_LABEL_SHUFFLE_SEED}:{session_name_from_path(nwb_path)}".encode()
+        ).digest()
+        rng = np.random.RandomState(int.from_bytes(digest[:4], "little"))
+        shuffled = permutation[rng.permutation(permutation.size)]
+        if np.array_equal(shuffled, permutation) and shuffled.size > 1:
+            shuffled = np.roll(shuffled, 1)
+        shuffled_dirs = {int(src): pool_trials[int(dst)]["target_dir"] for src, dst in zip(permutation, shuffled)}
+    else:
+        shuffled_dirs = {}
+
+    binned, bin_edges = _binned_spike_matrix(nwb_path, bin_size_ms=bin_size_ms)
+    num_units = binned.shape[1]
+    dt = bin_size_ms / 1000.0
+    design_rows: list[np.ndarray] = []
+    target_rows: list[np.ndarray] = []
+    weights: list[float] = []
+    support_counts = np.zeros(num_units, dtype=np.float64)
+    support_bins = 0
+    alignment_event = ""
+    for trial_index, trial in enumerate(pool_trials):
+        direction = shuffled_dirs.get(trial_index, trial.get("target_dir"))
+        if direction is None or not np.isfinite(direction):
+            continue
+        align, event_name = _trial_alignment_time(trial)
+        alignment_event = alignment_event or event_name
+        direction_vec = np.asarray([math.cos(float(direction)), math.sin(float(direction))], dtype=np.float64)
+        for offset, speed in enumerate(profile):
+            time = align + offset * dt
+            if time >= float(trial["stop_time"]):
+                continue
+            end_bin = int(np.searchsorted(bin_edges, time, side="right"))
+            start_bin = end_bin - window_size
+            window = np.zeros((window_size, num_units), dtype=np.float32)
+            src_start = max(0, start_bin)
+            src_stop = min(end_bin, binned.shape[0])
+            if src_stop > src_start:
+                dst_start = window_size - (src_stop - src_start)
+                window[dst_start:] = binned[src_start:src_stop]
+            design_rows.append(window.reshape(-1))
+            target_rows.append(float(speed) * direction_vec)
+            weights.append(float(speed) ** 2)
+        start_bin = int(trial["start"])
+        stop_bin = int(trial["stop"])
+        if stop_bin > start_bin:
+            support_counts += binned[start_bin:stop_bin].sum(axis=0)
+            support_bins += stop_bin - start_bin
+    if not design_rows or support_bins <= 0:
+        raise ValueError(f"{session_name_from_path(nwb_path)}: Template-Ridge produced no rows")
+    design = np.stack(design_rows, axis=0)
+    target = np.stack(target_rows, axis=0)
+    weight_array = np.asarray(weights, dtype=np.float64)
+    beta, condition, trace_hat = _weighted_dual_ridge(design, target, weight_array, TEMPLATE_RIDGE_RIDGE)
+    beta = beta.reshape(window_size, num_units, 2)
+    projected = np.tensordot(profile.astype(np.float32), beta, axes=([0], [0]))
+    support_rate = support_counts / max(support_bins * dt, 1.0e-8)
+    features = np.stack(
+        [projected[:, 0], projected[:, 1], np.linalg.norm(projected, axis=1), support_rate],
+        axis=1,
+    ).astype(np.float32)
+    if features.shape != (num_units, 4) or not np.isfinite(features).all():
+        raise ValueError(f"Invalid Template-Ridge features for {nwb_path}: {features.shape}")
+    cache_payload = {
+        "feature_version": feature_semantics_version(feature_group),
+        "feature_group": feature_group,
+        "pool_size": pool_size,
+        "ridge": TEMPLATE_RIDGE_RIDGE,
+        "template_profile_sha256": _array_sha256(profile),
+        **_pool_context_key(
+            bin_size_ms=bin_size_ms, window_size=window_size, trial_result_filter=trial_result_filter
+        ),
+        "source": _source_fingerprint(nwb_path),
+    }
+    zero_spike = int(np.sum(support_counts == 0))
+    metadata = SideFeatureMetadata(
+        feature_group=feature_group,
+        feature_version=feature_semantics_version(feature_group),
+        pool_size=pool_size,
+        cache_key=_cache_key(cache_payload),
+        degenerate_unit_count=zero_spike,
+        zero_spike_unit_count=zero_spike,
+        single_spike_unit_count=0,
+        zero_noise_std_unit_count=0,
+        zero_template_max_unit_count=0,
+        template_ridge_constructed_rows=int(design.shape[0]),
+        template_ridge_feature_count=int(design.shape[1]),
+        template_ridge_condition=condition,
+        template_ridge_trace_hat=trace_hat,
+        template_ridge_profile_sha256=_array_sha256(profile),
+        template_ridge_alignment_event=alignment_event,
+    )
+    return features, metadata
+
 def compute_unit_side_features_uncached(
     nwb_path: Path,
     *,
@@ -985,8 +1290,22 @@ def compute_unit_side_features_uncached(
     trial_result_filter: str = "R",
     pool_end_time: float | None = None,
     signal_view: str = "sua",
+    template_profile: np.ndarray | None = None,
 ) -> tuple[np.ndarray, SideFeatureMetadata]:
     _validate_signal_view(signal_view)
+    if feature_group in TEMPLATE_RIDGE_FEATURE_NAMES:
+        if template_profile is None:
+            raise ValueError("Template-Ridge features require a source-only template_profile")
+        return _compute_template_ridge_features_uncached(
+            nwb_path,
+            feature_group=feature_group,
+            pool_size=pool_size,
+            template_profile=template_profile,
+            bin_size_ms=bin_size_ms,
+            window_size=window_size,
+            trial_result_filter=trial_result_filter,
+            signal_view=signal_view,
+        )
     if feature_group in TUNING_FEATURE_NAMES:
         # T4/T8 are computed per pool *trial* (direction-conditioned mean firing rate), not
         # from a single spike-time prefix cutoff, so pool_end_time -- only meaningful for the
@@ -1120,11 +1439,26 @@ def fit_side_feature_stats(
     window_size: int = 50,
     trial_result_filter: str = "R",
     signal_view: str = "sua",
-) -> tuple[np.ndarray, np.ndarray]:
+    return_template_receipt: bool = False,
+) -> tuple[np.ndarray, np.ndarray] | tuple[np.ndarray, np.ndarray, dict[str, object]]:
     """Train-only mean/std for z-scoring side features."""
     if feature_group not in KNOWN_FEATURE_GROUPS:
         raise ValueError(f"Unsupported feature_group {feature_group!r}")
     _validate_signal_view(signal_view)
+
+    template_receipt: dict[str, object] | None = None
+    template_profile: np.ndarray | None = None
+    template_profile_hash: str | None = None
+    if feature_group in TEMPLATE_RIDGE_FEATURE_NAMES:
+        template_receipt = learn_template_ridge_speed_profile(
+            train_files,
+            pool_size=pool_size,
+            bin_size_ms=bin_size_ms,
+            window_size=window_size,
+            trial_result_filter=trial_result_filter,
+        )
+        template_profile = np.asarray(template_receipt["profile"], dtype=np.float32)
+        template_profile_hash = str(template_receipt["profile_sha256"])
 
     if cache_dir is not None:
         cache_path = _side_stats_cache_path(
@@ -1136,6 +1470,7 @@ def fit_side_feature_stats(
             window_size=window_size,
             trial_result_filter=trial_result_filter,
             signal_view=signal_view,
+            template_profile_hash=template_profile_hash,
         )
         with _exclusive_cache_lock(cache_path):
             if cache_path.is_file():
@@ -1144,6 +1479,9 @@ def fit_side_feature_stats(
                         mean = cache["mean"].astype(np.float32, copy=False)
                         std = cache["std"].astype(np.float32, copy=False)
                     logger.info("Loaded cached side-feature statistics from %s", cache_path)
+                    if return_template_receipt:
+                        assert template_receipt is not None
+                        return mean, std, template_receipt
                     return mean, std
                 except (KeyError, OSError, ValueError) as exc:
                     logger.warning("Discarding unreadable side-feature stats cache %s: %s", cache_path, exc)
@@ -1159,6 +1497,7 @@ def fit_side_feature_stats(
             window_size=window_size,
             trial_result_filter=trial_result_filter,
             signal_view=signal_view,
+            template_profile=template_profile,
         )
         chunks.append(raw)
     stacked = np.concatenate(chunks, axis=0)
@@ -1179,16 +1518,65 @@ def fit_side_feature_stats(
             window_size=window_size,
             trial_result_filter=trial_result_filter,
             signal_view=signal_view,
+            template_profile_hash=template_profile_hash,
         )
         with _exclusive_cache_lock(cache_path):
-            _write_npz_atomically(
-                cache_path,
-                mean=mean,
-                std=std,
-                clipped_count=np.asarray(clipped_count, dtype=np.int64),
-            )
+            arrays = {
+                "mean": mean,
+                "std": std,
+                "clipped_count": np.asarray(clipped_count, dtype=np.int64),
+            }
+            if template_profile is not None and template_receipt is not None:
+                arrays["template_profile"] = template_profile
+                arrays["template_profile_sha256"] = np.asarray(template_receipt["profile_sha256"])
+            _write_npz_atomically(cache_path, **arrays)
             logger.info("Cached side-feature statistics at %s", cache_path)
+    if return_template_receipt:
+        return mean, std, template_receipt or {}
     return mean, std
+
+def _metadata_to_cache_arrays(metadata: SideFeatureMetadata) -> dict[str, np.ndarray]:
+    return {
+        "feature_group": np.asarray(metadata.feature_group),
+        "feature_version": np.asarray(metadata.feature_version),
+        "pool_size": np.asarray(metadata.pool_size),
+        "cache_key": np.asarray(metadata.cache_key),
+        "degenerate_unit_count": np.asarray(metadata.degenerate_unit_count),
+        "zero_spike_unit_count": np.asarray(metadata.zero_spike_unit_count),
+        "single_spike_unit_count": np.asarray(metadata.single_spike_unit_count),
+        "zero_noise_std_unit_count": np.asarray(metadata.zero_noise_std_unit_count),
+        "zero_template_max_unit_count": np.asarray(metadata.zero_template_max_unit_count),
+        "zero_modulation_unit_count": np.asarray(metadata.zero_modulation_unit_count),
+        "insufficient_direction_unit_count": np.asarray(metadata.insufficient_direction_unit_count),
+        "template_ridge_constructed_rows": np.asarray(metadata.template_ridge_constructed_rows),
+        "template_ridge_feature_count": np.asarray(metadata.template_ridge_feature_count),
+        "template_ridge_condition": np.asarray(metadata.template_ridge_condition),
+        "template_ridge_trace_hat": np.asarray(metadata.template_ridge_trace_hat),
+        "template_ridge_profile_sha256": np.asarray(metadata.template_ridge_profile_sha256),
+        "template_ridge_alignment_event": np.asarray(metadata.template_ridge_alignment_event),
+    }
+
+
+def _metadata_from_cache(cache) -> SideFeatureMetadata:
+    return SideFeatureMetadata(
+        feature_group=str(cache["feature_group"].item()),
+        feature_version=int(cache["feature_version"].item()),
+        pool_size=int(cache["pool_size"].item()),
+        cache_key=str(cache["cache_key"].item()),
+        degenerate_unit_count=int(cache["degenerate_unit_count"].item()),
+        zero_spike_unit_count=int(cache["zero_spike_unit_count"].item()),
+        single_spike_unit_count=int(cache["single_spike_unit_count"].item()),
+        zero_noise_std_unit_count=int(cache["zero_noise_std_unit_count"].item()),
+        zero_template_max_unit_count=int(cache["zero_template_max_unit_count"].item()),
+        zero_modulation_unit_count=int(cache["zero_modulation_unit_count"].item()),
+        insufficient_direction_unit_count=int(cache["insufficient_direction_unit_count"].item()),
+        template_ridge_constructed_rows=int(cache["template_ridge_constructed_rows"].item()) if "template_ridge_constructed_rows" in cache.files else 0,
+        template_ridge_feature_count=int(cache["template_ridge_feature_count"].item()) if "template_ridge_feature_count" in cache.files else 0,
+        template_ridge_condition=float(cache["template_ridge_condition"].item()) if "template_ridge_condition" in cache.files else 0.0,
+        template_ridge_trace_hat=float(cache["template_ridge_trace_hat"].item()) if "template_ridge_trace_hat" in cache.files else 0.0,
+        template_ridge_profile_sha256=str(cache["template_ridge_profile_sha256"].item()) if "template_ridge_profile_sha256" in cache.files else "",
+        template_ridge_alignment_event=str(cache["template_ridge_alignment_event"].item()) if "template_ridge_alignment_event" in cache.files else "",
+    )
 
 
 def load_unit_side_features(
@@ -1204,6 +1592,7 @@ def load_unit_side_features(
     window_size: int = 50,
     trial_result_filter: str = "R",
     signal_view: str = "sua",
+    template_profile: np.ndarray | None = None,
 ) -> tuple[np.ndarray, SideFeatureMetadata]:
     """Load normalized per-unit (SUA) or per-electrode (pseudo-MUA) features."""
     if feature_group not in KNOWN_FEATURE_GROUPS:
@@ -1219,6 +1608,7 @@ def load_unit_side_features(
         "window_size": window_size,
         "trial_result_filter": trial_result_filter,
         "signal_view": signal_view,
+        "template_profile": template_profile,
     }
     if cache_dir is None:
         raw, metadata = compute_unit_side_features_uncached(nwb_path, **compute_kwargs)
@@ -1232,73 +1622,23 @@ def load_unit_side_features(
             window_size=window_size,
             trial_result_filter=trial_result_filter,
             signal_view=signal_view,
+            template_profile_hash=_array_sha256(template_profile) if template_profile is not None else None,
         )
         with _exclusive_cache_lock(cache_path):
             if cache_path.is_file():
                 try:
                     with np.load(cache_path, allow_pickle=False) as cache:
                         raw = cache["features"].astype(np.float32, copy=False)
-                        metadata = SideFeatureMetadata(
-                            feature_group=str(cache["feature_group"].item()),
-                            feature_version=int(cache["feature_version"].item()),
-                            pool_size=int(cache["pool_size"].item()),
-                            cache_key=str(cache["cache_key"].item()),
-                            degenerate_unit_count=int(cache["degenerate_unit_count"].item()),
-                            zero_spike_unit_count=int(cache["zero_spike_unit_count"].item()),
-                            single_spike_unit_count=int(cache["single_spike_unit_count"].item()),
-                            zero_noise_std_unit_count=int(cache["zero_noise_std_unit_count"].item()),
-                            zero_template_max_unit_count=int(cache["zero_template_max_unit_count"].item()),
-                            # Added for T4/T8 (E3); absent from any cache file written before
-                            # this change (including f1/f2 caches already on disk), which is
-                            # exactly what the surrounding except (KeyError, ...) below is for
-                            # -- an old-format hit here is discarded and recomputed rather than
-                            # crashing.
-                            zero_modulation_unit_count=int(cache["zero_modulation_unit_count"].item()),
-                            insufficient_direction_unit_count=int(
-                                cache["insufficient_direction_unit_count"].item()
-                            ),
-                        )
+                        metadata = _metadata_from_cache(cache)
                     logger.info("Loaded cached side features for %s from %s", nwb_path.name, cache_path)
                 except (KeyError, OSError, ValueError) as exc:
                     logger.warning("Discarding unreadable side-feature cache %s: %s", cache_path, exc)
                     cache_path.unlink(missing_ok=True)
                     raw, metadata = compute_unit_side_features_uncached(nwb_path, **compute_kwargs)
-                    _write_npz_atomically(
-                        cache_path,
-                        features=raw,
-                        feature_group=np.asarray(metadata.feature_group),
-                        feature_version=np.asarray(metadata.feature_version),
-                        pool_size=np.asarray(metadata.pool_size),
-                        cache_key=np.asarray(metadata.cache_key),
-                        degenerate_unit_count=np.asarray(metadata.degenerate_unit_count),
-                        zero_spike_unit_count=np.asarray(metadata.zero_spike_unit_count),
-                        single_spike_unit_count=np.asarray(metadata.single_spike_unit_count),
-                        zero_noise_std_unit_count=np.asarray(metadata.zero_noise_std_unit_count),
-                        zero_template_max_unit_count=np.asarray(metadata.zero_template_max_unit_count),
-                        zero_modulation_unit_count=np.asarray(metadata.zero_modulation_unit_count),
-                        insufficient_direction_unit_count=np.asarray(
-                            metadata.insufficient_direction_unit_count
-                        ),
-                    )
+                    _write_npz_atomically(cache_path, features=raw, **_metadata_to_cache_arrays(metadata))
             else:
                 raw, metadata = compute_unit_side_features_uncached(nwb_path, **compute_kwargs)
-                _write_npz_atomically(
-                    cache_path,
-                    features=raw,
-                    feature_group=np.asarray(metadata.feature_group),
-                    feature_version=np.asarray(metadata.feature_version),
-                    pool_size=np.asarray(metadata.pool_size),
-                    cache_key=np.asarray(metadata.cache_key),
-                    degenerate_unit_count=np.asarray(metadata.degenerate_unit_count),
-                    zero_spike_unit_count=np.asarray(metadata.zero_spike_unit_count),
-                    single_spike_unit_count=np.asarray(metadata.single_spike_unit_count),
-                    zero_noise_std_unit_count=np.asarray(metadata.zero_noise_std_unit_count),
-                    zero_template_max_unit_count=np.asarray(metadata.zero_template_max_unit_count),
-                    zero_modulation_unit_count=np.asarray(metadata.zero_modulation_unit_count),
-                    insufficient_direction_unit_count=np.asarray(
-                        metadata.insufficient_direction_unit_count
-                    ),
-                )
+                _write_npz_atomically(cache_path, features=raw, **_metadata_to_cache_arrays(metadata))
                 logger.info("Cached side features for %s at %s", nwb_path.name, cache_path)
 
     normalized = ((raw - mean) / std).astype(np.float32)
@@ -1307,7 +1647,6 @@ def load_unit_side_features(
             normalized, permutation_seed=permutation_seed
         )
     return normalized, metadata
-
 
 def load_session_electrode_ids(nwb_path: Path) -> np.ndarray:
     """Per-sorted-unit NWB electrode indices for one session (not z-scored)."""

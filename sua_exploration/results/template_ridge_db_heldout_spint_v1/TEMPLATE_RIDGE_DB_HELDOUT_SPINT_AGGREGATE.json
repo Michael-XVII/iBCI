@@ -1,0 +1,121 @@
+{
+  "arm_summary": {
+    "t4": {
+      "mean_test_heldout_r2": 0.6136593818664551,
+      "seed_values": {
+        "42": 0.6136593818664551
+      },
+      "std_test_heldout_r2": 0.0
+    },
+    "tr4": {
+      "mean_test_heldout_r2": -0.09871368855237961,
+      "seed_values": {
+        "42": -0.09871368855237961
+      },
+      "std_test_heldout_r2": 0.0
+    },
+    "trls4": {
+      "mean_test_heldout_r2": -0.11182989925146103,
+      "seed_values": {
+        "42": -0.11182989925146103
+      },
+      "std_test_heldout_r2": 0.0
+    },
+    "trs4": {
+      "mean_test_heldout_r2": -0.1302163302898407,
+      "seed_values": {
+        "42": -0.1302163302898407
+      },
+      "std_test_heldout_r2": 0.0
+    },
+    "trz4": {
+      "mean_test_heldout_r2": -0.061625443398952484,
+      "seed_values": {
+        "42": -0.061625443398952484
+      },
+      "std_test_heldout_r2": 0.0
+    },
+    "ts4": {
+      "mean_test_heldout_r2": -0.02030535787343979,
+      "seed_values": {
+        "42": -0.02030535787343979
+      },
+      "std_test_heldout_r2": 0.0
+    }
+  },
+  "arms": [
+    "t4",
+    "ts4",
+    "tr4",
+    "trs4",
+    "trls4",
+    "trz4"
+  ],
+  "heldout_backward_gradients": false,
+  "heldout_selected": true,
+  "paired_deltas": {
+    "TR4-T4": {
+      "mean_delta": -0.7123730704188347,
+      "positive_seed_count": 0,
+      "positive_session_seed_count": 0,
+      "seed_deltas": {
+        "42": -0.7123730704188347
+      },
+      "session_seed_count": 8,
+      "std_delta": 0.0
+    },
+    "TR4-TRLS4": {
+      "mean_delta": 0.013116210699081421,
+      "positive_seed_count": 1,
+      "positive_session_seed_count": 5,
+      "seed_deltas": {
+        "42": 0.013116210699081421
+      },
+      "session_seed_count": 8,
+      "std_delta": 0.0
+    },
+    "TR4-TRS4": {
+      "mean_delta": 0.03150264173746109,
+      "positive_seed_count": 1,
+      "positive_session_seed_count": 5,
+      "seed_deltas": {
+        "42": 0.03150264173746109
+      },
+      "session_seed_count": 8,
+      "std_delta": 0.0
+    },
+    "TR4-TRZ4": {
+      "mean_delta": -0.037088245153427124,
+      "positive_seed_count": 0,
+      "positive_session_seed_count": 2,
+      "seed_deltas": {
+        "42": -0.037088245153427124
+      },
+      "session_seed_count": 8,
+      "std_delta": 0.0
+    },
+    "TR4-TS4": {
+      "mean_delta": -0.07840833067893982,
+      "positive_seed_count": 0,
+      "positive_session_seed_count": 1,
+      "seed_deltas": {
+        "42": -0.07840833067893982
+      },
+      "session_seed_count": 8,
+      "std_delta": 0.0
+    }
+  },
+  "per_seed_session_csv": "sua_exploration/results/template_ridge_db_heldout_spint_v1/TEMPLATE_RIDGE_DB_HELDOUT_SPINT_PER_SEED_SESSION.csv",
+  "promotion_gate": {
+    "null_gate_pass": false,
+    "pass": false,
+    "requires": "TR4-T4 >= +0.03 mean held-out R2, all seed means positive, all held-out session means positive; null gate TR4-TRLS4 same direction",
+    "threshold": 0.03,
+    "tr4_t4_pass": false
+  },
+  "protocol": "template_ridge_db_heldout_spint_v1",
+  "schema_version": 1,
+  "seeds": [
+    42
+  ]
+}

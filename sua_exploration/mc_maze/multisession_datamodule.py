@@ -656,6 +656,16 @@ def list_datamodule_rewarded_trials(
                     target_dir = None
                 else:
                     target_dir = float(target_dir)
+                go_cue_time = trial.get("go_cue_time")
+                if go_cue_time is None or not np.isfinite(go_cue_time):
+                    go_cue_time = None
+                else:
+                    go_cue_time = float(go_cue_time)
+                target_on_time = trial.get("target_on_time")
+                if target_on_time is None or not np.isfinite(target_on_time):
+                    target_on_time = None
+                else:
+                    target_on_time = float(target_on_time)
                 trial_info.append(
                     {
                         "start_time": float(trial["start_time"]),
@@ -663,6 +673,8 @@ def list_datamodule_rewarded_trials(
                         "start": float(start_bin),
                         "stop": float(stop_bin),
                         "target_dir": target_dir,
+                        "go_cue_time": go_cue_time,
+                        "target_on_time": target_on_time,
                     }
                 )
     return trial_info
@@ -926,6 +938,8 @@ class Dandi688MultiSessionDataModule(pl.LightningDataModule):
         self.session_channel_counts: dict[str, int] = {}
         self._behavior_stats: Optional[tuple[np.ndarray, np.ndarray]] = None
         self._side_feature_stats: Optional[tuple[np.ndarray, np.ndarray]] = None
+        self._template_ridge_receipt: Optional[dict[str, object]] = None
+        self._template_ridge_profile: Optional[np.ndarray] = None
         self._splits_initialized = False
 
     def setup(self, stage: Optional[str] = None):
@@ -969,6 +983,7 @@ class Dandi688MultiSessionDataModule(pl.LightningDataModule):
                         confidence_component_shuffle,
                         is_electrode_shuffle_control,
                         is_feature_shuffle_control,
+                        is_template_ridge_zero_control,
                         load_session_electrode_ids,
                         load_unit_side_features,
                         permute_electrode_ids,
@@ -996,7 +1011,10 @@ class Dandi688MultiSessionDataModule(pl.LightningDataModule):
                         window_size=self.window_size,
                         trial_result_filter=self.trial_result_filter,
                         signal_view=self.signal_view,
+                        template_profile=self._template_ridge_profile,
                     )
+                    if is_template_ridge_zero_control(self.side_feature_group):
+                        side_features = np.zeros_like(side_features, dtype=np.float32)
                     component_shuffle = confidence_component_shuffle(self.side_feature_group)
                     if component_shuffle is not None:
                         if self.side_permutation_seed is None:
@@ -1161,19 +1179,39 @@ class Dandi688MultiSessionDataModule(pl.LightningDataModule):
         if self.side_feature_group is None:
             return None
         if self._side_feature_stats is None:
-            from mc_maze.unit_side_features import base_feature_group, fit_side_feature_stats
+            from mc_maze.unit_side_features import (
+                TEMPLATE_RIDGE_FEATURE_NAMES,
+                base_feature_group,
+                fit_side_feature_stats,
+            )
 
             feature_group = base_feature_group(self.side_feature_group)
-            self._side_feature_stats = fit_side_feature_stats(
-                self.session_files["train"],
-                feature_group=feature_group,
-                pool_size=self.side_feature_pool_size,
-                cache_dir=self.cache_dir,
-                bin_size_ms=self.bin_size_ms,
-                window_size=self.window_size,
-                trial_result_filter=self.trial_result_filter,
-                signal_view=self.signal_view,
-            )
+            if feature_group in TEMPLATE_RIDGE_FEATURE_NAMES:
+                side_mean, side_std, receipt = fit_side_feature_stats(
+                    self.session_files["train"],
+                    feature_group=feature_group,
+                    pool_size=self.side_feature_pool_size,
+                    cache_dir=self.cache_dir,
+                    bin_size_ms=self.bin_size_ms,
+                    window_size=self.window_size,
+                    trial_result_filter=self.trial_result_filter,
+                    signal_view=self.signal_view,
+                    return_template_receipt=True,
+                )
+                self._side_feature_stats = (side_mean, side_std)
+                self._template_ridge_receipt = receipt
+                self._template_ridge_profile = np.asarray(receipt["profile"], dtype=np.float32)
+            else:
+                self._side_feature_stats = fit_side_feature_stats(
+                    self.session_files["train"],
+                    feature_group=feature_group,
+                    pool_size=self.side_feature_pool_size,
+                    cache_dir=self.cache_dir,
+                    bin_size_ms=self.bin_size_ms,
+                    window_size=self.window_size,
+                    trial_result_filter=self.trial_result_filter,
+                    signal_view=self.signal_view,
+                )
         return self._side_feature_stats
 
     def _dataloader(self, dataset: Dandi688MultiSessionDataset, shuffle: bool) -> DataLoader:
@@ -1204,7 +1242,11 @@ class Dandi688MultiSessionDataModule(pl.LightningDataModule):
     def test_dataloader(self):
         if self.test_dataset is None:
             raise RuntimeError("Test dataset is not initialized; call setup('test') first")
-        return self._dataloader(self.test_dataset, shuffle=False)
+        # The streaming calibration module exposes separate test_heldin and
+        # test_heldout metric namespaces. The DANDI test split is the official
+        # held-out set, so feed the same frozen loader through both indices.
+        dl = self._dataloader(self.test_dataset, shuffle=False)
+        return [dl, dl]
 
 
 # Backward-compatible alias requested in ROADMAP

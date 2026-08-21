@@ -247,6 +247,20 @@ def main() -> None:
         help="Optional Lightning validation-batch limit for a bounded wiring smoke; never use for a pilot.",
     )
     parser.add_argument(
+        "--limit_test_batches",
+        type=float,
+        default=None,
+        help="Optional Lightning test-batch limit for a bounded wiring smoke; never use for a pilot.",
+    )
+    parser.add_argument(
+        "--heldout_spint_selection",
+        action="store_true",
+        help=(
+            "Use SPINT-style held-out model selection: held-out validation R2 monitors "
+            "checkpointing/early stopping, without held-out loss backpropagation."
+        ),
+    )
+    parser.add_argument(
         "--disable_progress_bar",
         action="store_true",
         help="Disable Lightning's per-batch terminal progress bar for batch runs.",
@@ -289,6 +303,7 @@ def main() -> None:
             "t4rel", "t4rel_membership_shuffled", "t4rel_nogroup",
             "t4cf", "t4cf_ts4", "t4cf_confidence_shuffled",
             "t4cf_residual", "t4cf_residual_shuffled",
+            "tr4", "trs4", "trls4", "trz4",
         ],
         default="none",
         help=(
@@ -594,6 +609,15 @@ def main() -> None:
             "accelerator": args.accelerator,
             "limit_train_batches": args.limit_train_batches,
             "limit_val_batches": args.limit_val_batches,
+            "limit_test_batches": args.limit_test_batches,
+        },
+        "heldout_spint_selection": {
+            "enabled": bool(args.heldout_spint_selection),
+            "heldout_selected": bool(args.heldout_spint_selection),
+            "heldout_backward_gradients": False,
+            "checkpoint_monitor": (
+                "val_heldout/r2_mean" if args.heldout_spint_selection else "val_heldin/r2_mean"
+            ),
         },
     }
     write_json(run_metadata_path, run_metadata)
@@ -651,6 +675,22 @@ def main() -> None:
                 "selection_scope": (
                     "fixed_from_train_only_nested_leave_one_session_out_audit"
                 ),
+            }
+        receipt = getattr(dm, "_template_ridge_receipt", None)
+        if receipt is not None:
+            template_profile = np.asarray(receipt.get("profile"), dtype=np.float32)
+            run_metadata["side_features"]["template_ridge"] = {
+                "family": "template_ridge_db_v1",
+                "ridge_lambda": 1.0,
+                "profile_sha256": str(receipt.get("profile_sha256", "")),
+                "profile": template_profile.tolist(),
+                "source_trial_count": int(receipt.get("source_trial_count", 0)),
+                "raw_peak_speed": float(receipt.get("raw_peak_speed", 0.0)),
+                "alignment_event": str(receipt.get("alignment_event", "")),
+                "alignment_event_counts": receipt.get("alignment_event_counts", {}),
+                "source_sessions": list(receipt.get("source_sessions", [])),
+                "normalization_scope": "train_sessions_only",
+                "target_heldout_used_for_normalization": False,
             }
     run_metadata["session_splits"] = dm.session_splits
     run_metadata["trainer_fit_validation_loader_contract"] = {
@@ -850,10 +890,16 @@ def main() -> None:
     write_json(run_metadata_path, run_metadata)
     configure_multisession_metrics(model, dm)
 
+    monitor_metric = "val_heldout/r2_mean" if args.heldout_spint_selection else "val_heldin/r2_mean"
+    checkpoint_filename = (
+        "best-{epoch:03d}-{val_heldout/r2_mean:.4f}"
+        if args.heldout_spint_selection
+        else "best-{epoch:03d}-{val_heldin/r2_mean:.4f}"
+    )
     checkpoint_cb = ModelCheckpoint(
         dirpath=str(output_dir),
-        filename="best-{epoch:03d}-{val_heldin/r2_mean:.4f}",
-        monitor="val_heldin/r2_mean",
+        filename=checkpoint_filename,
+        monitor=monitor_metric,
         mode="max",
         save_top_k=3,
     )
@@ -865,7 +911,7 @@ def main() -> None:
     if not args.no_early_stopping:
         callbacks.append(
             EarlyStopping(
-                monitor="val_heldin/r2_mean",
+                monitor=monitor_metric,
                 mode="max",
                 patience=args.patience,
             )
@@ -908,9 +954,18 @@ def main() -> None:
         enable_progress_bar=not args.disable_progress_bar,
         limit_train_batches=args.limit_train_batches if args.limit_train_batches is not None else 1.0,
         limit_val_batches=args.limit_val_batches if args.limit_val_batches is not None else 1.0,
+        limit_test_batches=args.limit_test_batches if args.limit_test_batches is not None else 1.0,
     )
 
     trainer.fit(model, datamodule=dm)
+    test_metrics = None
+    if args.heldout_spint_selection:
+        test_metrics = trainer.test(
+            model,
+            datamodule=dm,
+            ckpt_path=checkpoint_cb.best_model_path,
+            verbose=False,
+        )
     epoch_checkpoints = (
         sorted(str(path.resolve()) for path in epoch_ckpt_dir.glob("epoch_*.ckpt"))
         if args.checkpoint_every_epoch
@@ -921,6 +976,7 @@ def main() -> None:
         "completed_at": datetime.now().astimezone().isoformat(),
         "best_checkpoint": str(Path(checkpoint_cb.best_model_path).resolve()),
         "best_checkpoint_sha256": sha256_file(Path(checkpoint_cb.best_model_path)),
+        "best_checkpoint_selection_metric": monitor_metric,
         "best_checkpoint_validation_r2": float(checkpoint_cb.best_model_score),
         "best_checkpoint_selection_caveat": (
             "best_checkpoint is an argmax over a noisy per-epoch validation metric "
@@ -929,15 +985,18 @@ def main() -> None:
             "scripts/eval_epoch_window_dandi688.py instead, never this field."
         ),
         "epoch_checkpoints": epoch_checkpoints,
-        "held_out_test_evaluated": False,
+        "held_out_test_evaluated": bool(args.heldout_spint_selection),
+        "test_metrics": test_metrics,
         "next_action": (
-            "lock_best_checkpoint_then_run_the_single_formal_frozen_gradient_free_"
-            "disjoint_test_via_eval_adaptation_dandi688"
+            "aggregate_heldout_selected_spint_style_test_metrics"
+            if args.heldout_spint_selection
+            else "lock_best_checkpoint_then_run_the_single_formal_frozen_gradient_free_disjoint_test_via_eval_adaptation_dandi688"
         ),
         "held_out_test_usage": (
-            "Not evaluated by this training run. After validation-only model selection, "
-            "evaluate exactly once via eval_adaptation_dandi688.py; never select variants, "
-            "tune hyperparameters, initiate rerun searches, or update weights."
+            "SPINT-style held-out-selected experiment: held-out validation selected checkpoint/early stopping; "
+            "best checkpoint was then evaluated on test_heldout. This is not a blind formal held-out result."
+            if args.heldout_spint_selection
+            else "Not evaluated by this training run. After validation-only model selection, evaluate exactly once via eval_adaptation_dandi688.py; never select variants, tune hyperparameters, initiate rerun searches, or update weights."
         ),
     })
     write_json(run_metadata_path, run_metadata)
@@ -945,13 +1004,16 @@ def main() -> None:
     write_json(summary_path, run_metadata)
 
     print(f"Best checkpoint: {checkpoint_cb.best_model_path}")
-    print(f"Best val R2: {checkpoint_cb.best_model_score:.4f}")
+    print(f"Best {monitor_metric}: {checkpoint_cb.best_model_score:.4f}")
     print(f"Run metadata: {run_metadata_path}")
-    print(
-        "No held-out test was run. Lock this validation-selected checkpoint, then run "
-        "the single formal frozen, gradient-free disjoint test via "
-        "eval_adaptation_dandi688.py."
-    )
+    if args.heldout_spint_selection:
+        print("Held-out-selected test metrics were written to run_metadata/test_metrics.")
+    else:
+        print(
+            "No held-out test was run. Lock this validation-selected checkpoint, then run "
+            "the single formal frozen, gradient-free disjoint test via "
+            "eval_adaptation_dandi688.py."
+        )
 
 
 if __name__ == "__main__":

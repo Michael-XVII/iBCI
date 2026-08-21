@@ -1,0 +1,805 @@
+{
+  "all_sessions_pass": true,
+  "bin_size_ms": 20,
+  "data_dir": "/home/ial-mohd/dataset/ial-mohd/000688/sub-C",
+  "heldout_used_for_template_fit": false,
+  "ridge_lambda": 1.0,
+  "rows": [
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2486,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 159,
+      "session": "sub-C_ses-CO-20131003",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2429,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 152,
+      "session": "sub-C_ses-CO-20131022",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2351,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 193,
+      "session": "sub-C_ses-CO-20131023",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2241,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 217,
+      "session": "sub-C_ses-CO-20131031",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2230,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 246,
+      "session": "sub-C_ses-CO-20131101",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 166,
+      "session": "sub-C_ses-CO-20131203",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 163,
+      "session": "sub-C_ses-CO-20131204",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 180,
+      "session": "sub-C_ses-CO-20131219",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 198,
+      "session": "sub-C_ses-CO-20131220",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 605,
+      "session": "sub-C_ses-CO-20150309",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 912,
+      "session": "sub-C_ses-CO-20150311",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 905,
+      "session": "sub-C_ses-CO-20150312",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 49
+      },
+      "constructed_synthetic_rows": 2450,
+      "labelled_support_trials": 49,
+      "pass": true,
+      "rewarded_trials": 1038,
+      "session": "sub-C_ses-CO-20150313",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 1026,
+      "session": "sub-C_ses-CO-20150319",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2488,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 179,
+      "session": "sub-C_ses-CO-20150629",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2492,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 178,
+      "session": "sub-C_ses-CO-20150630",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2498,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 196,
+      "session": "sub-C_ses-CO-20150701",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2495,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 184,
+      "session": "sub-C_ses-CO-20150703",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2499,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 184,
+      "session": "sub-C_ses-CO-20150706",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 189,
+      "session": "sub-C_ses-CO-20150707",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2499,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 190,
+      "session": "sub-C_ses-CO-20150708",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 196,
+      "session": "sub-C_ses-CO-20150709",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2498,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 203,
+      "session": "sub-C_ses-CO-20150710",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 185,
+      "session": "sub-C_ses-CO-20150713",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 199,
+      "session": "sub-C_ses-CO-20150714",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2497,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 192,
+      "session": "sub-C_ses-CO-20150715",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 191,
+      "session": "sub-C_ses-CO-20150716",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 250,
+      "session": "sub-C_ses-CO-20151103",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2499,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 319,
+      "session": "sub-C_ses-CO-20151104",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 258,
+      "session": "sub-C_ses-CO-20151106",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 173,
+      "session": "sub-C_ses-CO-20151109",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 198,
+      "session": "sub-C_ses-CO-20151110",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 188,
+      "session": "sub-C_ses-CO-20151112",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 188,
+      "session": "sub-C_ses-CO-20151113",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 169,
+      "session": "sub-C_ses-CO-20151116",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 49
+      },
+      "constructed_synthetic_rows": 2450,
+      "labelled_support_trials": 49,
+      "pass": true,
+      "rewarded_trials": 186,
+      "session": "sub-C_ses-CO-20151117",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 208,
+      "session": "sub-C_ses-CO-20151119",
+      "split": "train",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 169,
+      "session": "sub-C_ses-CO-20151120",
+      "split": "val_heldout_selection",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2498,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 189,
+      "session": "sub-C_ses-CO-20151201",
+      "split": "val_heldout_selection",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 154,
+      "session": "sub-C_ses-CO-20160909",
+      "split": "val_heldout_selection",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 200,
+      "session": "sub-C_ses-CO-20160912",
+      "split": "val_heldout_selection",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 195,
+      "session": "sub-C_ses-CO-20160914",
+      "split": "val_heldout_selection",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 182,
+      "session": "sub-C_ses-CO-20160915",
+      "split": "val_heldout_selection",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 186,
+      "session": "sub-C_ses-CO-20160919",
+      "split": "val_heldout_selection",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 176,
+      "session": "sub-C_ses-CO-20160921",
+      "split": "val_heldout_selection",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 203,
+      "session": "sub-C_ses-CO-20160923",
+      "split": "test_heldout",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 209,
+      "session": "sub-C_ses-CO-20160929",
+      "split": "test_heldout",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 202,
+      "session": "sub-C_ses-CO-20161005",
+      "split": "test_heldout",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 209,
+      "session": "sub-C_ses-CO-20161006",
+      "split": "test_heldout",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 170,
+      "session": "sub-C_ses-CO-20161007",
+      "split": "test_heldout",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 199,
+      "session": "sub-C_ses-CO-20161011",
+      "split": "test_heldout",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 239,
+      "session": "sub-C_ses-CO-20161013",
+      "split": "test_heldout",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    },
+    {
+      "alignment_event_counts": {
+        "go_cue_time": 50
+      },
+      "constructed_synthetic_rows": 2500,
+      "labelled_support_trials": 50,
+      "pass": true,
+      "rewarded_trials": 286,
+      "session": "sub-C_ses-CO-20161021",
+      "split": "test_heldout",
+      "support_trials_available": 50,
+      "support_trials_requested": 50,
+      "unique_direction_count": 8
+    }
+  ],
+  "schema_version": 1,
+  "split_counts": [
+    37,
+    8,
+    8
+  ],
+  "support_trials": 50,
+  "task": "CO",
+  "template_alignment_event": "go_cue_time",
+  "template_alignment_event_counts": {
+    "go_cue_time": 1848
+  },
+  "template_profile_sha256": "1a8f5cc3bb73be6d8f272ee42a2056d878f0bacf3b1f7870ec21886321788b50",
+  "template_source_sessions": [
+    "sub-C_ses-CO-20131003",
+    "sub-C_ses-CO-20131022",
+    "sub-C_ses-CO-20131023",
+    "sub-C_ses-CO-20131031",
+    "sub-C_ses-CO-20131101",
+    "sub-C_ses-CO-20131203",
+    "sub-C_ses-CO-20131204",
+    "sub-C_ses-CO-20131219",
+    "sub-C_ses-CO-20131220",
+    "sub-C_ses-CO-20150309",
+    "sub-C_ses-CO-20150311",
+    "sub-C_ses-CO-20150312",
+    "sub-C_ses-CO-20150313",
+    "sub-C_ses-CO-20150319",
+    "sub-C_ses-CO-20150629",
+    "sub-C_ses-CO-20150630",
+    "sub-C_ses-CO-20150701",
+    "sub-C_ses-CO-20150703",
+    "sub-C_ses-CO-20150706",
+    "sub-C_ses-CO-20150707",
+    "sub-C_ses-CO-20150708",
+    "sub-C_ses-CO-20150709",
+    "sub-C_ses-CO-20150710",
+    "sub-C_ses-CO-20150713",
+    "sub-C_ses-CO-20150714",
+    "sub-C_ses-CO-20150715",
+    "sub-C_ses-CO-20150716",
+    "sub-C_ses-CO-20151103",
+    "sub-C_ses-CO-20151104",
+    "sub-C_ses-CO-20151106",
+    "sub-C_ses-CO-20151109",
+    "sub-C_ses-CO-20151110",
+    "sub-C_ses-CO-20151112",
+    "sub-C_ses-CO-20151113",
+    "sub-C_ses-CO-20151116",
+    "sub-C_ses-CO-20151117",
+    "sub-C_ses-CO-20151119"
+  ],
+  "template_source_trial_count": 1701,
+  "window_size": 50
+}

@@ -366,11 +366,11 @@ def load_side_feature_stats_for_run_metadata(
     run_metadata: dict,
     train_files: list[Path],
     cache_dir: Path | None,
-) -> tuple[str, str, int, int | None, np.ndarray, np.ndarray] | None:
+) -> tuple[str, str, int, int | None, np.ndarray, np.ndarray, np.ndarray | None] | None:
     """Resolve and fit the side-feature configuration a training run used, or return None.
 
     Returns ``(side_feature_group, waveform_feature_group, pool_size, permutation_seed,
-    mean, std)`` ready to pass to ``attach_side_features`` for each session, or ``None`` if
+    mean, std, template_profile)`` ready to pass to ``attach_side_features`` for each session, or ``None`` if
     ``run_metadata`` shows no side features were used (the ``side_features.group`` field
     train_variant_dandi688.py always writes is ``"none"`` in that case). Reuses
     ``fit_side_feature_stats``'s on-disk cache (keyed by feature_group/pool_size/bin_size_ms/
@@ -383,23 +383,42 @@ def load_side_feature_stats_for_run_metadata(
     group = side_meta.get("group", "none")
     if group == "none":
         return None
-    from mc_maze.unit_side_features import base_feature_group, fit_side_feature_stats
+    from mc_maze.unit_side_features import (
+        TEMPLATE_RIDGE_FEATURE_NAMES,
+        base_feature_group,
+        fit_side_feature_stats,
+    )
 
     waveform_group = base_feature_group(group)
     signal_view = str(run_metadata.get("signal_view", "sua"))
     pool_size = int(side_meta["pool_size"])
     permutation_seed = side_meta.get("permutation_seed")
-    mean, std = fit_side_feature_stats(
-        train_files,
-        feature_group=waveform_group,
-        pool_size=pool_size,
-        cache_dir=cache_dir,
-        bin_size_ms=20,
-        window_size=WINDOW_SIZE,
-        trial_result_filter="R",
-        signal_view=signal_view,
-    )
-    return group, waveform_group, pool_size, permutation_seed, mean, std
+    template_profile = None
+    if waveform_group in TEMPLATE_RIDGE_FEATURE_NAMES:
+        mean, std, receipt = fit_side_feature_stats(
+            train_files,
+            feature_group=waveform_group,
+            pool_size=pool_size,
+            cache_dir=cache_dir,
+            bin_size_ms=20,
+            window_size=WINDOW_SIZE,
+            trial_result_filter="R",
+            signal_view=signal_view,
+            return_template_receipt=True,
+        )
+        template_profile = np.asarray(receipt["profile"], dtype=np.float32)
+    else:
+        mean, std = fit_side_feature_stats(
+            train_files,
+            feature_group=waveform_group,
+            pool_size=pool_size,
+            cache_dir=cache_dir,
+            bin_size_ms=20,
+            window_size=WINDOW_SIZE,
+            trial_result_filter="R",
+            signal_view=signal_view,
+        )
+    return group, waveform_group, pool_size, permutation_seed, mean, std, template_profile
 
 
 def attach_side_features(
@@ -413,6 +432,7 @@ def attach_side_features(
     mean: np.ndarray,
     std: np.ndarray,
     cache_dir: Path | None,
+    template_profile: np.ndarray | None = None,
 ) -> dict:
     """Return a copy of an ``rec`` from ``load_session_with_trials`` with side features
     (and, for F3/FS3 and the T4-substrate electrode designs A/D/C -- t4e/t4gate/t4anchor,
@@ -421,6 +441,7 @@ def attach_side_features(
         is_electrode_shuffle_control,
         is_feature_shuffle_control,
         confidence_component_shuffle,
+        is_template_ridge_zero_control,
         load_session_electrode_ids,
         load_unit_side_features,
         permute_electrode_ids,
@@ -442,7 +463,10 @@ def attach_side_features(
         window_size=WINDOW_SIZE,
         trial_result_filter="R",
         signal_view=str(rec.get("signal_view", "sua")),
+        template_profile=template_profile,
     )
+    if is_template_ridge_zero_control(side_feature_group):
+        side_features = np.zeros_like(side_features, dtype=np.float32)
     component_shuffle = confidence_component_shuffle(side_feature_group)
     if component_shuffle is not None:
         if permutation_seed is None:
@@ -965,6 +989,7 @@ def main() -> None:
                 permutation_seed,
                 side_mean,
                 side_std,
+                template_profile,
             ) = side_feature_config
             rec = attach_side_features(
                 rec,
@@ -976,6 +1001,7 @@ def main() -> None:
                 mean=side_mean,
                 std=side_std,
                 cache_dir=cache_dir,
+                template_profile=template_profile,
             )
         sname = rec["name"]
         n_trials = len(rec["trials"])

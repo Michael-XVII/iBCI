@@ -20,6 +20,8 @@ from mc_maze.unit_side_features import side_features_use_behavior_labels
         "t4cf", "t4cf_ts4", "t4cf_confidence_shuffled",
         # The prior omission plus every equivalent residual/shuffled substrate.
         "t4w3", "ts4w3", "t4cf_residual", "t4cf_residual_shuffled",
+        # Template-Ridge descriptors also derive from target-direction labels.
+        "tr4", "trs4", "trls4", "trz4",
     ),
 )
 def test_label_provenance_keeps_all_tuning_substrates_true(group):
