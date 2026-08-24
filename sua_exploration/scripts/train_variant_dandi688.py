@@ -295,7 +295,7 @@ def main() -> None:
         "--side_features",
         choices=[
             "none", "f1", "f2", "f3", "fs1", "fs2", "fs3",
-            "t4", "t8", "ts4", "ts8", "t4w3", "ts4w3",
+            "t4", "t4r", "t8", "ts4", "ts8", "t4w3", "ts4w3",
             # T4-substrate electrode designs (docs/ELECTRODE_ANCHOR_DESIGNS.md), variant
             # B3S (design A) or B3SEG/B3SEA (designs D/C) only -- see the variant/side_features
             # cross-validation below.
@@ -675,6 +675,22 @@ def main() -> None:
                 "selection_scope": (
                     "fixed_from_train_only_nested_leave_one_session_out_audit"
                 ),
+            }
+        posterior_receipt = getattr(dm, "_t4r_posterior_receipt", None)
+        if posterior_receipt is not None:
+            run_metadata["side_features"]["posterior_mean_t4"] = {
+                "formula_version": str(posterior_receipt["formula_version"]),
+                "prior_variance": float(posterior_receipt["prior_variance"]),
+                "prior_sha256": str(posterior_receipt["prior_sha256"]),
+                "pool_size": int(posterior_receipt["pool_size"]),
+                "source_sessions": list(posterior_receipt["source_sessions"]),
+                "source_fingerprints": posterior_receipt["source_fingerprints"],
+                "source_unit_count": int(posterior_receipt["source_unit_count"]),
+                "raw_direction_second_moment": float(posterior_receipt["raw_direction_second_moment"]),
+                "expected_ols_noise_variance": float(posterior_receipt["expected_ols_noise_variance"]),
+                "target_sessions_used": False,
+                "target_optimizer": False,
+                "target_backward": False,
             }
         receipt = getattr(dm, "_template_ridge_receipt", None)
         if receipt is not None:

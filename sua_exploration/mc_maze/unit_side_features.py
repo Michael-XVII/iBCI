@@ -40,6 +40,9 @@ TEMPLATE_RIDGE_FEATURE_VERSION = 1
 # the global version at 1 so unrelated, already-validated waveform/T4 caches do
 # not churn; cache payloads use ``feature_semantics_version`` below.
 T4C_FEATURE_VERSION = 2
+T4R_FEATURE_VERSION = 1
+T4R_POSTERIOR_FORMULA_VERSION = "isotropic_gaussian_posterior_mean_v1"
+T4R_PRIOR_VARIANCE_FLOOR = 1.0e-8
 # Selected by a fully train-only, leave-one-session-out audit.  This constant is
 # frozen before any validation decoding run; it is not tuned per held-out
 # session.  See results/sua_t4_confidence_shrinkage_audit_v1.
@@ -76,6 +79,7 @@ CANONICAL_DIRECTIONS_RAD: tuple[float, ...] = tuple(
 )
 TUNING_FEATURE_NAMES: dict[str, tuple[str, ...]] = {
     "t4": ("m_cos_phi", "m_sin_phi", "m", "b"),
+    "t4r": ("posterior_m_cos_phi", "posterior_m_sin_phi", "posterior_m", "b"),
     "t4w3": (
         "wiener3_m_cos_phi",
         "wiener3_m_sin_phi",
@@ -113,9 +117,11 @@ SIDE_FEATURE_DIMS: dict[str, int] = {
     "fs2": 6,
     "fs3": 6,
     "t4": 4,
+    "t4r": 4,
     "t4w3": 4,
     "t8": 8,
     "ts4": 4,
+    "ts4r": 4,
     "ts4w3": 4,
     "ts8": 8,
     # T4-substrate electrode designs (docs/ELECTRODE_ANCHOR_DESIGNS.md). All three reuse T4's
@@ -187,6 +193,7 @@ SHUFFLED_CONTROL_BASE_FEATURE_GROUP: dict[str, str] = {
     "fs2": "f2",
     "fs3": "f3",
     "ts4": "t4",
+    "ts4r": "t4r",
     "ts4w3": "t4w3",
     "ts8": "t8",
     "t4e_shuffled": "t4e",
@@ -362,6 +369,8 @@ def feature_semantics_version(side_feature_group: str) -> int:
     return (
         T4C_FEATURE_VERSION
         if resolved == "t4c"
+        else T4R_FEATURE_VERSION
+        if resolved == "t4r"
         else TEMPLATE_RIDGE_FEATURE_VERSION
         if resolved in TEMPLATE_RIDGE_FEATURE_NAMES
         else FEATURE_VERSION
@@ -405,6 +414,10 @@ class SideFeatureMetadata:
     template_ridge_trace_hat: float = 0.0
     template_ridge_profile_sha256: str = ""
     template_ridge_alignment_event: str = ""
+    posterior_prior_variance: float = 0.0
+    posterior_prior_sha256: str = ""
+    posterior_design_rank: int = 0
+    posterior_design_condition: float = 0.0
 
 
 def _pool_context_key(
@@ -488,6 +501,7 @@ def _side_stats_cache_path(
     trial_result_filter: str,
     signal_view: str = "sua",
     template_profile_hash: str | None = None,
+    posterior_prior_hash: str | None = None,
 ) -> Path:
     payload = {
         "cache_format_version": feature_semantics_version(feature_group),
@@ -508,6 +522,8 @@ def _side_stats_cache_path(
         ]
     if template_profile_hash is not None:
         payload["template_profile_sha256"] = template_profile_hash
+    if posterior_prior_hash is not None:
+        payload["posterior_prior_sha256"] = posterior_prior_hash
     return cache_dir / "side_feature_stats" / f"{_cache_key(payload)[:20]}.npz"
 
 
@@ -522,6 +538,7 @@ def _side_feature_cache_path(
     trial_result_filter: str,
     signal_view: str = "sua",
     template_profile_hash: str | None = None,
+    posterior_prior_hash: str | None = None,
 ) -> Path:
     payload = {
         "cache_format_version": feature_semantics_version(feature_group),
@@ -540,6 +557,8 @@ def _side_feature_cache_path(
         payload["electrode_mapping"] = _electrode_mapping_fingerprint(nwb_path)
     if template_profile_hash is not None:
         payload["template_profile_sha256"] = template_profile_hash
+    if posterior_prior_hash is not None:
+        payload["posterior_prior_sha256"] = posterior_prior_hash
     key = _cache_key(payload)[:20]
     return cache_dir / "side_features" / f"{session_name_from_path(nwb_path)}_{key}.npz"
 
@@ -797,6 +816,100 @@ def uncertainty_wiener_shrink_t4(
     return shrunk.astype(np.float32), factors.astype(np.float32)
 
 
+
+def _posterior_design(direction_indices: np.ndarray) -> tuple[np.ndarray, int, float]:
+    directions = np.asarray(direction_indices, dtype=np.int64)
+    valid = directions >= 0
+    theta = np.asarray([CANONICAL_DIRECTIONS_RAD[int(index)] for index in directions[valid]], dtype=np.float64)
+    design = np.stack([np.ones_like(theta), np.cos(theta), np.sin(theta)], axis=1)
+    rank = int(np.linalg.matrix_rank(design))
+    condition = float(np.linalg.cond(design)) if rank == 3 else math.inf
+    if rank != 3 or not math.isfinite(condition):
+        raise ValueError(f"t4r posterior requires rank=3 finite-condition design; got rank={rank}, condition={condition}")
+    return design, rank, condition
+
+
+def _trial_level_t4_ols(trial_rates: np.ndarray, direction_indices: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray, int, float]:
+    rates = np.asarray(trial_rates, dtype=np.float64)
+    directions = np.asarray(direction_indices, dtype=np.int64)
+    if rates.ndim != 2 or rates.shape[1] != directions.size:
+        raise ValueError("trial_rates must be [units,trials] aligned to direction_indices")
+    design, rank, condition = _posterior_design(directions)
+    response = rates[:, directions >= 0]
+    coefficients = np.linalg.lstsq(design, response.T, rcond=None)[0].T
+    residual = response - coefficients @ design.T
+    dof = response.shape[1] - rank
+    if dof <= 0:
+        raise ValueError("t4r posterior requires more labelled trials than design rank")
+    variance = np.sum(np.square(residual), axis=1) / float(dof)
+    if not np.isfinite(coefficients).all() or not np.isfinite(variance).all():
+        raise ValueError("t4r OLS statistics are non-finite")
+    return coefficients, variance, design, rank, condition
+
+
+def _t4r_prior_hash(receipt: dict[str, object]) -> str:
+    payload = {key: receipt[key] for key in ("formula_version", "prior_variance", "pool_size", "source_sessions", "source_fingerprints", "source_unit_count")}
+    return hashlib.sha256(json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
+def fit_t4r_posterior_prior(train_files: Sequence[Path], *, pool_size: int, bin_size_ms: int, window_size: int, trial_result_filter: str, signal_view: str = "sua") -> dict[str, object]:
+    """Estimate the isotropic direction prior from source-train sessions only."""
+    _validate_signal_view(signal_view)
+    beta_chunks: list[np.ndarray] = []
+    noise_trace_chunks: list[np.ndarray] = []
+    for nwb_path in train_files:
+        trials = list_datamodule_rewarded_trials(nwb_path, bin_size_ms=bin_size_ms, window_size=window_size, trial_result_filter=trial_result_filter)[:pool_size]
+        if len(trials) < pool_size:
+            raise ValueError(f"{nwb_path}: fewer than {pool_size} rewarded source trials")
+        directions = np.asarray([_nearest_canonical_direction_index(trial["target_dir"]) if trial.get("target_dir") is not None else -1 for trial in trials], dtype=np.int64)
+        rates, _ = _pool_trial_rate_matrix(nwb_path, trials)
+        if signal_view == "pseudo_mua":
+            with NWBHDF5IO(str(nwb_path), "r") as io:
+                nwb = io.read()
+                if nwb.units is None:
+                    raise ValueError(f"NWB file has no units table: {nwb_path}")
+                electrode_ids = electrode_ids_from_units(nwb.units.to_dataframe())
+            rates, _ = pool_trial_rates_by_electrode(rates, electrode_ids)
+        coefficients, variance, design, _rank, _condition = _trial_level_t4_ols(rates, directions)
+        beta_chunks.append(coefficients[:, 1:3])
+        noise_trace_chunks.append(variance * float(np.trace(np.linalg.inv(design.T @ design)[1:3, 1:3])))
+    beta = np.concatenate(beta_chunks, axis=0)
+    noise_trace = np.concatenate(noise_trace_chunks, axis=0)
+    raw_second_moment = float(np.mean(np.sum(np.square(beta), axis=1)) / 2.0)
+    expected_noise_variance = float(np.mean(noise_trace) / 2.0)
+    receipt: dict[str, object] = {
+        "formula_version": T4R_POSTERIOR_FORMULA_VERSION,
+        "prior_variance": max(T4R_PRIOR_VARIANCE_FLOOR, raw_second_moment - expected_noise_variance),
+        "pool_size": pool_size,
+        "source_sessions": [session_name_from_path(path) for path in train_files],
+        "source_fingerprints": [_source_fingerprint(path) for path in train_files],
+        "source_unit_count": int(beta.shape[0]),
+        "raw_direction_second_moment": raw_second_moment,
+        "expected_ols_noise_variance": expected_noise_variance,
+        "target_sessions_used": False,
+    }
+    receipt["prior_sha256"] = _t4r_prior_hash(receipt)
+    return receipt
+
+
+def posterior_mean_t4(trial_rates: np.ndarray, direction_indices: np.ndarray, *, prior_variance: float) -> tuple[np.ndarray, np.ndarray, int, float]:
+    """Closed-form posterior mean with an unpenalized intercept."""
+    if not math.isfinite(prior_variance) or prior_variance < T4R_PRIOR_VARIANCE_FLOOR:
+        raise ValueError("t4r prior_variance must be finite and positive")
+    coefficients, variance, design, rank, condition = _trial_level_t4_ols(trial_rates, direction_indices)
+    directions = np.asarray(direction_indices, dtype=np.int64)
+    response = np.asarray(trial_rates, dtype=np.float64)[:, directions >= 0]
+    xtx = design.T @ design
+    xty = design.T @ response.T
+    posterior = np.empty_like(coefficients)
+    for index, sigma2 in enumerate(variance):
+        system = xtx + np.diag([0.0, float(sigma2) / prior_variance, float(sigma2) / prior_variance])
+        posterior[index] = np.linalg.solve(system, xty[:, index])
+    features = np.column_stack((posterior[:, 1], posterior[:, 2], np.hypot(posterior[:, 1], posterior[:, 2]), posterior[:, 0]))
+    if not np.isfinite(features).all():
+        raise ValueError("t4r posterior mean is non-finite")
+    return features.astype(np.float32), variance.astype(np.float32), rank, condition
+
 def _unit_tuning_features(
     trial_rates: np.ndarray,
     direction_indices: np.ndarray,
@@ -886,6 +999,7 @@ def _compute_tuning_features_uncached(
     window_size: int,
     trial_result_filter: str,
     signal_view: str = "sua",
+    posterior_prior: dict[str, object] | None = None,
 ) -> tuple[np.ndarray, SideFeatureMetadata]:
     """E3 directional tuning features (T4/T8), computed from the first ``pool_size`` rewarded
     trials only -- the identical pool boundary F1/F2 use, via the same
@@ -946,7 +1060,7 @@ def _compute_tuning_features_uncached(
         design = np.stack([np.ones_like(theta), np.cos(theta), np.sin(theta)], axis=1)
         design_rank = int(np.linalg.matrix_rank(design))
         design_condition = float(np.linalg.cond(design)) if design_rank == 3 else math.inf
-    if feature_group in {"t4c", "t4w3"} and (
+    if feature_group in {"t4c", "t4w3", "t4r"} and (
         design_rank != 3 or not math.isfinite(design_condition)
     ):
         raise ValueError(
@@ -954,6 +1068,9 @@ def _compute_tuning_features_uncached(
             "rank=3 finite-condition design; "
             f"got rank={design_rank}, condition={design_condition}"
         )
+
+    if feature_group == "t4r" and posterior_prior is None:
+        raise ValueError("t4r features require a source-only posterior_prior receipt")
 
     if len(present_directions) < 2:
         # Session-wide degeneracy shared by every unit (E3_E4_ENCODER_PROGRAM.md section 1.4):
@@ -1009,6 +1126,28 @@ def _compute_tuning_features_uncached(
             t4,
             confidence[:, 0],
             direction_indices,
+        )
+    elif feature_group == "t4r":
+        assert posterior_prior is not None
+        features, _variance, design_rank, design_condition = posterior_mean_t4(
+            rates, direction_indices,
+            prior_variance=float(posterior_prior["prior_variance"]),
+        )
+        posterior_cache_key = _cache_key({
+            "feature_version": feature_semantics_version("t4r"),
+            "feature_group": "t4r",
+            "pool_size": pool_size,
+            **_pool_context_key(bin_size_ms=bin_size_ms, window_size=window_size, trial_result_filter=trial_result_filter),
+            "source": _source_fingerprint(nwb_path),
+            "posterior_prior_sha256": str(posterior_prior["prior_sha256"]),
+        })
+        metadata = SideFeatureMetadata(
+            **{**metadata.__dict__,
+               "cache_key": posterior_cache_key,
+               "posterior_prior_variance": float(posterior_prior["prior_variance"]),
+               "posterior_prior_sha256": str(posterior_prior["prior_sha256"]),
+               "posterior_design_rank": design_rank,
+               "posterior_design_condition": design_condition}
         )
     elif feature_group == "t4":
         features = t4
@@ -1291,6 +1430,7 @@ def compute_unit_side_features_uncached(
     pool_end_time: float | None = None,
     signal_view: str = "sua",
     template_profile: np.ndarray | None = None,
+    posterior_prior: dict[str, object] | None = None,
 ) -> tuple[np.ndarray, SideFeatureMetadata]:
     _validate_signal_view(signal_view)
     if feature_group in TEMPLATE_RIDGE_FEATURE_NAMES:
@@ -1321,6 +1461,7 @@ def compute_unit_side_features_uncached(
             window_size=window_size,
             trial_result_filter=trial_result_filter,
             signal_view=signal_view,
+            posterior_prior=posterior_prior,
         )
     if signal_view != "sua":
         raise ValueError(
@@ -1403,6 +1544,9 @@ def compute_unit_side_features_uncached(
         ),
         "source": _source_fingerprint(nwb_path),
     }
+    if feature_group == "t4r":
+        assert posterior_prior is not None
+        cache_payload["posterior_prior_sha256"] = str(posterior_prior["prior_sha256"])
     metadata = SideFeatureMetadata(
         feature_group=feature_group,
         feature_version=semantic_version,
@@ -1440,6 +1584,7 @@ def fit_side_feature_stats(
     trial_result_filter: str = "R",
     signal_view: str = "sua",
     return_template_receipt: bool = False,
+    return_t4r_receipt: bool = False,
 ) -> tuple[np.ndarray, np.ndarray] | tuple[np.ndarray, np.ndarray, dict[str, object]]:
     """Train-only mean/std for z-scoring side features."""
     if feature_group not in KNOWN_FEATURE_GROUPS:
@@ -1449,6 +1594,15 @@ def fit_side_feature_stats(
     template_receipt: dict[str, object] | None = None
     template_profile: np.ndarray | None = None
     template_profile_hash: str | None = None
+    posterior_prior: dict[str, object] | None = None
+    posterior_prior_hash: str | None = None
+    if feature_group == "t4r":
+        posterior_prior = fit_t4r_posterior_prior(
+            train_files, pool_size=pool_size, bin_size_ms=bin_size_ms,
+            window_size=window_size, trial_result_filter=trial_result_filter,
+            signal_view=signal_view,
+        )
+        posterior_prior_hash = str(posterior_prior["prior_sha256"])
     if feature_group in TEMPLATE_RIDGE_FEATURE_NAMES:
         template_receipt = learn_template_ridge_speed_profile(
             train_files,
@@ -1471,6 +1625,7 @@ def fit_side_feature_stats(
             trial_result_filter=trial_result_filter,
             signal_view=signal_view,
             template_profile_hash=template_profile_hash,
+            posterior_prior_hash=posterior_prior_hash,
         )
         with _exclusive_cache_lock(cache_path):
             if cache_path.is_file():
@@ -1482,6 +1637,9 @@ def fit_side_feature_stats(
                     if return_template_receipt:
                         assert template_receipt is not None
                         return mean, std, template_receipt
+                    if return_t4r_receipt:
+                        assert posterior_prior is not None
+                        return mean, std, posterior_prior
                     return mean, std
                 except (KeyError, OSError, ValueError) as exc:
                     logger.warning("Discarding unreadable side-feature stats cache %s: %s", cache_path, exc)
@@ -1498,6 +1656,7 @@ def fit_side_feature_stats(
             trial_result_filter=trial_result_filter,
             signal_view=signal_view,
             template_profile=template_profile,
+            posterior_prior=posterior_prior,
         )
         chunks.append(raw)
     stacked = np.concatenate(chunks, axis=0)
@@ -1519,6 +1678,7 @@ def fit_side_feature_stats(
             trial_result_filter=trial_result_filter,
             signal_view=signal_view,
             template_profile_hash=template_profile_hash,
+            posterior_prior_hash=posterior_prior_hash,
         )
         with _exclusive_cache_lock(cache_path):
             arrays = {
@@ -1533,6 +1693,8 @@ def fit_side_feature_stats(
             logger.info("Cached side-feature statistics at %s", cache_path)
     if return_template_receipt:
         return mean, std, template_receipt or {}
+    if return_t4r_receipt:
+        return mean, std, posterior_prior or {}
     return mean, std
 
 def _metadata_to_cache_arrays(metadata: SideFeatureMetadata) -> dict[str, np.ndarray]:
@@ -1554,6 +1716,10 @@ def _metadata_to_cache_arrays(metadata: SideFeatureMetadata) -> dict[str, np.nda
         "template_ridge_trace_hat": np.asarray(metadata.template_ridge_trace_hat),
         "template_ridge_profile_sha256": np.asarray(metadata.template_ridge_profile_sha256),
         "template_ridge_alignment_event": np.asarray(metadata.template_ridge_alignment_event),
+        "posterior_prior_variance": np.asarray(metadata.posterior_prior_variance),
+        "posterior_prior_sha256": np.asarray(metadata.posterior_prior_sha256),
+        "posterior_design_rank": np.asarray(metadata.posterior_design_rank),
+        "posterior_design_condition": np.asarray(metadata.posterior_design_condition),
     }
 
 
@@ -1576,6 +1742,10 @@ def _metadata_from_cache(cache) -> SideFeatureMetadata:
         template_ridge_trace_hat=float(cache["template_ridge_trace_hat"].item()) if "template_ridge_trace_hat" in cache.files else 0.0,
         template_ridge_profile_sha256=str(cache["template_ridge_profile_sha256"].item()) if "template_ridge_profile_sha256" in cache.files else "",
         template_ridge_alignment_event=str(cache["template_ridge_alignment_event"].item()) if "template_ridge_alignment_event" in cache.files else "",
+        posterior_prior_variance=float(cache["posterior_prior_variance"].item()) if "posterior_prior_variance" in cache.files else 0.0,
+        posterior_prior_sha256=str(cache["posterior_prior_sha256"].item()) if "posterior_prior_sha256" in cache.files else "",
+        posterior_design_rank=int(cache["posterior_design_rank"].item()) if "posterior_design_rank" in cache.files else 0,
+        posterior_design_condition=float(cache["posterior_design_condition"].item()) if "posterior_design_condition" in cache.files else 0.0,
     )
 
 
@@ -1593,6 +1763,7 @@ def load_unit_side_features(
     trial_result_filter: str = "R",
     signal_view: str = "sua",
     template_profile: np.ndarray | None = None,
+    posterior_prior: dict[str, object] | None = None,
 ) -> tuple[np.ndarray, SideFeatureMetadata]:
     """Load normalized per-unit (SUA) or per-electrode (pseudo-MUA) features."""
     if feature_group not in KNOWN_FEATURE_GROUPS:
@@ -1609,6 +1780,7 @@ def load_unit_side_features(
         "trial_result_filter": trial_result_filter,
         "signal_view": signal_view,
         "template_profile": template_profile,
+        "posterior_prior": posterior_prior,
     }
     if cache_dir is None:
         raw, metadata = compute_unit_side_features_uncached(nwb_path, **compute_kwargs)
@@ -1623,6 +1795,7 @@ def load_unit_side_features(
             trial_result_filter=trial_result_filter,
             signal_view=signal_view,
             template_profile_hash=_array_sha256(template_profile) if template_profile is not None else None,
+            posterior_prior_hash=str(posterior_prior["prior_sha256"]) if posterior_prior is not None else None,
         )
         with _exclusive_cache_lock(cache_path):
             if cache_path.is_file():

@@ -920,6 +920,7 @@ class Dandi688MultiSessionDataModule(pl.LightningDataModule):
         if signal_view == "pseudo_mua" and side_feature_group not in {
             None,
             "t4",
+            "t4r",
             "t8",
             "ts4",
             "ts8",
@@ -940,6 +941,7 @@ class Dandi688MultiSessionDataModule(pl.LightningDataModule):
         self._side_feature_stats: Optional[tuple[np.ndarray, np.ndarray]] = None
         self._template_ridge_receipt: Optional[dict[str, object]] = None
         self._template_ridge_profile: Optional[np.ndarray] = None
+        self._t4r_posterior_receipt: Optional[dict[str, object]] = None
         self._splits_initialized = False
 
     def setup(self, stage: Optional[str] = None):
@@ -1012,6 +1014,7 @@ class Dandi688MultiSessionDataModule(pl.LightningDataModule):
                         trial_result_filter=self.trial_result_filter,
                         signal_view=self.signal_view,
                         template_profile=self._template_ridge_profile,
+                        posterior_prior=self._t4r_posterior_receipt,
                     )
                     if is_template_ridge_zero_control(self.side_feature_group):
                         side_features = np.zeros_like(side_features, dtype=np.float32)
@@ -1186,7 +1189,21 @@ class Dandi688MultiSessionDataModule(pl.LightningDataModule):
             )
 
             feature_group = base_feature_group(self.side_feature_group)
-            if feature_group in TEMPLATE_RIDGE_FEATURE_NAMES:
+            if feature_group == "t4r":
+                side_mean, side_std, receipt = fit_side_feature_stats(
+                    self.session_files["train"],
+                    feature_group=feature_group,
+                    pool_size=self.side_feature_pool_size,
+                    cache_dir=self.cache_dir,
+                    bin_size_ms=self.bin_size_ms,
+                    window_size=self.window_size,
+                    trial_result_filter=self.trial_result_filter,
+                    signal_view=self.signal_view,
+                    return_t4r_receipt=True,
+                )
+                self._side_feature_stats = (side_mean, side_std)
+                self._t4r_posterior_receipt = receipt
+            elif feature_group in TEMPLATE_RIDGE_FEATURE_NAMES:
                 side_mean, side_std, receipt = fit_side_feature_stats(
                     self.session_files["train"],
                     feature_group=feature_group,
