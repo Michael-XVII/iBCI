@@ -26,7 +26,7 @@ def main():
  dm=Dandi688MultiSessionDataModule(data_dir=art['data_dir'],task='CO',split_counts=tuple(art['split_counts']),batch_size=32,calibration_n_trials=50,side_feature_group='t4',side_feature_pool_size=50,cache_dir='/tmp/ibci_e05_t4_cache',num_workers=0,seed=42);dm.setup('fit')
  allowed=dm.session_splits['train']+dm.session_splits['val']; assert not set(allowed)&set(dm.session_splits['test'])
  mean,std=dm._get_side_feature_stats(); bmean,bstd=dm._get_behavior_stats(); ckpt=Path(art['best_checkpoint'])
- model=StreamingCalibrationLitModule.load_from_checkpoint(str(ckpt),weights_only=False); model.eval(); student=model.student; assert student is not None; student.eval(); before=sha(student.state_dict()); dev=torch.device(a.device); student.to(dev)
+ checkpoint=torch.load(ckpt,map_location='cpu',weights_only=False); model=StreamingCalibrationLitModule(**checkpoint['hyper_parameters']); model.setup('fit'); incompatible=model.load_state_dict(checkpoint['state_dict'],strict=False); assert incompatible.unexpected_keys == [] and incompatible.missing_keys == ['student.reliability_logit_gamma_raw']; model.eval(); student=model.student; assert student is not None; student.eval(); before=sha(student.state_dict()); dev=torch.device(a.device); student.to(dev)
  rng=np.random.RandomState(20260825); angles=np.r_[0.,rng.uniform(0,2*np.pi,32)].tolist(); rows=[]
  with torch.no_grad():
   for split in ('train','val'):
