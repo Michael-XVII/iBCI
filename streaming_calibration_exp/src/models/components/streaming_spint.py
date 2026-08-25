@@ -5,6 +5,7 @@ from typing import Any, Literal, Optional, Tuple
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 from src.models.components.spint import (
     CachedDecoupledMultiLayerCrossAttention,
@@ -186,6 +187,8 @@ class StreamingSpintModel(nn.Module):
         decoupled_value_dim: int = 32,
         decoupled_num_heads: int = 2,
         decoupled_direct_feature_dim: int = 4,
+        reliability_logit_bias: bool = False,
+        reliability_gamma_init: float = 1.0e-3,
     ) -> None:
         super().__init__()
         if decoder_mode not in {"coupled", "decoupled"}:
@@ -197,6 +200,10 @@ class StreamingSpintModel(nn.Module):
             )
         if decoupled_direct_feature_dim <= 0:
             raise ValueError("decoupled_direct_feature_dim must be positive")
+        if reliability_gamma_init <= 0.0:
+            raise ValueError("reliability_gamma_init must be positive")
+        if reliability_logit_bias and decoder_mode != "coupled":
+            raise ValueError("reliability logit bias requires coupled decoder attention")
         if decoder_mode == "decoupled" and fixed_slot_count > 0:
             raise ValueError(
                 "decoupled K/V requires fixed_slot_count=0 so unit keys remain explicit"
@@ -210,6 +217,17 @@ class StreamingSpintModel(nn.Module):
         self.decoder_mode = decoder_mode
         self.decoupled_key_mode = decoupled_key_mode
         self.decoupled_direct_feature_dim = decoupled_direct_feature_dim
+        self.reliability_logit_bias = bool(reliability_logit_bias)
+        self.reliability_gamma_init = float(reliability_gamma_init)
+        # softplus makes gamma non-negative; its inverse makes initialization
+        # near-neutral without a target-side hyperparameter search.
+        raw_init = float(torch.log(torch.expm1(torch.tensor(reliability_gamma_init))).item())
+        gamma_raw = torch.full((decoder.num_layers,), raw_init, dtype=torch.float32)
+        if self.reliability_logit_bias:
+            self.reliability_logit_gamma_raw = nn.Parameter(gamma_raw)
+        else:
+            # Preserve non-E04 trainable/total parameter counts and behavior.
+            self.register_buffer("reliability_logit_gamma_raw", gamma_raw)
         self.fixed_slot_router = (
             CalibrationFixedSlotRouter(
                 window_size=decoder.window_size,
@@ -258,11 +276,17 @@ class StreamingSpintModel(nn.Module):
             calib_trials, side_features=side_features, electrode_ids=electrode_ids
         )
 
+    def reliability_logit_gammas(self) -> torch.Tensor:
+        if not self.reliability_logit_bias:
+            return self.reliability_logit_gamma_raw.new_zeros((self.decoder.num_layers,))
+        return F.softplus(self.reliability_logit_gamma_raw)
+
     def decode_with_identity(
         self,
         neural: torch.Tensor,
         identity: torch.Tensor,
         neuron_gate: torch.Tensor | None = None,
+        reliability_q: torch.Tensor | None = None,
     ) -> torch.Tensor:
         """neural: [B,W,N], identity: [B,N,W] -> behavior [B,W,C].
 
@@ -297,7 +321,18 @@ class StreamingSpintModel(nn.Module):
 
         src = self.decoder.fc_in(src)
         rep = self.decoder.fc_in(self.decoder.rep).to(src)
-        transformer_output, _ = self.decoder.transformer(rep.repeat(src.size(0), 1, 1), src)
+        if self.reliability_logit_bias:
+            if reliability_q is None or reliability_q.shape != src.shape[:2]:
+                raise ValueError("E04 reliability_q must have shape [B,N]")
+            if not torch.isfinite(reliability_q).all():
+                raise ValueError("E04 reliability_q must be finite")
+        elif reliability_q is not None:
+            raise ValueError("reliability_q requires reliability_logit_bias=True")
+        transformer_output, _ = self.decoder.transformer(
+            rep.repeat(src.size(0), 1, 1), src,
+            attention_logit_bias=reliability_q,
+            logit_bias_gammas=(self.reliability_logit_gammas() if self.reliability_logit_bias else None),
+        )
         output = self.decoder.fc_out(transformer_output)
         return output.permute(0, 2, 1)
 
@@ -639,22 +674,29 @@ class StreamingSpintModel(nn.Module):
         electrode_ids: Optional[torch.Tensor] = None,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         neuron_gate = None
+        reliability_q = None
+        encoder_side_features = side_features
+        if self.reliability_logit_bias:
+            if side_features is None or side_features.ndim != 3 or side_features.shape[-1] != 5:
+                raise ValueError("E04 requires normalized side_features [B,N,5]=[T4R,q_theta]")
+            encoder_side_features = side_features[..., :4]
+            reliability_q = side_features[..., 4]
         if identity is None:
             if calib_trials is None:
                 raise ValueError("Either calib_trials or identity must be provided")
             if hasattr(self.id_encoder, "forward_batch_with_gate"):
                 identity, neuron_gate = self.id_encoder.forward_batch_with_gate(
-                    calib_trials, side_features=side_features
+                    calib_trials, side_features=encoder_side_features
                 )
             else:
                 identity = self.compute_identity(
                     calib_trials,
-                    side_features=side_features,
+                    side_features=encoder_side_features,
                     electrode_ids=electrode_ids,
                 )
         if self.decoder_mode == "coupled":
             behavior = self.decode_with_identity(
-                neural, identity, neuron_gate=neuron_gate
+                neural, identity, neuron_gate=neuron_gate, reliability_q=reliability_q
             )
         else:
             if neuron_gate is not None:

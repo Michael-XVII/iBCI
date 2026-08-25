@@ -84,6 +84,8 @@ TUNING_FEATURE_NAMES: dict[str, tuple[str, ...]] = {
     "t4": ("m_cos_phi", "m_sin_phi", "m", "b"),
     "t4r": ("posterior_m_cos_phi", "posterior_m_sin_phi", "posterior_m", "b"),
     "t4rq": ("posterior_m_cos_phi", "posterior_m_sin_phi", "posterior_m", "b", "angular_reliability"),
+    # E04 reuses E03's carrier but routes q_theta only to attention logits.
+    "t4rql": ("posterior_m_cos_phi", "posterior_m_sin_phi", "posterior_m", "b", "angular_reliability"),
     "t4w3": (
         "wiener3_m_cos_phi",
         "wiener3_m_sin_phi",
@@ -123,6 +125,7 @@ SIDE_FEATURE_DIMS: dict[str, int] = {
     "t4": 4,
     "t4r": 4,
     "t4rq": 5,
+    "t4rql": 5,
     "t4w3": 4,
     "t8": 8,
     "ts4": 4,
@@ -375,7 +378,7 @@ def feature_semantics_version(side_feature_group: str) -> int:
         T4C_FEATURE_VERSION
         if resolved == "t4c"
         else T4RQ_FEATURE_VERSION
-        if resolved == "t4rq"
+        if resolved in {"t4rq", "t4rql"}
         else T4R_FEATURE_VERSION
         if resolved == "t4r"
         else TEMPLATE_RIDGE_FEATURE_VERSION
@@ -1115,7 +1118,7 @@ def _compute_tuning_features_uncached(
         design = np.stack([np.ones_like(theta), np.cos(theta), np.sin(theta)], axis=1)
         design_rank = int(np.linalg.matrix_rank(design))
         design_condition = float(np.linalg.cond(design)) if design_rank == 3 else math.inf
-    if feature_group in {"t4c", "t4w3", "t4r", "t4rq"} and (
+    if feature_group in {"t4c", "t4w3", "t4r", "t4rq", "t4rql"} and (
         design_rank != 3 or not math.isfinite(design_condition)
     ):
         raise ValueError(
@@ -1124,7 +1127,7 @@ def _compute_tuning_features_uncached(
             f"got rank={design_rank}, condition={design_condition}"
         )
 
-    if feature_group in {"t4r", "t4rq"} and posterior_prior is None:
+    if feature_group in {"t4r", "t4rq", "t4rql"} and posterior_prior is None:
         raise ValueError("t4r features require a source-only posterior_prior receipt")
 
     if len(present_directions) < 2:
@@ -1182,14 +1185,14 @@ def _compute_tuning_features_uncached(
             confidence[:, 0],
             direction_indices,
         )
-    elif feature_group in {"t4r", "t4rq"}:
+    elif feature_group in {"t4r", "t4rq", "t4rql"}:
         assert posterior_prior is not None
         posterior_t4, _variance, covariance_ac, design_rank, design_condition = posterior_mean_t4_with_covariance(
             rates, direction_indices,
             prior_variance=float(posterior_prior["prior_variance"]),
         )
         features = posterior_t4
-        if feature_group == "t4rq":
+        if feature_group in {"t4rq", "t4rql"}:
             reliability = posterior_angular_reliability(posterior_t4, covariance_ac)
             features = np.concatenate((posterior_t4, reliability[:, None]), axis=1)
         posterior_cache_key = _cache_key({
@@ -1207,9 +1210,9 @@ def _compute_tuning_features_uncached(
                "posterior_prior_sha256": str(posterior_prior["prior_sha256"]),
                "posterior_design_rank": design_rank,
                "posterior_design_condition": design_condition,
-               "posterior_reliability_formula": "angular_posterior_variance_q3_v1" if feature_group == "t4rq" else "",
-               "posterior_reliability_epsilon": T4RQ_ANGULAR_EPS if feature_group == "t4rq" else 0.0,
-               "posterior_reliability_zero_floor": T4RQ_ZERO_MODULATION_RELIABILITY if feature_group == "t4rq" else 0.0}
+               "posterior_reliability_formula": "angular_posterior_variance_q3_v1" if feature_group in {"t4rq", "t4rql"} else "",
+               "posterior_reliability_epsilon": T4RQ_ANGULAR_EPS if feature_group in {"t4rq", "t4rql"} else 0.0,
+               "posterior_reliability_zero_floor": T4RQ_ZERO_MODULATION_RELIABILITY if feature_group in {"t4rq", "t4rql"} else 0.0}
         )
     elif feature_group == "t4":
         features = t4
@@ -1606,7 +1609,7 @@ def compute_unit_side_features_uncached(
         ),
         "source": _source_fingerprint(nwb_path),
     }
-    if feature_group in {"t4r", "t4rq"}:
+    if feature_group in {"t4r", "t4rq", "t4rql"}:
         assert posterior_prior is not None
         cache_payload["posterior_prior_sha256"] = str(posterior_prior["prior_sha256"])
     metadata = SideFeatureMetadata(
@@ -1658,7 +1661,7 @@ def fit_side_feature_stats(
     template_profile_hash: str | None = None
     posterior_prior: dict[str, object] | None = None
     posterior_prior_hash: str | None = None
-    if feature_group in {"t4r", "t4rq"}:
+    if feature_group in {"t4r", "t4rq", "t4rql"}:
         posterior_prior = fit_t4r_posterior_prior(
             train_files, pool_size=pool_size, bin_size_ms=bin_size_ms,
             window_size=window_size, trial_result_filter=trial_result_filter,

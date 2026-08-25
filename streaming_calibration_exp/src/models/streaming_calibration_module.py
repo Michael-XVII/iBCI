@@ -139,6 +139,8 @@ class StreamingCalibrationLitModule(pl.LightningModule):
     decoupled_value_dim: int = 32,
     decoupled_num_heads: int = 2,
     decoupled_key_permutation_seed: int | None = None,
+    reliability_logit_bias: bool = False,
+    reliability_gamma_init: float = 1.0e-3,
   ) -> None:
     super().__init__()
     self.save_hyperparameters(ignore=["optimizer", "scheduler", "net"])
@@ -226,6 +228,8 @@ class StreamingCalibrationLitModule(pl.LightningModule):
     self._decoupled_value_dim = int(decoupled_value_dim)
     self._decoupled_num_heads = int(decoupled_num_heads)
     self._decoupled_key_permutation_seed = decoupled_key_permutation_seed
+    self._reliability_logit_bias = bool(reliability_logit_bias)
+    self._reliability_gamma_init = float(reliability_gamma_init)
     self.population_identity: nn.Parameter | None = None
     if self._support_prediction_consistency_weight < 0.0:
       raise ValueError("support_prediction_consistency_weight must be >= 0")
@@ -245,6 +249,8 @@ class StreamingCalibrationLitModule(pl.LightningModule):
       raise ValueError("decoupled K/V requires identity_mode='calibrated'")
     if self._decoder_mode == "decoupled" and self._side_dim != 4:
       raise ValueError("decoupled K/V pilot requires the real four-dimensional T4 side input")
+    if self._reliability_logit_bias and (self._decoder_mode != "coupled" or self._side_dim != 4):
+      raise ValueError("E04 reliability logit requires coupled B3S with encoder side_dim=4")
     if (
       self._decoupled_key_dim <= 0
       or self._decoupled_value_dim <= 0
@@ -368,6 +374,8 @@ class StreamingCalibrationLitModule(pl.LightningModule):
       decoupled_value_dim=self._decoupled_value_dim,
       decoupled_num_heads=self._decoupled_num_heads,
       decoupled_direct_feature_dim=4,
+      reliability_logit_bias=self._reliability_logit_bias,
+      reliability_gamma_init=self._reliability_gamma_init,
     )
     if self._identity_mode == "learned_prior":
       for parameter in self.student.id_encoder.parameters():

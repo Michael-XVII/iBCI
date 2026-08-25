@@ -51,11 +51,36 @@ class MultiLayerCrossAttention(nn.Module):
             for _ in range(num_layers)
         ])
 
-    def forward(self, query, key_value, attn_mask=None, key_padding_mask=None):
+    def forward(
+        self, query, key_value, attn_mask=None, key_padding_mask=None,
+        attention_logit_bias=None, logit_bias_gammas=None,
+    ):
+        """Optionally add a per-unit bias immediately before attention softmax.
+
+        ``attention_logit_bias`` is [B,N] and expands over covariate queries and
+        heads. It never enters key/value inputs, so reliability cannot alter the
+        activity or identity representations.
+        """
+        if (attention_logit_bias is None) != (logit_bias_gammas is None):
+            raise ValueError("attention_logit_bias and logit_bias_gammas must be provided together")
+        if attention_logit_bias is not None:
+            if (attention_logit_bias.ndim != 2 or attention_logit_bias.shape[0] != query.shape[0]
+                    or attention_logit_bias.shape[1] != key_value.shape[1]):
+                raise ValueError("attention_logit_bias must have shape [B,N] matching query/key batch")
+            if len(logit_bias_gammas) != len(self.layers):
+                raise ValueError("logit_bias_gammas must provide one scalar per attention layer")
         x = query
         attn_scores = []
-        for layer in self.layers:
-            x, attn_score = layer(x, key_value, attn_mask=attn_mask, key_padding_mask=key_padding_mask)
+        for layer_index, layer in enumerate(self.layers):
+            layer_mask = attn_mask
+            if attention_logit_bias is not None:
+                if attn_mask is not None:
+                    raise ValueError("E04 reliability bias does not combine with an arbitrary attention mask")
+                bias = logit_bias_gammas[layer_index] * attention_logit_bias
+                layer_mask = bias[:, None, None, :].expand(
+                    -1, layer.cross_attn.num_heads, x.shape[1], -1
+                ).reshape(-1, x.shape[1], key_value.shape[1])
+            x, attn_score = layer(x, key_value, attn_mask=layer_mask, key_padding_mask=key_padding_mask)
             attn_scores.append(attn_score)
         return x, attn_scores
 

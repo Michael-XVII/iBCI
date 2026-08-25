@@ -295,7 +295,7 @@ def main() -> None:
         "--side_features",
         choices=[
             "none", "f1", "f2", "f3", "fs1", "fs2", "fs3",
-            "t4", "t4r", "t4rq", "t8", "ts4", "ts8", "t4w3", "ts4w3",
+            "t4", "t4r", "t4rq", "t4rql", "t8", "ts4", "ts8", "t4w3", "ts4w3",
             # T4-substrate electrode designs (docs/ELECTRODE_ANCHOR_DESIGNS.md), variant
             # B3S (design A) or B3SEG/B3SEA (designs D/C) only -- see the variant/side_features
             # cross-validation below.
@@ -431,7 +431,9 @@ def main() -> None:
             uses_electrode_relation_membership,
         )
 
-        side_dim = SIDE_FEATURE_DIMS[args.side_features]
+        # E04 carries q_theta in the same five-column data tensor but keeps it
+        # out of B3S psi; only the first posterior-T4 columns enter the encoder.
+        side_dim = 4 if args.side_features == "t4rql" else SIDE_FEATURE_DIMS[args.side_features]
         electrode_embed_dim = ELECTRODE_EMBED_DIM if uses_electrode_embedding(args.side_features) else 0
         num_electrodes = 0
         relation_membership = uses_electrode_relation_membership(args.side_features)
@@ -692,7 +694,7 @@ def main() -> None:
                 "target_optimizer": False,
                 "target_backward": False,
             }
-            if args.side_features == "t4rq":
+            if args.side_features in {"t4rq", "t4rql"}:
                 from mc_maze.unit_side_features import (
                     T4RQ_ANGULAR_EPS,
                     T4RQ_ZERO_MODULATION_RELIABILITY,
@@ -701,7 +703,7 @@ def main() -> None:
                     "formula_version": "angular_posterior_variance_q3_v1",
                     "epsilon": T4RQ_ANGULAR_EPS,
                     "zero_modulation_reliability": T4RQ_ZERO_MODULATION_RELIABILITY,
-                    "consumer": "B3S_direct_scalar_concat",
+                    "consumer": ("B3S_attention_logit_bias" if args.side_features == "t4rql" else "B3S_direct_scalar_concat"),
                     "target_sessions_used": False,
                 }
         receipt = getattr(dm, "_template_ridge_receipt", None)
@@ -771,6 +773,7 @@ def main() -> None:
             and args.decoupled_key_mode == "e_ts4"
             else None
         ),
+        reliability_logit_bias=args.side_features == "t4rql",
         side_dim=side_dim,
         electrode_embed_dim=electrode_embed_dim,
         num_electrodes=num_electrodes if args.side_features != "none" else 0,
@@ -831,6 +834,21 @@ def main() -> None:
                 if parameter.requires_grad
             ),
         }
+    if args.side_features == "t4rql":
+        run_metadata["reliability_logit"] = {
+            "formula_version": "posterior_angular_reliability_logit_v1",
+            "injection": "cross_attention_softmax_pre_logit",
+            "q_source": "normalized_t4rql_column_4_source_train_only",
+            "gamma_parameterization": "per_decoder_layer_softplus(raw_gamma)",
+            "gamma_init": float(model.student.reliability_gamma_init),
+            "layer_count": int(model.student.decoder.num_layers),
+            "target_optimizer": False,
+            "target_backward": False,
+            "target_hyperparameter_search": False,
+            "encoder_side_dim": 4,
+            "carrier_side_dim": 5,
+        }
+
     decoder_meta = run_metadata["decoder_architecture"]
     decoder_meta["decoder_cost_comparison_receipt_reference_n64"] = (
         model.student.decoder_cost_comparison_receipt(
@@ -999,6 +1017,18 @@ def main() -> None:
         if args.checkpoint_every_epoch
         else []
     )
+    if args.side_features == "t4rql":
+        assert model.student is not None
+        run_metadata["reliability_logit"]["final_gamma"] = [
+            float(value) for value in model.student.reliability_logit_gammas().detach().cpu().tolist()
+        ]
+        run_metadata["reliability_logit"]["raw_gamma"] = [
+            float(value) for value in model.student.reliability_logit_gamma_raw.detach().cpu().tolist()
+        ]
+        run_metadata["reliability_logit"]["trainable_parameter_names"] = sorted(
+            name for name, parameter in model.student.named_parameters() if parameter.requires_grad and "reliability_logit_gamma" in name
+        )
+
     run_metadata.update({
         "status": "completed",
         "completed_at": datetime.now().astimezone().isoformat(),
