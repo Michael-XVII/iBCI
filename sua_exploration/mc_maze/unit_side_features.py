@@ -41,6 +41,9 @@ TEMPLATE_RIDGE_FEATURE_VERSION = 1
 # not churn; cache payloads use ``feature_semantics_version`` below.
 T4C_FEATURE_VERSION = 2
 T4R_FEATURE_VERSION = 1
+T4RQ_FEATURE_VERSION = 1
+T4RQ_ANGULAR_EPS = 1.0e-8
+T4RQ_ZERO_MODULATION_RELIABILITY = -20.0
 T4R_POSTERIOR_FORMULA_VERSION = "isotropic_gaussian_posterior_mean_v1"
 T4R_PRIOR_VARIANCE_FLOOR = 1.0e-8
 # Selected by a fully train-only, leave-one-session-out audit.  This constant is
@@ -80,6 +83,7 @@ CANONICAL_DIRECTIONS_RAD: tuple[float, ...] = tuple(
 TUNING_FEATURE_NAMES: dict[str, tuple[str, ...]] = {
     "t4": ("m_cos_phi", "m_sin_phi", "m", "b"),
     "t4r": ("posterior_m_cos_phi", "posterior_m_sin_phi", "posterior_m", "b"),
+    "t4rq": ("posterior_m_cos_phi", "posterior_m_sin_phi", "posterior_m", "b", "angular_reliability"),
     "t4w3": (
         "wiener3_m_cos_phi",
         "wiener3_m_sin_phi",
@@ -118,6 +122,7 @@ SIDE_FEATURE_DIMS: dict[str, int] = {
     "fs3": 6,
     "t4": 4,
     "t4r": 4,
+    "t4rq": 5,
     "t4w3": 4,
     "t8": 8,
     "ts4": 4,
@@ -369,6 +374,8 @@ def feature_semantics_version(side_feature_group: str) -> int:
     return (
         T4C_FEATURE_VERSION
         if resolved == "t4c"
+        else T4RQ_FEATURE_VERSION
+        if resolved == "t4rq"
         else T4R_FEATURE_VERSION
         if resolved == "t4r"
         else TEMPLATE_RIDGE_FEATURE_VERSION
@@ -418,6 +425,9 @@ class SideFeatureMetadata:
     posterior_prior_sha256: str = ""
     posterior_design_rank: int = 0
     posterior_design_condition: float = 0.0
+    posterior_reliability_formula: str = ""
+    posterior_reliability_epsilon: float = 0.0
+    posterior_reliability_zero_floor: float = 0.0
 
 
 def _pool_context_key(
@@ -892,8 +902,13 @@ def fit_t4r_posterior_prior(train_files: Sequence[Path], *, pool_size: int, bin_
     return receipt
 
 
-def posterior_mean_t4(trial_rates: np.ndarray, direction_indices: np.ndarray, *, prior_variance: float) -> tuple[np.ndarray, np.ndarray, int, float]:
-    """Closed-form posterior mean with an unpenalized intercept."""
+def posterior_mean_t4_with_covariance(
+    trial_rates: np.ndarray,
+    direction_indices: np.ndarray,
+    *,
+    prior_variance: float,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, int, float]:
+    """Posterior mean and the 2D directional covariance, with flat intercept prior."""
     if not math.isfinite(prior_variance) or prior_variance < T4R_PRIOR_VARIANCE_FLOOR:
         raise ValueError("t4r prior_variance must be finite and positive")
     coefficients, variance, design, rank, condition = _trial_level_t4_ols(trial_rates, direction_indices)
@@ -902,13 +917,53 @@ def posterior_mean_t4(trial_rates: np.ndarray, direction_indices: np.ndarray, *,
     xtx = design.T @ design
     xty = design.T @ response.T
     posterior = np.empty_like(coefficients)
+    covariance_ac = np.empty((coefficients.shape[0], 2, 2), dtype=np.float64)
     for index, sigma2 in enumerate(variance):
         system = xtx + np.diag([0.0, float(sigma2) / prior_variance, float(sigma2) / prior_variance])
         posterior[index] = np.linalg.solve(system, xty[:, index])
-    features = np.column_stack((posterior[:, 1], posterior[:, 2], np.hypot(posterior[:, 1], posterior[:, 2]), posterior[:, 0]))
-    if not np.isfinite(features).all():
-        raise ValueError("t4r posterior mean is non-finite")
-    return features.astype(np.float32), variance.astype(np.float32), rank, condition
+        covariance_ac[index] = float(sigma2) * np.linalg.inv(system)[1:3, 1:3]
+    features = np.column_stack((
+        posterior[:, 1], posterior[:, 2],
+        np.hypot(posterior[:, 1], posterior[:, 2]), posterior[:, 0],
+    ))
+    if not np.isfinite(features).all() or not np.isfinite(covariance_ac).all():
+        raise ValueError("t4r posterior mean/covariance is non-finite")
+    return features.astype(np.float32), variance.astype(np.float32), covariance_ac.astype(np.float32), rank, condition
+
+
+def posterior_mean_t4(trial_rates: np.ndarray, direction_indices: np.ndarray, *, prior_variance: float) -> tuple[np.ndarray, np.ndarray, int, float]:
+    """Closed-form posterior mean with an unpenalized intercept."""
+    features, variance, _covariance_ac, rank, condition = posterior_mean_t4_with_covariance(
+        trial_rates, direction_indices, prior_variance=prior_variance,
+    )
+    return features, variance, rank, condition
+
+
+def posterior_angular_reliability(
+    posterior_t4: np.ndarray,
+    covariance_ac: np.ndarray,
+    *,
+    eps: float = T4RQ_ANGULAR_EPS,
+    zero_modulation_reliability: float = T4RQ_ZERO_MODULATION_RELIABILITY,
+) -> np.ndarray:
+    """SO(2)-invariant negative log posterior angular variance for E03."""
+    features = np.asarray(posterior_t4, dtype=np.float64)
+    covariance = np.asarray(covariance_ac, dtype=np.float64)
+    if features.ndim != 2 or features.shape[1] != 4:
+        raise ValueError(f"posterior_t4 must be [units,4], got {features.shape}")
+    if covariance.shape != (features.shape[0], 2, 2):
+        raise ValueError("covariance_ac must be [units,2,2] aligned to posterior_t4")
+    if not np.isfinite(features).all() or not np.isfinite(covariance).all():
+        raise ValueError("posterior angular reliability inputs must be finite")
+    mu = features[:, :2]
+    modulation = np.hypot(mu[:, 0], mu[:, 1])
+    u_perp = np.column_stack((-mu[:, 1], mu[:, 0])) / (modulation[:, None] + eps)
+    angular_variance = np.einsum("ni,nij,nj->n", u_perp, covariance, u_perp) / (np.square(modulation) + eps)
+    reliability = -np.log(np.maximum(angular_variance, 0.0) + eps)
+    reliability[modulation <= MODULATION_EPS] = zero_modulation_reliability
+    if not np.isfinite(reliability).all():
+        raise ValueError("posterior angular reliability is non-finite")
+    return reliability.astype(np.float32)
 
 def _unit_tuning_features(
     trial_rates: np.ndarray,
@@ -1060,7 +1115,7 @@ def _compute_tuning_features_uncached(
         design = np.stack([np.ones_like(theta), np.cos(theta), np.sin(theta)], axis=1)
         design_rank = int(np.linalg.matrix_rank(design))
         design_condition = float(np.linalg.cond(design)) if design_rank == 3 else math.inf
-    if feature_group in {"t4c", "t4w3", "t4r"} and (
+    if feature_group in {"t4c", "t4w3", "t4r", "t4rq"} and (
         design_rank != 3 or not math.isfinite(design_condition)
     ):
         raise ValueError(
@@ -1069,7 +1124,7 @@ def _compute_tuning_features_uncached(
             f"got rank={design_rank}, condition={design_condition}"
         )
 
-    if feature_group == "t4r" and posterior_prior is None:
+    if feature_group in {"t4r", "t4rq"} and posterior_prior is None:
         raise ValueError("t4r features require a source-only posterior_prior receipt")
 
     if len(present_directions) < 2:
@@ -1127,15 +1182,19 @@ def _compute_tuning_features_uncached(
             confidence[:, 0],
             direction_indices,
         )
-    elif feature_group == "t4r":
+    elif feature_group in {"t4r", "t4rq"}:
         assert posterior_prior is not None
-        features, _variance, design_rank, design_condition = posterior_mean_t4(
+        posterior_t4, _variance, covariance_ac, design_rank, design_condition = posterior_mean_t4_with_covariance(
             rates, direction_indices,
             prior_variance=float(posterior_prior["prior_variance"]),
         )
+        features = posterior_t4
+        if feature_group == "t4rq":
+            reliability = posterior_angular_reliability(posterior_t4, covariance_ac)
+            features = np.concatenate((posterior_t4, reliability[:, None]), axis=1)
         posterior_cache_key = _cache_key({
-            "feature_version": feature_semantics_version("t4r"),
-            "feature_group": "t4r",
+            "feature_version": feature_semantics_version(feature_group),
+            "feature_group": feature_group,
             "pool_size": pool_size,
             **_pool_context_key(bin_size_ms=bin_size_ms, window_size=window_size, trial_result_filter=trial_result_filter),
             "source": _source_fingerprint(nwb_path),
@@ -1147,7 +1206,10 @@ def _compute_tuning_features_uncached(
                "posterior_prior_variance": float(posterior_prior["prior_variance"]),
                "posterior_prior_sha256": str(posterior_prior["prior_sha256"]),
                "posterior_design_rank": design_rank,
-               "posterior_design_condition": design_condition}
+               "posterior_design_condition": design_condition,
+               "posterior_reliability_formula": "angular_posterior_variance_q3_v1" if feature_group == "t4rq" else "",
+               "posterior_reliability_epsilon": T4RQ_ANGULAR_EPS if feature_group == "t4rq" else 0.0,
+               "posterior_reliability_zero_floor": T4RQ_ZERO_MODULATION_RELIABILITY if feature_group == "t4rq" else 0.0}
         )
     elif feature_group == "t4":
         features = t4
@@ -1544,7 +1606,7 @@ def compute_unit_side_features_uncached(
         ),
         "source": _source_fingerprint(nwb_path),
     }
-    if feature_group == "t4r":
+    if feature_group in {"t4r", "t4rq"}:
         assert posterior_prior is not None
         cache_payload["posterior_prior_sha256"] = str(posterior_prior["prior_sha256"])
     metadata = SideFeatureMetadata(
@@ -1596,7 +1658,7 @@ def fit_side_feature_stats(
     template_profile_hash: str | None = None
     posterior_prior: dict[str, object] | None = None
     posterior_prior_hash: str | None = None
-    if feature_group == "t4r":
+    if feature_group in {"t4r", "t4rq"}:
         posterior_prior = fit_t4r_posterior_prior(
             train_files, pool_size=pool_size, bin_size_ms=bin_size_ms,
             window_size=window_size, trial_result_filter=trial_result_filter,
@@ -1720,6 +1782,9 @@ def _metadata_to_cache_arrays(metadata: SideFeatureMetadata) -> dict[str, np.nda
         "posterior_prior_sha256": np.asarray(metadata.posterior_prior_sha256),
         "posterior_design_rank": np.asarray(metadata.posterior_design_rank),
         "posterior_design_condition": np.asarray(metadata.posterior_design_condition),
+        "posterior_reliability_formula": np.asarray(metadata.posterior_reliability_formula),
+        "posterior_reliability_epsilon": np.asarray(metadata.posterior_reliability_epsilon),
+        "posterior_reliability_zero_floor": np.asarray(metadata.posterior_reliability_zero_floor),
     }
 
 
@@ -1746,6 +1811,9 @@ def _metadata_from_cache(cache) -> SideFeatureMetadata:
         posterior_prior_sha256=str(cache["posterior_prior_sha256"].item()) if "posterior_prior_sha256" in cache.files else "",
         posterior_design_rank=int(cache["posterior_design_rank"].item()) if "posterior_design_rank" in cache.files else 0,
         posterior_design_condition=float(cache["posterior_design_condition"].item()) if "posterior_design_condition" in cache.files else 0.0,
+        posterior_reliability_formula=str(cache["posterior_reliability_formula"].item()) if "posterior_reliability_formula" in cache.files else "",
+        posterior_reliability_epsilon=float(cache["posterior_reliability_epsilon"].item()) if "posterior_reliability_epsilon" in cache.files else 0.0,
+        posterior_reliability_zero_floor=float(cache["posterior_reliability_zero_floor"].item()) if "posterior_reliability_zero_floor" in cache.files else 0.0,
     )
 
 

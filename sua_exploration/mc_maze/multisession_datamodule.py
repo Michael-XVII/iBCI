@@ -921,6 +921,7 @@ class Dandi688MultiSessionDataModule(pl.LightningDataModule):
             None,
             "t4",
             "t4r",
+            "t4rq",
             "t8",
             "ts4",
             "ts8",
@@ -1189,7 +1190,7 @@ class Dandi688MultiSessionDataModule(pl.LightningDataModule):
             )
 
             feature_group = base_feature_group(self.side_feature_group)
-            if feature_group == "t4r":
+            if feature_group in {"t4r", "t4rq"}:
                 side_mean, side_std, receipt = fit_side_feature_stats(
                     self.session_files["train"],
                     feature_group=feature_group,

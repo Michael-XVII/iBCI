@@ -295,7 +295,7 @@ def main() -> None:
         "--side_features",
         choices=[
             "none", "f1", "f2", "f3", "fs1", "fs2", "fs3",
-            "t4", "t4r", "t8", "ts4", "ts8", "t4w3", "ts4w3",
+            "t4", "t4r", "t4rq", "t8", "ts4", "ts8", "t4w3", "ts4w3",
             # T4-substrate electrode designs (docs/ELECTRODE_ANCHOR_DESIGNS.md), variant
             # B3S (design A) or B3SEG/B3SEA (designs D/C) only -- see the variant/side_features
             # cross-validation below.
@@ -692,6 +692,18 @@ def main() -> None:
                 "target_optimizer": False,
                 "target_backward": False,
             }
+            if args.side_features == "t4rq":
+                from mc_maze.unit_side_features import (
+                    T4RQ_ANGULAR_EPS,
+                    T4RQ_ZERO_MODULATION_RELIABILITY,
+                )
+                run_metadata["side_features"]["posterior_angular_reliability"] = {
+                    "formula_version": "angular_posterior_variance_q3_v1",
+                    "epsilon": T4RQ_ANGULAR_EPS,
+                    "zero_modulation_reliability": T4RQ_ZERO_MODULATION_RELIABILITY,
+                    "consumer": "B3S_direct_scalar_concat",
+                    "target_sessions_used": False,
+                }
         receipt = getattr(dm, "_template_ridge_receipt", None)
         if receipt is not None:
             template_profile = np.asarray(receipt.get("profile"), dtype=np.float32)
