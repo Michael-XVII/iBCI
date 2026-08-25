@@ -625,6 +625,9 @@ class StreamingCalibrationLitModule(pl.LightningModule):
       self.log("val_heldin/r2_mean", heldin_mean, prog_bar=True)
       self.val_heldin_r2_mean_best(heldin_mean)
       self.log("val_heldin/r2_mean_best", self.val_heldin_r2_mean_best.compute(), prog_bar=True)
+    if heldout_r2s:
+      heldout_mean = torch.stack(heldout_r2s).mean()
+      self.log("val_heldout/r2_mean", heldout_mean, prog_bar=True)
 
   def configure_optimizers(self) -> Dict[str, Any]:
     assert self.student is not None
