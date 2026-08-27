@@ -13,6 +13,10 @@ interrupt after Lightning parsed 1.0 as 100% of batches. The matched seed-42
 training command is:
 
     sua_exploration/scripts/run_e06_minimal_so2.sh
+Formal seed-42 training started at 2026-08-27T14:53:27+08:00 on physical
+GPU 0 in persistent terminal session 30923. The live terminal stream is saved
+to logs/e06_minimal_so2_t4_s42_20260827.log. Per request, the run is not being
+continuously monitored.
 
 ## Matched protocol
 
