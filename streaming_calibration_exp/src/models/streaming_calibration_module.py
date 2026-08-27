@@ -36,6 +36,40 @@ from src.models.falcon_module import DATASET_NAMES
 LossMode = Literal["task_only", "task_plus_y", "task_plus_y_plus_E"]
 
 
+def analytic_ridge_ole_prediction(
+  neural: torch.Tensor,
+  normalized_t4: torch.Tensor,
+  *,
+  side_mean: torch.Tensor,
+  side_std: torch.Tensor,
+  ridge_lambda: float,
+  gain: float,
+  bin_size_s: float,
+  shuffle_seed: int | None = None,
+) -> torch.Tensor:
+  """E08 B0-2 on one causal activity window, returned as ``[B,1,2]``."""
+  if neural.ndim != 3 or normalized_t4.ndim != 3:
+    raise ValueError("analytic ridge OLE requires neural [B,W,N] and T4 [B,N,4]")
+  if normalized_t4.shape[:2] != (neural.shape[0], neural.shape[2]) or normalized_t4.shape[2] != 4:
+    raise ValueError("analytic ridge OLE requires one four-vector per neural channel")
+  if ridge_lambda < 0.0 or bin_size_s <= 0.0:
+    raise ValueError("analytic ridge lambda must be non-negative and bin_size_s positive")
+  raw_t4 = normalized_t4 * side_std.to(normalized_t4) + side_mean.to(normalized_t4)
+  if shuffle_seed is not None:
+    order = np.random.RandomState(shuffle_seed).permutation(raw_t4.shape[1])
+    raw_t4 = raw_t4.index_select(1, torch.as_tensor(order, device=raw_t4.device))
+  beta = raw_t4[..., :2]
+  baseline = raw_t4[..., 3]
+  rate_hz = neural.sum(dim=1) / (neural.shape[1] * bin_size_s)
+  centered = rate_hz - baseline
+  gram = beta.transpose(1, 2) @ beta
+  identity = torch.eye(2, dtype=gram.dtype, device=gram.device).unsqueeze(0)
+  gram = gram + float(ridge_lambda) * identity
+  rhs = (centered.unsqueeze(1) @ beta).transpose(1, 2)
+  prediction = torch.linalg.solve(gram, rhs).transpose(1, 2)
+  return prediction * float(gain)
+
+
 def load_encoder_warmstart_state(
   id_encoder: nn.Module, state: Dict[str, torch.Tensor]
 ) -> None:
@@ -146,6 +180,14 @@ class StreamingCalibrationLitModule(pl.LightningModule):
     so2_behavior_mean: list[float] | None = None,
     so2_behavior_std: list[float] | None = None,
     so2_hidden_dim: int = 128,
+    analytic_residual_mode: Literal["none", "ridge_ole"] = "none",
+    analytic_ridge_lambda: float = 0.0,
+    analytic_gain: float = 1.0,
+    analytic_side_mean: list[float] | None = None,
+    analytic_side_std: list[float] | None = None,
+    analytic_bin_size_ms: int = 20,
+    analytic_shuffle_seed: int | None = None,
+    analytic_zero_residual_init: bool = False,
   ) -> None:
     super().__init__()
     self.save_hyperparameters(ignore=["optimizer", "scheduler", "net"])
@@ -182,6 +224,30 @@ class StreamingCalibrationLitModule(pl.LightningModule):
     )
     self.test_heldout_r2 = nn.ModuleDict(
       {k: R2Score(multioutput="variance_weighted") for k in DATASET_NAMES[task]["heldout"]}
+    )
+    self.test_heldin_analytic_r2 = nn.ModuleDict(
+      {k: R2Score(multioutput="variance_weighted") for k in DATASET_NAMES[task]["heldin"]}
+    )
+    self.test_heldout_analytic_r2 = nn.ModuleDict(
+      {k: R2Score(multioutput="variance_weighted") for k in DATASET_NAMES[task]["heldout"]}
+    )
+    self.test_heldin_analytic_shuffle_r2 = nn.ModuleDict(
+      {k: R2Score(multioutput="variance_weighted") for k in DATASET_NAMES[task]["heldin"]}
+    )
+    self.test_heldout_analytic_shuffle_r2 = nn.ModuleDict(
+      {k: R2Score(multioutput="variance_weighted") for k in DATASET_NAMES[task]["heldout"]}
+    )
+    self.test_heldin_residual_power = nn.ModuleDict(
+      {k: MeanMetric() for k in DATASET_NAMES[task]["heldin"]}
+    )
+    self.test_heldout_residual_power = nn.ModuleDict(
+      {k: MeanMetric() for k in DATASET_NAMES[task]["heldout"]}
+    )
+    self.test_heldin_target_power = nn.ModuleDict(
+      {k: MeanMetric() for k in DATASET_NAMES[task]["heldin"]}
+    )
+    self.test_heldout_target_power = nn.ModuleDict(
+      {k: MeanMetric() for k in DATASET_NAMES[task]["heldout"]}
     )
 
     self._teacher_ckpt_path = teacher_ckpt_path
@@ -240,6 +306,14 @@ class StreamingCalibrationLitModule(pl.LightningModule):
     self._so2_behavior_mean = so2_behavior_mean
     self._so2_behavior_std = so2_behavior_std
     self._so2_hidden_dim = int(so2_hidden_dim)
+    self._analytic_residual_mode = analytic_residual_mode
+    self._analytic_ridge_lambda = float(analytic_ridge_lambda)
+    self._analytic_gain = float(analytic_gain)
+    self._analytic_side_mean = analytic_side_mean
+    self._analytic_side_std = analytic_side_std
+    self._analytic_bin_size_s = float(analytic_bin_size_ms) / 1000.0
+    self._analytic_shuffle_seed = analytic_shuffle_seed
+    self._analytic_zero_residual_init = bool(analytic_zero_residual_init)
     self.population_identity: nn.Parameter | None = None
     if self._support_prediction_consistency_weight < 0.0:
       raise ValueError("support_prediction_consistency_weight must be >= 0")
@@ -249,6 +323,21 @@ class StreamingCalibrationLitModule(pl.LightningModule):
       raise ValueError("fixed_slot_dim must be positive when fixed slots are enabled")
     if self._decoder_mode not in {"coupled", "decoupled", "so2"}:
       raise ValueError("decoder_mode must be 'coupled', 'decoupled', or 'so2'")
+    if self._analytic_residual_mode not in {"none", "ridge_ole"}:
+      raise ValueError("analytic_residual_mode must be 'none' or 'ridge_ole'")
+    if self._analytic_residual_mode == "ridge_ole":
+      if self._side_dim != 4 or self._decoder_mode != "coupled":
+        raise ValueError("analytic residual requires coupled decoding with raw-reconstructable T4")
+      if not self._decode_last_timestep_only or not self._predict_scaled_behavior:
+        raise ValueError("analytic residual requires scaled last-timestep behavior prediction")
+      if self._analytic_side_mean is None or self._analytic_side_std is None:
+        raise ValueError("analytic residual requires source-only T4 normalization statistics")
+      if len(self._analytic_side_mean) != 4 or len(self._analytic_side_std) != 4:
+        raise ValueError("analytic T4 mean/std must each contain four values")
+      if self._analytic_ridge_lambda < 0.0 or self._analytic_bin_size_s <= 0.0:
+        raise ValueError("analytic ridge lambda/bin size are invalid")
+    elif self._analytic_zero_residual_init or self._analytic_shuffle_seed is not None:
+      raise ValueError("analytic controls require analytic_residual_mode='ridge_ole'")
     if self._decoupled_key_mode not in {"e_t4", "e_ts4", "e_only", "x_only"}:
       raise ValueError(
         "decoupled_key_mode must be one of {'e_t4','e_ts4','e_only','x_only'}"
@@ -365,6 +454,10 @@ class StreamingCalibrationLitModule(pl.LightningModule):
       if not warmstart_path.is_file():
         raise FileNotFoundError(f"Encoder warm-start does not exist: {warmstart_path}")
       load_selected_t4_full_student_warmstart(decoder, id_encoder, warmstart_path)
+
+    if self._analytic_zero_residual_init:
+      nn.init.zeros_(decoder.fc_out.weight)
+      nn.init.zeros_(decoder.fc_out.bias)
 
     if self._freeze_encoder_base and self._tune_encoder_fusion:
       raise ValueError("freeze_encoder_base and tune_encoder_fusion are mutually exclusive")
@@ -501,6 +594,7 @@ class StreamingCalibrationLitModule(pl.LightningModule):
       neural, behavior_target, calib, session_name = batch
       side_features = None
     assert self.student is not None and self.teacher is not None
+    analytic_neural = neural
 
     dropout_mask = None
     if self.training and self._neuron_dropout is not None:
@@ -523,6 +617,36 @@ class StreamingCalibrationLitModule(pl.LightningModule):
         electrode_ids=electrode_ids,
       )
     y_student, behavior_target = self._slice_last_timestep(y_student, behavior_target)
+    residual_pred = y_student
+    analytic_pred = None
+    analytic_shuffle_pred = None
+    if self._analytic_residual_mode == "ridge_ole":
+      if side_features is None:
+        raise ValueError("analytic residual batch is missing aligned T4 side features")
+      side_mean = torch.as_tensor(self._analytic_side_mean, device=side_features.device)
+      side_std = torch.as_tensor(self._analytic_side_std, device=side_features.device)
+      analytic_pred = analytic_ridge_ole_prediction(
+        analytic_neural,
+        side_features,
+        side_mean=side_mean,
+        side_std=side_std,
+        ridge_lambda=self._analytic_ridge_lambda,
+        gain=self._analytic_gain,
+        bin_size_s=self._analytic_bin_size_s,
+      )
+      y_student = analytic_pred + residual_pred
+      if not self.training and self._analytic_shuffle_seed is not None:
+        shuffled_anchor = analytic_ridge_ole_prediction(
+          analytic_neural,
+          side_features,
+          side_mean=side_mean,
+          side_std=side_std,
+          ridge_lambda=self._analytic_ridge_lambda,
+          gain=self._analytic_gain,
+          bin_size_s=self._analytic_bin_size_s,
+          shuffle_seed=self._analytic_shuffle_seed,
+        )
+        analytic_shuffle_pred = shuffled_anchor + residual_pred
 
     loss = self.mse_loss(y_student, behavior_target)
     pred_distill_mse = torch.tensor(float("nan"), device=loss.device)
@@ -546,6 +670,9 @@ class StreamingCalibrationLitModule(pl.LightningModule):
       "loss": loss,
       "behavior_pred": y_student,
       "behavior_target": behavior_target,
+      "analytic_pred": analytic_pred,
+      "residual_pred": residual_pred,
+      "analytic_shuffle_pred": analytic_shuffle_pred,
       "session_name": session_name,
       "identity_mse": identity_mse,
       "prediction_distill_mse": pred_distill_mse,
@@ -736,6 +863,24 @@ class StreamingCalibrationLitModule(pl.LightningModule):
       )
       self.test_heldin_identity_mse(out["identity_mse"])
       self.test_heldin_prediction_distill_mse(out["prediction_distill_mse"])
+      if out["analytic_pred"] is not None:
+        self.test_heldin_analytic_r2[session_name].update(
+          out["analytic_pred"].flatten(start_dim=0, end_dim=1),
+          out["behavior_target"].flatten(start_dim=0, end_dim=1),
+        )
+      if out["analytic_shuffle_pred"] is not None:
+        self.test_heldin_analytic_shuffle_r2[session_name].update(
+          out["analytic_shuffle_pred"].flatten(start_dim=0, end_dim=1),
+          out["behavior_target"].flatten(start_dim=0, end_dim=1),
+        )
+      if out["analytic_pred"] is not None:
+        count = out["residual_pred"].numel()
+        self.test_heldin_residual_power[session_name].update(
+          out["residual_pred"].square().mean(), weight=count
+        )
+        self.test_heldin_target_power[session_name].update(
+          out["behavior_target"].square().mean(), weight=count
+        )
       self.log("test_heldin/loss", self.test_heldin_loss, on_epoch=True, prog_bar=True, add_dataloader_idx=False)
     else:
       self.test_heldout_loss(out["loss"])
@@ -745,6 +890,24 @@ class StreamingCalibrationLitModule(pl.LightningModule):
       )
       self.test_heldout_identity_mse(out["identity_mse"])
       self.test_heldout_prediction_distill_mse(out["prediction_distill_mse"])
+      if out["analytic_pred"] is not None:
+        self.test_heldout_analytic_r2[session_name].update(
+          out["analytic_pred"].flatten(start_dim=0, end_dim=1),
+          out["behavior_target"].flatten(start_dim=0, end_dim=1),
+        )
+      if out["analytic_shuffle_pred"] is not None:
+        self.test_heldout_analytic_shuffle_r2[session_name].update(
+          out["analytic_shuffle_pred"].flatten(start_dim=0, end_dim=1),
+          out["behavior_target"].flatten(start_dim=0, end_dim=1),
+        )
+      if out["analytic_pred"] is not None:
+        count = out["residual_pred"].numel()
+        self.test_heldout_residual_power[session_name].update(
+          out["residual_pred"].square().mean(), weight=count
+        )
+        self.test_heldout_target_power[session_name].update(
+          out["behavior_target"].square().mean(), weight=count
+        )
       self.log("test_heldout/loss", self.test_heldout_loss, on_epoch=True, prog_bar=True, add_dataloader_idx=False)
     self.test_identity_mse(out["identity_mse"])
     self.test_prediction_distill_mse(out["prediction_distill_mse"])
@@ -773,6 +936,22 @@ class StreamingCalibrationLitModule(pl.LightningModule):
       heldout_r2s.append(r2)
       self.log(f"test_heldout_{sess_name}/r2", r2, add_dataloader_idx=False)
       metric.reset()
+    analytic_heldin_r2s, analytic_heldout_r2s = [], []
+    shuffle_heldin_r2s, shuffle_heldout_r2s = [], []
+    for prefix, metrics, values in (
+      ("test_heldin_analytic", self.test_heldin_analytic_r2, analytic_heldin_r2s),
+      ("test_heldout_analytic", self.test_heldout_analytic_r2, analytic_heldout_r2s),
+      ("test_heldin_analytic_shuffle", self.test_heldin_analytic_shuffle_r2, shuffle_heldin_r2s),
+      ("test_heldout_analytic_shuffle", self.test_heldout_analytic_shuffle_r2, shuffle_heldout_r2s),
+    ):
+      for sess_name, metric in metrics.items():
+        if metric.total <= 2:
+          metric.reset()
+          continue
+        r2 = metric.compute()
+        values.append(r2)
+        self.log(f"{prefix}_{sess_name}/r2", r2, add_dataloader_idx=False)
+        metric.reset()
     if heldin_r2s:
       self.log("test_heldin/r2_mean", torch.stack(heldin_r2s).mean(), prog_bar=True)
       self.log("test_heldin/identity_mse", self.test_heldin_identity_mse, prog_bar=True)
@@ -781,3 +960,28 @@ class StreamingCalibrationLitModule(pl.LightningModule):
       self.log("test_heldout/r2_mean", torch.stack(heldout_r2s).mean(), prog_bar=True)
       self.log("test_heldout/identity_mse", self.test_heldout_identity_mse, prog_bar=True)
       self.log("test_heldout/prediction_distill_mse", self.test_heldout_prediction_distill_mse, prog_bar=True)
+    for name, values in (
+      ("test_heldin_analytic/r2_mean", analytic_heldin_r2s),
+      ("test_heldout_analytic/r2_mean", analytic_heldout_r2s),
+      ("test_heldin_analytic_shuffle/r2_mean", shuffle_heldin_r2s),
+      ("test_heldout_analytic_shuffle/r2_mean", shuffle_heldout_r2s),
+    ):
+      if values:
+        self.log(name, torch.stack(values).mean())
+    for prefix, residual_metrics, target_metrics in (
+      ("test_heldin", self.test_heldin_residual_power, self.test_heldin_target_power),
+      ("test_heldout", self.test_heldout_residual_power, self.test_heldout_target_power),
+    ):
+      ratios = []
+      for sess_name in residual_metrics:
+        if residual_metrics[sess_name].weight <= 0 or target_metrics[sess_name].weight <= 0:
+          residual_metrics[sess_name].reset()
+          target_metrics[sess_name].reset()
+          continue
+        ratio = residual_metrics[sess_name].compute() / target_metrics[sess_name].compute().clamp_min(1e-12)
+        ratios.append(ratio)
+        self.log(f"{prefix}_{sess_name}/residual_energy_fraction", ratio, add_dataloader_idx=False)
+        residual_metrics[sess_name].reset()
+        target_metrics[sess_name].reset()
+      if ratios:
+        self.log(f"{prefix}/residual_energy_fraction_mean", torch.stack(ratios).mean())

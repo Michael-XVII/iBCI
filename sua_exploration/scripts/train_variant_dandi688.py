@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import sys
 from dataclasses import asdict
 from datetime import datetime
@@ -15,6 +16,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 from lightning.pytorch.callbacks import EarlyStopping, ModelCheckpoint
+from torchmetrics import MeanMetric
 from torchmetrics.regression import R2Score
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -48,6 +50,30 @@ def configure_multisession_metrics(
     )
     model.test_heldout_r2 = nn.ModuleDict(
         {name: R2Score(multioutput="variance_weighted") for name in test_sessions}
+    )
+    model.test_heldin_analytic_r2 = nn.ModuleDict(
+        {name: R2Score(multioutput="variance_weighted") for name in test_sessions}
+    )
+    model.test_heldout_analytic_r2 = nn.ModuleDict(
+        {name: R2Score(multioutput="variance_weighted") for name in test_sessions}
+    )
+    model.test_heldin_analytic_shuffle_r2 = nn.ModuleDict(
+        {name: R2Score(multioutput="variance_weighted") for name in test_sessions}
+    )
+    model.test_heldout_analytic_shuffle_r2 = nn.ModuleDict(
+        {name: R2Score(multioutput="variance_weighted") for name in test_sessions}
+    )
+    model.test_heldin_residual_power = nn.ModuleDict(
+        {name: MeanMetric() for name in test_sessions}
+    )
+    model.test_heldout_residual_power = nn.ModuleDict(
+        {name: MeanMetric() for name in test_sessions}
+    )
+    model.test_heldin_target_power = nn.ModuleDict(
+        {name: MeanMetric() for name in test_sessions}
+    )
+    model.test_heldout_target_power = nn.ModuleDict(
+        {name: MeanMetric() for name in test_sessions}
     )
 
 
@@ -333,6 +359,15 @@ def main() -> None:
         ),
     )
     parser.add_argument(
+        "--analytic_residual_e08_result",
+        type=str,
+        default=None,
+        help=(
+            "Completed E08 JSON receipt. Enables E09 B0-2 plus direct residual, "
+            "locking ridge lambda/gain to the source-only E08 values."
+        ),
+    )
+    parser.add_argument(
         "--encoder_warmstart_path",
         type=str,
         default=None,
@@ -467,6 +502,43 @@ def main() -> None:
         args.seed if is_shuffled_control(args.side_features)
         or confidence_component_shuffle(args.side_features) is not None else None
     )
+    analytic_config = None
+    analytic_e08_path = None
+    if args.analytic_residual_e08_result is not None:
+        analytic_e08_path = Path(args.analytic_residual_e08_result).expanduser().resolve()
+        if not analytic_e08_path.is_file():
+            raise FileNotFoundError(f"E08 result does not exist: {analytic_e08_path}")
+        if (
+            args.variant != "B3S"
+            or args.side_features != "t4"
+            or args.decoder_mode != "coupled"
+            or args.calibration_n_trials != 50
+            or args.side_feature_pool_size != 50
+            or args.loss_mode != "task_only"
+            or args.encoder_warmstart_path is not None
+        ):
+            raise ValueError(
+                "E09 requires fresh B3S/T4 coupled task-only training with a 50-trial "
+                "T4/calibration prefix and no warm-start"
+            )
+        e08_payload = json.loads(analytic_e08_path.read_text())
+        if e08_payload.get("status") != "complete" or e08_payload.get("seed") != args.seed:
+            raise ValueError("E09 requires a completed E08 receipt with the same seed")
+        b02 = e08_payload.get("decoders", {}).get("B0-2_ridge_ole", {})
+        ridge_lambda = float(b02.get("source_selected_lambda", float("nan")))
+        gain = float(b02.get("source_fixed_gain", float("nan")))
+        if not math.isfinite(ridge_lambda) or ridge_lambda < 0.0 or not math.isfinite(gain):
+            raise ValueError("E08 B0-2 receipt has invalid lambda/gain")
+        analytic_config = {
+            "mode": "ridge_ole",
+            "ridge_lambda": ridge_lambda,
+            "gain": gain,
+            "shuffle_seed": args.seed,
+            "e08_result": str(analytic_e08_path),
+            "e08_result_sha256": sha256_file(analytic_e08_path),
+            "e08_source_sessions": e08_payload["protocol"]["source_sessions"],
+            "e08_target_sessions": e08_payload["protocol"]["target_sessions"],
+        }
     if args.require_gpu and not torch.cuda.is_available():
         raise RuntimeError("--require_gpu was set but CUDA is unavailable")
     if args.accelerator == "gpu" and not torch.cuda.is_available():
@@ -550,6 +622,20 @@ def main() -> None:
             "strict_so2_equivariance": args.decoder_mode == "so2",
             "permutation_invariant": args.decoder_mode == "so2",
         },
+        "analytic_residual": (
+            {
+                **analytic_config,
+                "formula": "v_hat = v_ana + delta_v_theta",
+                "source_training_objective": "MSE(v_ana + delta_v_theta, v), equivalent to MSE(delta_v_theta, v-v_ana)",
+                "residual_zero_initialization": "decoder fc_out weight and bias are exact zero",
+                "B_Res_Zero": "set delta_v_theta=0; exact analytic-only path",
+                "B_Res_Shuffle": "row-permute only the analytic T4 carrier at test; learned residual retains aligned T4",
+                "target_optimizer": False,
+                "target_backward": False,
+                "target_parameter_count": 0,
+            }
+            if analytic_config is not None else {"mode": "none"}
+        ),
         "seed": args.seed,
         "teacher_checkpoint": str(teacher_ckpt),
         "teacher_sha256": sha256_file(teacher_ckpt),
@@ -653,6 +739,11 @@ def main() -> None:
         train_val_manifest_path=args.train_val_manifest,
     )
     dm.setup("fit")
+    if analytic_config is not None:
+        if dm.session_splits["train"] != analytic_config["e08_source_sessions"]:
+            raise ValueError("E09 source sessions differ from the locked E08 receipt")
+        if dm.session_splits["test"] != analytic_config["e08_target_sessions"]:
+            raise ValueError("E09 target sessions differ from the locked E08 receipt")
     if args.side_features != "none":
         from mc_maze.unit_side_features import (
             T4_WIENER_SHRINK_STRENGTH,
@@ -666,6 +757,10 @@ def main() -> None:
 
         side_mean, side_std = dm._get_side_feature_stats()
         assert side_mean is not None and side_std is not None
+        if analytic_config is not None:
+            run_metadata["analytic_residual"]["side_mean"] = side_mean.tolist()
+            run_metadata["analytic_residual"]["side_std"] = side_std.tolist()
+            run_metadata["analytic_residual"]["rate_definition"] = "mean firing rate over the causal 50-bin (1.0 s) window"
         # uses_electrode_ids (not the narrower uses_electrode_embedding) so B3SEG/B3SEA's own
         # gate/anchor tables -- which do not use the concat-embedding mechanism -- still get a
         # correctly-sized vocabulary (docs/ELECTRODE_ANCHOR_DESIGNS.md).
@@ -804,6 +899,22 @@ def main() -> None:
         so2_behavior_mean=behavior_mean.tolist() if args.decoder_mode == "so2" else None,
         so2_behavior_std=behavior_std.tolist() if args.decoder_mode == "so2" else None,
         so2_hidden_dim=128,
+        analytic_residual_mode=(
+            analytic_config["mode"] if analytic_config is not None else "none"
+        ),
+        analytic_ridge_lambda=(
+            analytic_config["ridge_lambda"] if analytic_config is not None else 0.0
+        ),
+        analytic_gain=(
+            analytic_config["gain"] if analytic_config is not None else 1.0
+        ),
+        analytic_side_mean=(side_mean.tolist() if analytic_config is not None else None),
+        analytic_side_std=(side_std.tolist() if analytic_config is not None else None),
+        analytic_bin_size_ms=20,
+        analytic_shuffle_seed=(
+            analytic_config["shuffle_seed"] if analytic_config is not None else None
+        ),
+        analytic_zero_residual_init=analytic_config is not None,
         side_dim=side_dim,
         electrode_embed_dim=electrode_embed_dim,
         num_electrodes=num_electrodes if args.side_features != "none" else 0,
@@ -817,6 +928,26 @@ def main() -> None:
     # Lightning's later setup("fit") is idempotent.
     model.setup("fit")
     assert model.student is not None
+    if analytic_config is not None:
+        fc_out = model.student.decoder.fc_out
+        nonzero_output_parameters = int(torch.count_nonzero(fc_out.weight)) + int(
+            torch.count_nonzero(fc_out.bias)
+        )
+        if nonzero_output_parameters != 0:
+            raise RuntimeError("E09 residual output head did not initialize to exact zero")
+        run_metadata["analytic_residual"]["zero_init_verified"] = True
+        run_metadata["analytic_residual"]["parameter_counts"] = {
+            "student_total": sum(
+                parameter.numel() for parameter in model.student.parameters()
+            ),
+            "optimizer_trainable": sum(
+                parameter.numel()
+                for parameter in model.student.parameters()
+                if parameter.requires_grad
+            ),
+            "new_learned_parameters_vs_B_Base": 0,
+            "target_side_learned_parameters": 0,
+        }
     encoder_cost = model.student.id_encoder.cost_profile(
         num_neurons=64,
         trial_length=100,

@@ -124,6 +124,22 @@ def checkpoint_architecture_kwargs(checkpoint: dict) -> dict:
             hyper_parameters.get("electrode_embed_dim", 0)
         ),
         "num_electrodes": int(hyper_parameters.get("num_electrodes", 0)),
+        "analytic_residual_mode": str(
+            hyper_parameters.get("analytic_residual_mode", "none")
+        ),
+        "analytic_ridge_lambda": float(
+            hyper_parameters.get("analytic_ridge_lambda", 0.0)
+        ),
+        "analytic_gain": float(hyper_parameters.get("analytic_gain", 1.0)),
+        "analytic_side_mean": hyper_parameters.get("analytic_side_mean"),
+        "analytic_side_std": hyper_parameters.get("analytic_side_std"),
+        "analytic_bin_size_ms": int(
+            hyper_parameters.get("analytic_bin_size_ms", 20)
+        ),
+        "analytic_shuffle_seed": hyper_parameters.get("analytic_shuffle_seed"),
+        "analytic_zero_residual_init": bool(
+            hyper_parameters.get("analytic_zero_residual_init", False)
+        ),
     }
 
 
