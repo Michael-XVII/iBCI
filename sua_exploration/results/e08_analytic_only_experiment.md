@@ -6,10 +6,13 @@
 - Seed: 42 (the implementation is closed-form and deterministic)
 - Dataset: DANDI 000688, sub-C, CO, SUA
 - Split: chronological 37 source / 8 validation-unused / 8 target-test sessions, matched to E01
-- State: implementation and real-data smoke test complete; formal evaluation pending launch
+- State: formal evaluation running
+- Started: `2026-08-27T16:06:25+08:00`
+- Process: Python PID `218196` (persistent execution session `42507`)
 - Formal log: `logs/e08_analytic_only_seed42.log`
 - Formal result: `sua_exploration/results/e08_analytic_only_t4_seed42.json`
 
+- Startup check: passed; the formal 37-source / 8-target protocol was printed and the first two source sessions completed.
 ## Matched protocol
 
 - T4 carrier: raw `[a, c, m, b]` computed from the first 50 rewarded trials.
