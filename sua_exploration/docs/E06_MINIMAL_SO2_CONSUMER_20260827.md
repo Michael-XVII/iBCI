@@ -18,6 +18,20 @@ GPU 0 in persistent terminal session 30923. The live terminal stream is saved
 to logs/e06_minimal_so2_t4_s42_20260827.log. Per request, the run is not being
 continuously monitored.
 
+The server lost power after that launch and rebooted at approximately
+2026-08-27T19:11+08:00. No E06 process survived. The newest usable artifact is
+the complete epoch-4 checkpoint (global step 219545):
+
+    sua_exploration/checkpoints/e06_minimal_so2_t4_s42_20260827/best-epoch=004-val_heldout/r2_mean=-2.6888.ckpt
+
+At 2026-08-27T19:25+08:00, E06 was relaunched on physical GPU 0 with full
+Lightning state restoration from that checkpoint. The loader uses
+`weights_only=True`; model, optimizer, loop/epoch, ModelCheckpoint, and
+EarlyStopping states are restored without executing pickled Python objects.
+Output continues in the original formal log. Because only top-3 checkpoints
+were saved, any post-epoch-4 work completed before the power loss but not
+retained by the checkpoint callback cannot be recovered.
+
 ## Matched protocol
 
 - E01 split: 37 train / 8 validation / 8 held-out-selected test sessions.

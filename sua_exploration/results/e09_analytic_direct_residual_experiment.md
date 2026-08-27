@@ -6,12 +6,24 @@
 - Seed: 42
 - Dataset/split: DANDI 000688 sub-C CO SUA, chronological 37/8/8, matched to E01 and E08
 - State: formal training running
-- Started: `2026-08-27T16:51:00+08:00`
+- Restarted after power loss: `2026-08-27T19:23:00+08:00`
 - Device: physical GPU 1 (`CUDA_VISIBLE_DEVICES=1`)
-- Process: Python PID `290935` (persistent execution session `69542`)
-- Startup check: passed; process is alive and the locked seed-42/T4/E08 configuration was accepted.
+- Process: Python PID `37856` (persistent execution session `16623`)
+- Startup check: process alive; rebuilding the reboot-cleared preprocessing cache before GPU training.
 - Formal log: `logs/e09_analytic_direct_residual_t4_s42.log`
 - Formal result: `sua_exploration/results/p3_e09_analytic_direct_residual_t4_s42_seed42.json`
+
+The original process was interrupted by a server power loss before it completed
+epoch 0, so no formal E09 checkpoint existed and checkpoint resume was
+impossible. Its partial artifacts were preserved as:
+
+- `sua_exploration/checkpoints/e09_analytic_direct_residual_t4_s42_interrupted_powerloss`
+- `logs/e09_analytic_direct_residual_t4_s42_interrupted_powerloss.log`
+
+E09 was cleanly restarted from epoch 0 at 2026-08-27T19:23+08:00 on physical
+GPU 1, reusing the original formal output and log names. The server reboot also
+cleared the shared `/tmp` preprocessing cache, so both restarted jobs first
+rebuild that cache before entering GPU training.
 
 ## Locked analytic branch
 
