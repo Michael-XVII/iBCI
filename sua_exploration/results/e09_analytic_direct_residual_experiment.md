@@ -5,7 +5,11 @@
 - Branch: `exp/e09-analytic-direct-residual`
 - Seed: 42
 - Dataset/split: DANDI 000688 sub-C CO SUA, chronological 37/8/8, matched to E01 and E08
-- State: implementation verified; formal training pending launch
+- State: formal training running
+- Started: `2026-08-27T16:51:00+08:00`
+- Device: physical GPU 1 (`CUDA_VISIBLE_DEVICES=1`)
+- Process: Python PID `290935` (persistent execution session `69542`)
+- Startup check: passed; process is alive and the locked seed-42/T4/E08 configuration was accepted.
 - Formal log: `logs/e09_analytic_direct_residual_t4_s42.log`
 - Formal result: `sua_exploration/results/p3_e09_analytic_direct_residual_t4_s42_seed42.json`
 
