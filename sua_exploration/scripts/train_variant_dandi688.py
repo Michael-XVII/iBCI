@@ -592,9 +592,9 @@ def main() -> None:
             raise FileNotFoundError(
                 f"Resume checkpoint does not exist: {resume_checkpoint}"
             )
-        if resume_checkpoint.parent != output_dir.resolve():
+        if not resume_checkpoint.is_relative_to(output_dir.resolve()):
             raise ValueError(
-                "--resume_checkpoint must belong to the selected --out_name directory"
+                "--resume_checkpoint must belong to the selected --out_name directory tree"
             )
     # M1 hard assertion (sua_exploration/docs/CURRENT_RESULTS.md section H.4): refuse to
     # reuse a checkpoint directory that already holds another run's checkpoints or
