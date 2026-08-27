@@ -167,6 +167,150 @@ class CalibrationFixedSlotRouter(nn.Module):
         return self.project_neural(neural_tokens, calibration_state), calibration_state
 
 
+class MinimalSO2EquivariantConsumer(nn.Module):
+    """Permutation-invariant, physically SO(2)-equivariant T4 consumer.
+
+    Every learned quantity is a scalar function of live activity, the
+    calibration identity, modulation magnitude, and baseline. The only vector
+    basis exposed to the readout is (u_i, J u_i) from the physical T4
+    tuning vector.
+    """
+
+    def __init__(
+        self,
+        *,
+        window_size: int,
+        hidden_dim: int,
+        side_mean: list[float] | tuple[float, ...],
+        side_std: list[float] | tuple[float, ...],
+        behavior_mean: list[float] | tuple[float, ...],
+        behavior_std: list[float] | tuple[float, ...],
+        behavior_scaling_factor: float,
+        eps: float = 1.0e-8,
+    ) -> None:
+        super().__init__()
+        if hidden_dim <= 0:
+            raise ValueError("SO(2) hidden_dim must be positive")
+        if behavior_scaling_factor <= 0.0:
+            raise ValueError("SO(2) behavior_scaling_factor must be positive")
+        side_mean_tensor = torch.as_tensor(side_mean, dtype=torch.float32)
+        side_std_tensor = torch.as_tensor(side_std, dtype=torch.float32)
+        behavior_mean_tensor = torch.as_tensor(behavior_mean, dtype=torch.float32)
+        behavior_std_tensor = torch.as_tensor(behavior_std, dtype=torch.float32)
+        if side_mean_tensor.shape != (4,) or side_std_tensor.shape != (4,):
+            raise ValueError("SO(2) T4 normalization statistics must each have shape [4]")
+        if behavior_mean_tensor.shape != (2,) or behavior_std_tensor.shape != (2,):
+            raise ValueError("SO(2) behavior normalization statistics must each have shape [2]")
+        if not torch.isfinite(side_mean_tensor).all() or not torch.isfinite(side_std_tensor).all():
+            raise ValueError("SO(2) T4 normalization statistics must be finite")
+        if not torch.isfinite(behavior_mean_tensor).all() or not torch.isfinite(behavior_std_tensor).all():
+            raise ValueError("SO(2) behavior normalization statistics must be finite")
+        if (side_std_tensor <= 0.0).any() or (behavior_std_tensor <= 0.0).any():
+            raise ValueError("SO(2) normalization standard deviations must be positive")
+
+        self.window_size = int(window_size)
+        self.hidden_dim = int(hidden_dim)
+        self.behavior_scaling_factor = float(behavior_scaling_factor)
+        self.eps = float(eps)
+        self.register_buffer("side_mean", side_mean_tensor)
+        self.register_buffer("side_std", side_std_tensor)
+        self.register_buffer("behavior_mean", behavior_mean_tensor)
+        self.register_buffer("behavior_std", behavior_std_tensor)
+        self.register_buffer(
+            "modulation_scale",
+            torch.linalg.vector_norm(side_std_tensor[:2]).clamp_min(self.eps),
+        )
+        scalar_input_dim = 2 * self.window_size + 2
+        self.scalar_net = nn.Sequential(
+            nn.Linear(scalar_input_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, 3 * self.window_size),
+        )
+
+    def carrier_geometry(
+        self, side_features: torch.Tensor
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        """Return physical unit directions and invariant [m, b] features."""
+        if side_features.ndim != 3 or side_features.shape[-1] != 4:
+            raise ValueError("SO(2) consumer requires normalized T4 with shape [B,N,4]")
+        raw_t4 = side_features * self.side_std + self.side_mean
+        beta = raw_t4[..., :2]
+        magnitude = torch.linalg.vector_norm(beta, dim=-1, keepdim=True)
+        direction = beta / magnitude.clamp_min(self.eps)
+        invariants = torch.cat(
+            [magnitude / self.modulation_scale, side_features[..., 3:4]], dim=-1
+        )
+        return direction, invariants
+
+    def physical_output(self, scaled_normalized_output: torch.Tensor) -> torch.Tensor:
+        return (
+            scaled_normalized_output / self.behavior_scaling_factor
+        ) * self.behavior_std + self.behavior_mean
+
+    def forward(
+        self,
+        neural: torch.Tensor,
+        identity: torch.Tensor,
+        side_features: torch.Tensor,
+    ) -> torch.Tensor:
+        if neural.ndim != 3:
+            raise ValueError("SO(2) neural input must have shape [B,W,N]")
+        batch_size, window_size, num_neurons = neural.shape
+        if window_size != self.window_size:
+            raise ValueError(
+                f"SO(2) neural window must be {self.window_size}, got {window_size}"
+            )
+        if identity.shape != (batch_size, num_neurons, window_size):
+            raise ValueError(
+                "SO(2) calibration identity must have shape [B,N,W], got "
+                f"{tuple(identity.shape)}"
+            )
+        if side_features.shape[:2] != (batch_size, num_neurons):
+            raise ValueError("SO(2) carrier batch/unit dimensions must match neural input")
+
+        direction, invariants = self.carrier_geometry(side_features)
+        scalar_input = torch.cat(
+            [neural.permute(0, 2, 1), identity, invariants], dim=-1
+        )
+        scalar_output = self.scalar_net(scalar_input).reshape(
+            batch_size, num_neurons, window_size, 3
+        )
+        attention = torch.softmax(scalar_output[..., 0], dim=1)
+        parallel = scalar_output[..., 1]
+        perpendicular = scalar_output[..., 2]
+        quarter_turn = torch.stack(
+            [-direction[..., 1], direction[..., 0]], dim=-1
+        )
+        vector_value = (
+            parallel.unsqueeze(-1) * direction.unsqueeze(2)
+            + perpendicular.unsqueeze(-1) * quarter_turn.unsqueeze(2)
+        )
+        physical = (attention.unsqueeze(-1) * vector_value).sum(dim=1)
+        normalized = (physical - self.behavior_mean) / self.behavior_std
+        return self.behavior_scaling_factor * normalized
+
+    def cost_receipt(self, *, batch_size: int, num_neurons: int) -> dict[str, object]:
+        scalar_input_dim = 2 * self.window_size + 2
+        per_unit_macs = (
+            scalar_input_dim * self.hidden_dim
+            + self.hidden_dim * self.hidden_dim
+            + self.hidden_dim * 3 * self.window_size
+        )
+        return {
+            "schema_version": 1,
+            "active_mode": "so2",
+            "reference_shape": {
+                "batch_size": batch_size,
+                "num_units": num_neurons,
+                "window_size": self.window_size,
+            },
+            "scalar_network_macs": batch_size * num_neurons * per_unit_macs,
+            "parameter_count": sum(parameter.numel() for parameter in self.parameters()),
+            "vector_basis": "sum_i alpha_i * (A_i*u_i + B_i*J*u_i)",
+            "persistent_state_width_per_unit": self.window_size + 4,
+        }
 class StreamingSpintModel(nn.Module):
     """Frozen decoder + trainable/streaming calibration encoder."""
 
@@ -179,7 +323,7 @@ class StreamingSpintModel(nn.Module):
         fixed_slot_mode: str = "soft",
         fixed_slot_fusion: str = "film",
         fixed_slot_temperature: float = 1.0,
-        decoder_mode: Literal["coupled", "decoupled"] = "coupled",
+        decoder_mode: Literal["coupled", "decoupled", "so2"] = "coupled",
         decoupled_key_mode: Literal[
             "e_t4", "e_ts4", "e_only", "x_only"
         ] = "e_t4",
@@ -189,10 +333,16 @@ class StreamingSpintModel(nn.Module):
         decoupled_direct_feature_dim: int = 4,
         reliability_logit_bias: bool = False,
         reliability_gamma_init: float = 1.0e-3,
+        so2_side_mean: list[float] | tuple[float, ...] | None = None,
+        so2_side_std: list[float] | tuple[float, ...] | None = None,
+        so2_behavior_mean: list[float] | tuple[float, ...] | None = None,
+        so2_behavior_std: list[float] | tuple[float, ...] | None = None,
+        so2_hidden_dim: int = 128,
+        behavior_scaling_factor: float = 5.0,
     ) -> None:
         super().__init__()
-        if decoder_mode not in {"coupled", "decoupled"}:
-            raise ValueError("decoder_mode must be 'coupled' or 'decoupled'")
+        if decoder_mode not in {"coupled", "decoupled", "so2"}:
+            raise ValueError("decoder_mode must be 'coupled', 'decoupled', or 'so2'")
         if decoupled_key_mode not in {"e_t4", "e_ts4", "e_only", "x_only"}:
             raise ValueError(
                 "decoupled_key_mode must be one of "
@@ -219,6 +369,29 @@ class StreamingSpintModel(nn.Module):
         self.decoupled_direct_feature_dim = decoupled_direct_feature_dim
         self.reliability_logit_bias = bool(reliability_logit_bias)
         self.reliability_gamma_init = float(reliability_gamma_init)
+        self.so2_consumer = None
+        if decoder_mode == "so2":
+            if any(
+                value is None
+                for value in (
+                    so2_side_mean,
+                    so2_side_std,
+                    so2_behavior_mean,
+                    so2_behavior_std,
+                )
+            ):
+                raise ValueError("SO(2) mode requires source-only T4 and behavior statistics")
+            self.so2_consumer = MinimalSO2EquivariantConsumer(
+                window_size=decoder.window_size,
+                hidden_dim=so2_hidden_dim,
+                side_mean=so2_side_mean,
+                side_std=so2_side_std,
+                behavior_mean=so2_behavior_mean,
+                behavior_std=so2_behavior_std,
+                behavior_scaling_factor=behavior_scaling_factor,
+            )
+            for parameter in decoder.parameters():
+                parameter.requires_grad = False
         # softplus makes gamma non-negative; its inverse makes initialization
         # near-neutral without a target-side hyperparameter search.
         raw_init = float(torch.log(torch.expm1(torch.tensor(reliability_gamma_init))).item())
@@ -508,6 +681,11 @@ class StreamingSpintModel(nn.Module):
         """
         if batch_size <= 0 or num_neurons <= 0:
             raise ValueError("batch_size and num_neurons must be positive")
+        if self.decoder_mode == "so2":
+            assert self.so2_consumer is not None
+            return self.so2_consumer.cost_receipt(
+                batch_size=batch_size, num_neurons=num_neurons
+            )
         decoder = self.decoder
         batch = batch_size
         units = num_neurons
@@ -673,6 +851,20 @@ class StreamingSpintModel(nn.Module):
         decoder_key_features: Optional[torch.Tensor] = None,
         electrode_ids: Optional[torch.Tensor] = None,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
+        if self.decoder_mode == "so2":
+            if identity is not None:
+                raise ValueError("SO(2) mode derives its invariant identity from calibration")
+            if calib_trials is None or side_features is None:
+                raise ValueError("SO(2) mode requires calibration trials and aligned T4")
+            assert self.so2_consumer is not None
+            _, invariant_side = self.so2_consumer.carrier_geometry(side_features)
+            identity = self.compute_identity(
+                calib_trials,
+                side_features=invariant_side,
+                electrode_ids=electrode_ids,
+            )
+            behavior = self.so2_consumer(neural, identity, side_features)
+            return behavior, identity
         neuron_gate = None
         reliability_q = None
         encoder_side_features = side_features
@@ -717,6 +909,10 @@ class StreamingSpintModel(nn.Module):
             frozen += param.numel()
         if self.decoupled_transformer is not None:
             for param in self.decoupled_transformer.parameters():
+                param.requires_grad = False
+                frozen += param.numel()
+        if self.so2_consumer is not None:
+            for param in self.so2_consumer.parameters():
                 param.requires_grad = False
                 frozen += param.numel()
         self._decoder_frozen = True

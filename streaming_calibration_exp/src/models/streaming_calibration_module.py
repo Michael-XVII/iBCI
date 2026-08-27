@@ -131,7 +131,7 @@ class StreamingCalibrationLitModule(pl.LightningModule):
     side_dim: int = 0,
     electrode_embed_dim: int = 0,
     num_electrodes: int = 0,
-    decoder_mode: Literal["coupled", "decoupled"] = "coupled",
+    decoder_mode: Literal["coupled", "decoupled", "so2"] = "coupled",
     decoupled_key_mode: Literal[
       "e_t4", "e_ts4", "e_only", "x_only"
     ] = "e_t4",
@@ -141,6 +141,11 @@ class StreamingCalibrationLitModule(pl.LightningModule):
     decoupled_key_permutation_seed: int | None = None,
     reliability_logit_bias: bool = False,
     reliability_gamma_init: float = 1.0e-3,
+    so2_side_mean: list[float] | None = None,
+    so2_side_std: list[float] | None = None,
+    so2_behavior_mean: list[float] | None = None,
+    so2_behavior_std: list[float] | None = None,
+    so2_hidden_dim: int = 128,
   ) -> None:
     super().__init__()
     self.save_hyperparameters(ignore=["optimizer", "scheduler", "net"])
@@ -230,6 +235,11 @@ class StreamingCalibrationLitModule(pl.LightningModule):
     self._decoupled_key_permutation_seed = decoupled_key_permutation_seed
     self._reliability_logit_bias = bool(reliability_logit_bias)
     self._reliability_gamma_init = float(reliability_gamma_init)
+    self._so2_side_mean = so2_side_mean
+    self._so2_side_std = so2_side_std
+    self._so2_behavior_mean = so2_behavior_mean
+    self._so2_behavior_std = so2_behavior_std
+    self._so2_hidden_dim = int(so2_hidden_dim)
     self.population_identity: nn.Parameter | None = None
     if self._support_prediction_consistency_weight < 0.0:
       raise ValueError("support_prediction_consistency_weight must be >= 0")
@@ -237,8 +247,8 @@ class StreamingCalibrationLitModule(pl.LightningModule):
       raise ValueError("fixed_slot_count must be >= 0")
     if self._fixed_slot_count > 0 and self._fixed_slot_dim <= 0:
       raise ValueError("fixed_slot_dim must be positive when fixed slots are enabled")
-    if self._decoder_mode not in {"coupled", "decoupled"}:
-      raise ValueError("decoder_mode must be 'coupled' or 'decoupled'")
+    if self._decoder_mode not in {"coupled", "decoupled", "so2"}:
+      raise ValueError("decoder_mode must be 'coupled', 'decoupled', or 'so2'")
     if self._decoupled_key_mode not in {"e_t4", "e_ts4", "e_only", "x_only"}:
       raise ValueError(
         "decoupled_key_mode must be one of {'e_t4','e_ts4','e_only','x_only'}"
@@ -251,6 +261,23 @@ class StreamingCalibrationLitModule(pl.LightningModule):
       raise ValueError("decoupled K/V pilot requires the real four-dimensional T4 side input")
     if self._reliability_logit_bias and (self._decoder_mode != "coupled" or self._side_dim != 4):
       raise ValueError("E04 reliability logit requires coupled B3S with encoder side_dim=4")
+    if self._decoder_mode == "so2":
+      if self._variant != "B3S" or self._side_dim != 4:
+        raise ValueError("SO(2) mode requires variant B3S with real four-dimensional T4")
+      if self._identity_mode != "calibrated" or self._fixed_slot_count != 0:
+        raise ValueError("SO(2) mode requires calibrated identity and fixed_slot_count=0")
+      if any(
+        value is None
+        for value in (
+          self._so2_side_mean,
+          self._so2_side_std,
+          self._so2_behavior_mean,
+          self._so2_behavior_std,
+        )
+      ):
+        raise ValueError("SO(2) mode requires source-only T4 and behavior statistics")
+      if self._so2_hidden_dim <= 0:
+        raise ValueError("SO(2) hidden dimension must be positive")
     if (
       self._decoupled_key_dim <= 0
       or self._decoupled_value_dim <= 0
@@ -325,7 +352,7 @@ class StreamingCalibrationLitModule(pl.LightningModule):
       learnable_ema_alpha=self._learnable_ema_alpha,
       sparsity_k=self._sparsity_k,
       pad_value=self._pad_value,
-      side_dim=self._side_dim,
+      side_dim=2 if self._decoder_mode == "so2" else self._side_dim,
       electrode_embed_dim=self._electrode_embed_dim,
       num_electrodes=self._num_electrodes,
     )
@@ -376,6 +403,12 @@ class StreamingCalibrationLitModule(pl.LightningModule):
       decoupled_direct_feature_dim=4,
       reliability_logit_bias=self._reliability_logit_bias,
       reliability_gamma_init=self._reliability_gamma_init,
+      so2_side_mean=self._so2_side_mean,
+      so2_side_std=self._so2_side_std,
+      so2_behavior_mean=self._so2_behavior_mean,
+      so2_behavior_std=self._so2_behavior_std,
+      so2_hidden_dim=self._so2_hidden_dim,
+      behavior_scaling_factor=self._behavior_scaling_factor,
     )
     if self._identity_mode == "learned_prior":
       for parameter in self.student.id_encoder.parameters():

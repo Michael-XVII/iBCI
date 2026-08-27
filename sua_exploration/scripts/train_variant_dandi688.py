@@ -142,9 +142,9 @@ def main() -> None:
     )
     parser.add_argument(
         "--decoder_mode",
-        choices=["coupled", "decoupled"],
+        choices=["coupled", "decoupled", "so2"],
         default="coupled",
-        help="Use legacy coupled K=V attention or the static-key/activity-value pilot.",
+        help="Use legacy coupled, static-key decoupled, or minimal SO(2) consumer.",
     )
     parser.add_argument(
         "--decoupled_key_mode",
@@ -419,6 +419,13 @@ def main() -> None:
             raise ValueError(
                 "the predeclared decoupled pilot fixes key/value dimensions at 32"
             )
+    if args.decoder_mode == "so2":
+        if args.variant != "B3S" or args.side_features != "t4":
+            raise ValueError("SO(2) mode requires --variant B3S --side_features t4")
+        if args.fixed_slot_count != 0 or args.identity_mode != "calibrated":
+            raise ValueError("SO(2) mode requires fixed_slot_count=0 and calibrated identity")
+        if args.encoder_warmstart_path is not None:
+            raise ValueError("SO(2) E06 is a fresh common-teacher fit and rejects warm-start")
     if args.side_features == "none":
         side_dim = 0
         electrode_embed_dim = 0
@@ -539,7 +546,9 @@ def main() -> None:
                 else None
             ),
             "fixed_slot_count": args.fixed_slot_count,
-            "fresh_common_teacher_fit": args.decoder_mode == "decoupled",
+            "fresh_common_teacher_fit": args.decoder_mode in {"decoupled", "so2"},
+            "strict_so2_equivariance": args.decoder_mode == "so2",
+            "permutation_invariant": args.decoder_mode == "so2",
         },
         "seed": args.seed,
         "teacher_checkpoint": str(teacher_ckpt),
@@ -668,6 +677,22 @@ def main() -> None:
             "feature_version": feature_semantics_version(args.side_features),
             "normalization_sha256": side_feature_stats_sha256(side_mean, side_std),
         })
+        if args.decoder_mode == "so2":
+            behavior_mean, behavior_std = dm._get_behavior_stats()
+            run_metadata["decoder_architecture"]["so2"] = {
+                "formula": "sum_i alpha_i * (A_i*u_i + B_i*J*u_i)",
+                "learned_outputs": ["attention_logit", "parallel_scalar", "perpendicular_scalar"],
+                "invariant_encoder_inputs": ["calibration_activity", "modulation_m", "baseline_b"],
+                "physical_t4_reconstruction": True,
+                "side_mean": side_mean.tolist(),
+                "side_std": side_std.tolist(),
+                "behavior_mean": behavior_mean.tolist(),
+                "behavior_std": behavior_std.tolist(),
+                "hidden_dim": 128,
+                "legacy_teacher_decoder_used": False,
+                "target_optimizer": False,
+                "target_backward": False,
+            }
         if base_feature_group(args.side_features) == "t4w3":
             run_metadata["side_features"]["shrinkage"] = {
                 "family": "uncertainty_wiener_ac_modulation_only",
@@ -774,6 +799,11 @@ def main() -> None:
             else None
         ),
         reliability_logit_bias=args.side_features == "t4rql",
+        so2_side_mean=side_mean.tolist() if args.decoder_mode == "so2" else None,
+        so2_side_std=side_std.tolist() if args.decoder_mode == "so2" else None,
+        so2_behavior_mean=behavior_mean.tolist() if args.decoder_mode == "so2" else None,
+        so2_behavior_std=behavior_std.tolist() if args.decoder_mode == "so2" else None,
+        so2_hidden_dim=128,
         side_dim=side_dim,
         electrode_embed_dim=electrode_embed_dim,
         num_electrodes=num_electrodes if args.side_features != "none" else 0,
@@ -868,6 +898,25 @@ def main() -> None:
             )
         }
     )
+    if args.decoder_mode == "so2":
+        assert model.student.so2_consumer is not None
+        decoder_meta["parameter_counts"] = {
+            "student_total_including_unused_frozen_teacher_decoder": sum(
+                parameter.numel() for parameter in model.student.parameters()
+            ),
+            "optimizer_trainable": sum(
+                parameter.numel()
+                for parameter in model.student.parameters()
+                if parameter.requires_grad
+            ),
+            "identity_encoder": sum(
+                parameter.numel() for parameter in model.student.id_encoder.parameters()
+            ),
+            "so2_consumer": sum(
+                parameter.numel() for parameter in model.student.so2_consumer.parameters()
+            ),
+            "legacy_teacher_decoder_trainable": 0,
+        }
     if args.decoder_mode == "decoupled":
         assert model.student.decoupled_transformer is not None
         decoupled = model.student.decoupled_transformer
