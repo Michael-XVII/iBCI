@@ -15,6 +15,7 @@ import lightning.pytorch as pl
 import numpy as np
 import torch
 import torch.nn as nn
+from lightning.fabric.plugins.io.torch_io import TorchCheckpointIO
 from lightning.pytorch.callbacks import EarlyStopping, ModelCheckpoint
 from torchmetrics import MeanMetric
 from torchmetrics.regression import R2Score
@@ -32,6 +33,15 @@ DEFAULT_TEACHER = (
     Path(__file__).resolve().parents[1]
     / "checkpoints/teacher_mc_maze/best-epoch=083-val_heldin/r2_mean=0.9061.ckpt"
 )
+
+
+class SafeWeightsOnlyCheckpointIO(TorchCheckpointIO):
+    """Restore tensor-only Lightning checkpoints without pickle code execution."""
+
+    def load_checkpoint(self, path, map_location=lambda storage, loc: storage):
+        return torch.load(path, map_location=map_location, weights_only=True)
+
+
 def configure_multisession_metrics(
     model: StreamingCalibrationLitModule,
     dm: Dandi688MultiSessionDataModule,
@@ -184,6 +194,16 @@ def main() -> None:
     parser.add_argument("--decoupled_key_dim", type=int, default=32)
     parser.add_argument("--decoupled_value_dim", type=int, default=32)
     parser.add_argument("--out_name", type=str, default=None)
+    parser.add_argument(
+        "--resume_checkpoint",
+        type=str,
+        default=None,
+        help=(
+            "Resume an interrupted run from a checkpoint in the selected output directory. "
+            "The checkpoint is loaded with weights_only=True, including optimizer, loop, "
+            "and callback states, without executing pickled Python objects."
+        ),
+    )
     parser.add_argument(
         "--data_dir",
         type=str,
@@ -563,12 +583,26 @@ def main() -> None:
     out_name = args.out_name or f"{args.variant.lower()}_dandi688_{args.task.lower()}"
     output_dir = Path(__file__).resolve().parents[1] / "checkpoints" / out_name
     results_dir = Path(__file__).resolve().parents[1] / "results"
+    resume_checkpoint = (
+        Path(args.resume_checkpoint).expanduser().resolve()
+        if args.resume_checkpoint else None
+    )
+    if resume_checkpoint is not None:
+        if not resume_checkpoint.is_file():
+            raise FileNotFoundError(
+                f"Resume checkpoint does not exist: {resume_checkpoint}"
+            )
+        if resume_checkpoint.parent != output_dir.resolve():
+            raise ValueError(
+                "--resume_checkpoint must belong to the selected --out_name directory"
+            )
     # M1 hard assertion (sua_exploration/docs/CURRENT_RESULTS.md section H.4): refuse to
     # reuse a checkpoint directory that already holds another run's checkpoints or
     # tfevents. --out_name defaults to a seed-agnostic name, so re-invoking this script
     # twice without a fresh --out_name (e.g. two seeds) would otherwise silently
     # commingle both runs' checkpoints the way the MUA Hydra run dir once did.
-    assert_run_dir_is_fresh(output_dir)
+    if resume_checkpoint is None:
+        assert_run_dir_is_fresh(output_dir)
     results_dir.mkdir(parents=True, exist_ok=True)
     output_dir.mkdir(parents=True, exist_ok=True)
     run_metadata_path = output_dir / "run_metadata.json"
@@ -707,6 +741,17 @@ def main() -> None:
             "limit_train_batches": args.limit_train_batches,
             "limit_val_batches": args.limit_val_batches,
             "limit_test_batches": args.limit_test_batches,
+            "resume_checkpoint": (
+                str(resume_checkpoint) if resume_checkpoint is not None else None
+            ),
+            "resume_checkpoint_sha256": (
+                sha256_file(resume_checkpoint)
+                if resume_checkpoint is not None else None
+            ),
+            "resume_loading": (
+                "weights_only_full_lightning_state"
+                if resume_checkpoint is not None else None
+            ),
         },
         "heldout_spint_selection": {
             "enabled": bool(args.heldout_spint_selection),
@@ -1181,9 +1226,17 @@ def main() -> None:
         limit_train_batches=args.limit_train_batches if args.limit_train_batches is not None else 1.0,
         limit_val_batches=args.limit_val_batches if args.limit_val_batches is not None else 1.0,
         limit_test_batches=args.limit_test_batches if args.limit_test_batches is not None else 1.0,
+        plugins=(
+            [SafeWeightsOnlyCheckpointIO()]
+            if resume_checkpoint is not None else None
+        ),
     )
 
-    trainer.fit(model, datamodule=dm)
+    trainer.fit(
+        model,
+        datamodule=dm,
+        ckpt_path=(str(resume_checkpoint) if resume_checkpoint is not None else None),
+    )
     test_metrics = None
     if args.heldout_spint_selection:
         test_metrics = trainer.test(
