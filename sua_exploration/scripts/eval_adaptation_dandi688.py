@@ -140,6 +140,12 @@ def checkpoint_architecture_kwargs(checkpoint: dict) -> dict:
         "analytic_zero_residual_init": bool(
             hyper_parameters.get("analytic_zero_residual_init", False)
         ),
+        "analytic_residual_frame": str(
+            hyper_parameters.get("analytic_residual_frame", "direct")
+        ),
+        "analytic_local_frame_epsilon": float(
+            hyper_parameters.get("analytic_local_frame_epsilon", 1.0e-6)
+        ),
     }
 
 

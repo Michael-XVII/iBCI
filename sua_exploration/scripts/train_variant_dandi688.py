@@ -383,9 +383,30 @@ def main() -> None:
         type=str,
         default=None,
         help=(
-            "Completed E08 JSON receipt. Enables E09 B0-2 plus direct residual, "
+            "Completed E08 JSON receipt. Enables the E09/E10 B0-2 analytic carrier, "
             "locking ridge lambda/gain to the source-only E08 values."
         ),
+    )
+    parser.add_argument(
+        "--analytic_residual_frame",
+        choices=["direct", "local"],
+        default="direct",
+        help=(
+            "Interpret the two learned residual outputs as Cartesian components "
+            "(E09 direct) or analytic-frame parallel/perpendicular scalars (E10 local)."
+        ),
+    )
+    parser.add_argument(
+        "--analytic_residual_e09_result",
+        type=str,
+        default=None,
+        help="Completed E09 JSON receipt required to authorize E10 local-frame training.",
+    )
+    parser.add_argument(
+        "--analytic_local_frame_epsilon",
+        type=float,
+        default=1.0e-6,
+        help="Positive denominator epsilon in u=v_ana/(||v_ana||+epsilon).",
     )
     parser.add_argument(
         "--encoder_warmstart_path",
@@ -413,6 +434,14 @@ def main() -> None:
         raise ValueError("--side_feature_pool_size must be positive")
     if args.calibration_n_trials <= 0:
         raise ValueError("--calibration_n_trials must be positive")
+    if args.analytic_local_frame_epsilon <= 0.0:
+        raise ValueError("--analytic_local_frame_epsilon must be positive")
+    if args.analytic_residual_frame == "local" and args.analytic_residual_e09_result is None:
+        raise ValueError("E10 local-frame residual requires --analytic_residual_e09_result")
+    if args.analytic_residual_e09_result is not None and args.analytic_residual_frame != "local":
+        raise ValueError("--analytic_residual_e09_result is only valid for E10 local-frame residual")
+    if args.analytic_residual_frame != "direct" and args.analytic_residual_e08_result is None:
+        raise ValueError("analytic local-frame residual requires --analytic_residual_e08_result")
     # B3S (design A / F1-F3 / T4-T8) plus B3SEG (design D, gate) / B3SEA (design C, anchor) --
     # docs/ELECTRODE_ANCHOR_DESIGNS.md -- are the only variants that consume --side_features.
     SIDE_FEATURE_VARIANTS = {
@@ -538,12 +567,12 @@ def main() -> None:
             or args.encoder_warmstart_path is not None
         ):
             raise ValueError(
-                "E09 requires fresh B3S/T4 coupled task-only training with a 50-trial "
+                "E09/E10 requires fresh B3S/T4 coupled task-only training with a 50-trial "
                 "T4/calibration prefix and no warm-start"
             )
         e08_payload = json.loads(analytic_e08_path.read_text())
         if e08_payload.get("status") != "complete" or e08_payload.get("seed") != args.seed:
-            raise ValueError("E09 requires a completed E08 receipt with the same seed")
+            raise ValueError("E09/E10 requires a completed E08 receipt with the same seed")
         b02 = e08_payload.get("decoders", {}).get("B0-2_ridge_ole", {})
         ridge_lambda = float(b02.get("source_selected_lambda", float("nan")))
         gain = float(b02.get("source_fixed_gain", float("nan")))
@@ -558,7 +587,38 @@ def main() -> None:
             "e08_result_sha256": sha256_file(analytic_e08_path),
             "e08_source_sessions": e08_payload["protocol"]["source_sessions"],
             "e08_target_sessions": e08_payload["protocol"]["target_sessions"],
+            "frame": args.analytic_residual_frame,
+            "local_frame_epsilon": (
+                args.analytic_local_frame_epsilon
+                if args.analytic_residual_frame == "local" else None
+            ),
         }
+        if args.analytic_residual_frame == "local":
+            e09_path = Path(args.analytic_residual_e09_result).expanduser().resolve()
+            if not e09_path.is_file():
+                raise FileNotFoundError(f"E09 result does not exist: {e09_path}")
+            e09_payload = json.loads(e09_path.read_text())
+            if e09_payload.get("status") != "completed" or e09_payload.get("seed") != args.seed:
+                raise ValueError("E10 requires a completed E09 receipt with the same seed")
+            e09_metrics = e09_payload.get("test_metrics", [])
+            e09_mean_r2 = next(
+                (
+                    float(metrics["test_heldout/r2_mean"])
+                    for metrics in reversed(e09_metrics)
+                    if "test_heldout/r2_mean" in metrics
+                ),
+                float("nan"),
+            )
+            e01_mean_r2 = 0.6136593818664551
+            if not math.isfinite(e09_mean_r2) or e09_mean_r2 <= e01_mean_r2:
+                raise ValueError("E10 gate failed: E09 test mean R2 must exceed E01")
+            analytic_config.update({
+                "e09_result": str(e09_path),
+                "e09_result_sha256": sha256_file(e09_path),
+                "e09_test_mean_r2": e09_mean_r2,
+                "e01_test_mean_r2": e01_mean_r2,
+                "e10_gate": "E09 test mean R2 > E01 test mean R2",
+            })
     if args.require_gpu and not torch.cuda.is_available():
         raise RuntimeError("--require_gpu was set but CUDA is unavailable")
     if args.accelerator == "gpu" and not torch.cuda.is_available():
@@ -659,11 +719,30 @@ def main() -> None:
         "analytic_residual": (
             {
                 **analytic_config,
-                "formula": "v_hat = v_ana + delta_v_theta",
-                "source_training_objective": "MSE(v_ana + delta_v_theta, v), equivalent to MSE(delta_v_theta, v-v_ana)",
+                "formula": (
+                    "u=v_ana/(||v_ana||+epsilon); "
+                    "delta_v=delta_parallel*u+delta_perp*J(u); v_hat=v_ana+delta_v"
+                    if args.analytic_residual_frame == "local"
+                    else "v_hat = v_ana + delta_v_theta"
+                ),
+                "learned_outputs": (
+                    ["delta_parallel", "delta_perpendicular"]
+                    if args.analytic_residual_frame == "local"
+                    else ["delta_v_x", "delta_v_y"]
+                ),
+                "source_training_objective": (
+                    "MSE(v_ana + delta_parallel*u + delta_perp*J(u), v)"
+                    if args.analytic_residual_frame == "local"
+                    else "MSE(v_ana + delta_v_theta, v), equivalent to MSE(delta_v_theta, v-v_ana)"
+                ),
                 "residual_zero_initialization": "decoder fc_out weight and bias are exact zero",
                 "B_Res_Zero": "set delta_v_theta=0; exact analytic-only path",
-                "B_Res_Shuffle": "row-permute only the analytic T4 carrier at test; learned residual retains aligned T4",
+                "B_Res_Shuffle": (
+                    "row-permute the analytic T4 carrier at test; learned local scalar "
+                    "corrections retain aligned T4 and are reconstructed in the shuffled carrier frame"
+                    if args.analytic_residual_frame == "local"
+                    else "row-permute only the analytic T4 carrier at test; learned residual retains aligned T4"
+                ),
                 "target_optimizer": False,
                 "target_backward": False,
                 "target_parameter_count": 0,
@@ -960,6 +1039,10 @@ def main() -> None:
             analytic_config["shuffle_seed"] if analytic_config is not None else None
         ),
         analytic_zero_residual_init=analytic_config is not None,
+        analytic_residual_frame=(
+            analytic_config["frame"] if analytic_config is not None else "direct"
+        ),
+        analytic_local_frame_epsilon=args.analytic_local_frame_epsilon,
         side_dim=side_dim,
         electrode_embed_dim=electrode_embed_dim,
         num_electrodes=num_electrodes if args.side_features != "none" else 0,
@@ -979,7 +1062,7 @@ def main() -> None:
             torch.count_nonzero(fc_out.bias)
         )
         if nonzero_output_parameters != 0:
-            raise RuntimeError("E09 residual output head did not initialize to exact zero")
+            raise RuntimeError("E09/E10 residual output head did not initialize to exact zero")
         run_metadata["analytic_residual"]["zero_init_verified"] = True
         run_metadata["analytic_residual"]["parameter_counts"] = {
             "student_total": sum(

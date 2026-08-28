@@ -8,7 +8,10 @@ import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "streaming_calibration_exp"))
 
-from src.models.streaming_calibration_module import analytic_ridge_ole_prediction  # noqa: E402
+from src.models.streaming_calibration_module import (  # noqa: E402
+    analytic_local_frame_residual,
+    analytic_ridge_ole_prediction,
+)
 
 
 def test_analytic_ridge_ole_matches_e08_numpy_formula() -> None:
@@ -74,3 +77,42 @@ def test_zero_residual_path_is_exact_analytic_prediction() -> None:
     analytic = torch.randn(4, 1, 2)
     residual = torch.zeros_like(analytic)
     assert torch.equal(analytic + residual, analytic)
+
+
+def test_e10_local_frame_reconstructs_parallel_and_perpendicular_residual() -> None:
+    analytic = torch.tensor([[[3.0, 4.0], [0.0, 2.0]]])
+    corrections = torch.tensor([[[2.0, -1.0], [3.0, 4.0]]])
+    epsilon = 1.0e-6
+    observed = analytic_local_frame_residual(
+        analytic, corrections, epsilon=epsilon
+    )
+    unit = analytic / (
+        torch.linalg.vector_norm(analytic, dim=-1, keepdim=True) + epsilon
+    )
+    perpendicular = torch.stack((-unit[..., 1], unit[..., 0]), dim=-1)
+    expected = corrections[..., 0:1] * unit + corrections[..., 1:2] * perpendicular
+    assert torch.allclose(observed, expected)
+
+
+def test_e10_local_frame_residual_rotates_with_analytic_anchor() -> None:
+    analytic = torch.tensor([[[2.0, -1.0], [0.5, 3.0]]])
+    corrections = torch.tensor([[[0.7, -0.2], [1.1, 0.4]]])
+    angle = torch.tensor(0.73)
+    rotation = torch.stack(
+        (
+            torch.stack((torch.cos(angle), -torch.sin(angle))),
+            torch.stack((torch.sin(angle), torch.cos(angle))),
+        )
+    )
+    residual = analytic_local_frame_residual(analytic, corrections)
+    rotated_analytic = analytic @ rotation.T
+    rotated_residual = analytic_local_frame_residual(rotated_analytic, corrections)
+    assert torch.allclose(rotated_residual, residual @ rotation.T, atol=1e-6)
+
+
+def test_e10_zero_analytic_anchor_has_finite_zero_residual() -> None:
+    observed = analytic_local_frame_residual(
+        torch.zeros(3, 1, 2), torch.randn(3, 1, 2)
+    )
+    assert torch.equal(observed, torch.zeros_like(observed))
+    assert torch.isfinite(observed).all()

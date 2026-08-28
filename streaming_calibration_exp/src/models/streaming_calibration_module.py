@@ -70,6 +70,34 @@ def analytic_ridge_ole_prediction(
   return prediction * float(gain)
 
 
+def analytic_local_frame_residual(
+  analytic_prediction: torch.Tensor,
+  scalar_corrections: torch.Tensor,
+  *,
+  epsilon: float = 1.0e-6,
+) -> torch.Tensor:
+  """Reconstruct E10's physical residual from analytic-frame scalars.
+
+  Channel 0 is parallel to the analytic velocity and channel 1 is parallel to
+  its +90-degree rotation. Both inputs and the returned tensor have shape [..., 2].
+  """
+  if analytic_prediction.shape != scalar_corrections.shape:
+    raise ValueError("analytic prediction and scalar corrections must have identical shapes")
+  if analytic_prediction.shape[-1] != 2:
+    raise ValueError("analytic local frame requires two-dimensional vectors")
+  if epsilon <= 0.0:
+    raise ValueError("analytic local-frame epsilon must be positive")
+  unit = analytic_prediction / (
+    torch.linalg.vector_norm(analytic_prediction, dim=-1, keepdim=True)
+    + float(epsilon)
+  )
+  perpendicular = torch.stack((-unit[..., 1], unit[..., 0]), dim=-1)
+  return (
+    scalar_corrections[..., 0:1] * unit
+    + scalar_corrections[..., 1:2] * perpendicular
+  )
+
+
 def load_encoder_warmstart_state(
   id_encoder: nn.Module, state: Dict[str, torch.Tensor]
 ) -> None:
@@ -188,6 +216,8 @@ class StreamingCalibrationLitModule(pl.LightningModule):
     analytic_bin_size_ms: int = 20,
     analytic_shuffle_seed: int | None = None,
     analytic_zero_residual_init: bool = False,
+    analytic_residual_frame: Literal["direct", "local"] = "direct",
+    analytic_local_frame_epsilon: float = 1.0e-6,
   ) -> None:
     super().__init__()
     self.save_hyperparameters(ignore=["optimizer", "scheduler", "net"])
@@ -314,6 +344,8 @@ class StreamingCalibrationLitModule(pl.LightningModule):
     self._analytic_bin_size_s = float(analytic_bin_size_ms) / 1000.0
     self._analytic_shuffle_seed = analytic_shuffle_seed
     self._analytic_zero_residual_init = bool(analytic_zero_residual_init)
+    self._analytic_residual_frame = analytic_residual_frame
+    self._analytic_local_frame_epsilon = float(analytic_local_frame_epsilon)
     self.population_identity: nn.Parameter | None = None
     if self._support_prediction_consistency_weight < 0.0:
       raise ValueError("support_prediction_consistency_weight must be >= 0")
@@ -325,6 +357,10 @@ class StreamingCalibrationLitModule(pl.LightningModule):
       raise ValueError("decoder_mode must be 'coupled', 'decoupled', or 'so2'")
     if self._analytic_residual_mode not in {"none", "ridge_ole"}:
       raise ValueError("analytic_residual_mode must be 'none' or 'ridge_ole'")
+    if self._analytic_residual_frame not in {"direct", "local"}:
+      raise ValueError("analytic_residual_frame must be 'direct' or 'local'")
+    if self._analytic_local_frame_epsilon <= 0.0:
+      raise ValueError("analytic_local_frame_epsilon must be positive")
     if self._analytic_residual_mode == "ridge_ole":
       if self._side_dim != 4 or self._decoder_mode != "coupled":
         raise ValueError("analytic residual requires coupled decoding with raw-reconstructable T4")
@@ -336,7 +372,11 @@ class StreamingCalibrationLitModule(pl.LightningModule):
         raise ValueError("analytic T4 mean/std must each contain four values")
       if self._analytic_ridge_lambda < 0.0 or self._analytic_bin_size_s <= 0.0:
         raise ValueError("analytic ridge lambda/bin size are invalid")
-    elif self._analytic_zero_residual_init or self._analytic_shuffle_seed is not None:
+    elif (
+      self._analytic_zero_residual_init
+      or self._analytic_shuffle_seed is not None
+      or self._analytic_residual_frame != "direct"
+    ):
       raise ValueError("analytic controls require analytic_residual_mode='ridge_ole'")
     if self._decoupled_key_mode not in {"e_t4", "e_ts4", "e_only", "x_only"}:
       raise ValueError(
@@ -617,7 +657,8 @@ class StreamingCalibrationLitModule(pl.LightningModule):
         electrode_ids=electrode_ids,
       )
     y_student, behavior_target = self._slice_last_timestep(y_student, behavior_target)
-    residual_pred = y_student
+    residual_coefficients = y_student
+    residual_pred = residual_coefficients
     analytic_pred = None
     analytic_shuffle_pred = None
     if self._analytic_residual_mode == "ridge_ole":
@@ -634,6 +675,12 @@ class StreamingCalibrationLitModule(pl.LightningModule):
         gain=self._analytic_gain,
         bin_size_s=self._analytic_bin_size_s,
       )
+      if self._analytic_residual_frame == "local":
+        residual_pred = analytic_local_frame_residual(
+          analytic_pred,
+          residual_coefficients,
+          epsilon=self._analytic_local_frame_epsilon,
+        )
       y_student = analytic_pred + residual_pred
       if not self.training and self._analytic_shuffle_seed is not None:
         shuffled_anchor = analytic_ridge_ole_prediction(
@@ -646,7 +693,14 @@ class StreamingCalibrationLitModule(pl.LightningModule):
           bin_size_s=self._analytic_bin_size_s,
           shuffle_seed=self._analytic_shuffle_seed,
         )
-        analytic_shuffle_pred = shuffled_anchor + residual_pred
+        shuffled_residual = residual_pred
+        if self._analytic_residual_frame == "local":
+          shuffled_residual = analytic_local_frame_residual(
+            shuffled_anchor,
+            residual_coefficients,
+            epsilon=self._analytic_local_frame_epsilon,
+          )
+        analytic_shuffle_pred = shuffled_anchor + shuffled_residual
 
     loss = self.mse_loss(y_student, behavior_target)
     pred_distill_mse = torch.tensor(float("nan"), device=loss.device)
