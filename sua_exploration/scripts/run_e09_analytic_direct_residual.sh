@@ -6,6 +6,11 @@ PY=/home/ial-mohd/workspace/envs/spint/bin/python
 GPU_ID=${GPU_ID:-1}
 OUT_NAME=e09_analytic_direct_residual_t4_s42
 LOG=${ROOT}/logs/${OUT_NAME}.log
+RESUME_CHECKPOINT=${RESUME_CHECKPOINT:-}
+RESUME_ARGS=()
+if [[ -n "${RESUME_CHECKPOINT}" ]]; then
+  RESUME_ARGS+=(--resume_checkpoint "${RESUME_CHECKPOINT}")
+fi
 
 cd "${ROOT}"
 mkdir -p logs
@@ -33,4 +38,5 @@ export PYTHONPATH=streaming_calibration_exp:sua_exploration
   --require_gpu \
   --heldout_spint_selection \
   --disable_progress_bar \
-  --out_name "${OUT_NAME}" 2>&1 | tee "${LOG}"
+  --out_name "${OUT_NAME}" \
+  "${RESUME_ARGS[@]}" 2>&1 | tee -a "${LOG}"
