@@ -5,14 +5,20 @@
 - Branch: `exp/e10-analytic-local-frame-residual`
 - Seed: 42
 - Dataset/split: DANDI 000688 sub-C CO SUA, chronological 37/8/8, matched to E01/E08/E09
-- State: launch-ready
-- Requested device: physical GPU 3 (`CUDA_VISIBLE_DEVICES=3`)
+- State: formal training running
+- Started: `2026-08-28T22:21:01+08:00`
+- Device: physical GPU 3 (`CUDA_VISIBLE_DEVICES=3`)
 - User service: `ibci-e10-analytic-local-frame-residual.service`
+- systemd invocation: `479d92079152429cb7b828210ef3a67f`
+- Startup processes: service main PID 3580213; Python PID 3580215
 - Formal log: `logs/e10_analytic_local_frame_residual_t4_s42.log`
 - Formal result: `sua_exploration/results/p3_e10_analytic_local_frame_residual_t4_s42_seed42.json`
 
 The formal process is launched through the user systemd manager, not a Codex
 PTY or terminal session. Closing Codex therefore does not terminate training.
+The one-time startup check found the service active/running, the Python trainer
+and log `tee` inside the service cgroup, and the formal log initialized. No
+continuing monitor is attached.
 
 ## E10 gate
 
