@@ -1,0 +1,95 @@
+{
+  "correction": {
+    "reason": "carrier_by_activity_interaction_requires_difference_in_differences_not_final_growing_system_gap",
+    "supersedes_v1_descriptive_verdict_only": true,
+    "v1_raw_cells_remain_valid": true
+  },
+  "date_order": [
+    "19250108",
+    "19250113",
+    "19250115",
+    "19250119",
+    "19250120"
+  ],
+  "decision": {
+    "equal_date_mean": {
+      "final_growing_hc_minus_hs": 0.045631595651742365,
+      "hc_growing_minus_static": 0.0489370007080583,
+      "hs_growing_minus_static": 0.05537136496623778,
+      "interaction_hc_gain_minus_hs_gain": -0.006434364258179481
+    },
+    "exact_five_date_bootstrap_95": {
+      "final_growing_hc_minus_hs": [
+        0.003976414219008173,
+        0.0783346982959703
+      ],
+      "hc_growing_minus_static": [
+        0.032664972733905985,
+        0.07360207866432603
+      ],
+      "hs_growing_minus_static": [
+        0.038212595671453777,
+        0.07726516950835947
+      ],
+      "interaction_hc_gain_minus_hs_gain": [
+        -0.013647496684515027,
+        -0.0008153389353994234
+      ]
+    },
+    "formal_selection_claim": false,
+    "interaction_verdict": "NO_MATERIAL_CARRIER_BY_ACTIVITY_INTERACTION",
+    "material_effect": 0.01,
+    "per_date": {
+      "final_growing_hc_minus_hs": {
+        "19250108": 0.07884193656921801,
+        "19250113": 0.07317478918679549,
+        "19250115": 0.08040741457730999,
+        "19250119": 0.02308068962517107,
+        "19250120": -0.027346851699782737
+      },
+      "hc_growing_minus_static": {
+        "19250108": 0.03948670707196811,
+        "19250113": 0.03532358367599636,
+        "19250115": 0.02723611346355226,
+        "19250119": 0.04629293960287678,
+        "19250120": 0.09634565972589798
+      },
+      "hs_growing_minus_static": {
+        "19250108": 0.0589484077938377,
+        "19250113": 0.045094944335608345,
+        "19250115": 0.028723791364710427,
+        "19250119": 0.045943196469299896,
+        "19250120": 0.09814648486773253
+      },
+      "interaction_hc_gain_minus_hs_gain": {
+        "19250108": -0.01946170072186959,
+        "19250113": -0.009771360659611983,
+        "19250115": -0.0014876779011581687,
+        "19250119": 0.00034974313357688525,
+        "19250120": -0.00180082514183455
+      }
+    },
+    "positive_final_hc_dates": 4,
+    "positive_hc_activity_dates": 5,
+    "positive_hs_activity_dates": 5,
+    "recommended_frozen_system_basis": "H-C_CAUSAL_GROWING_RETAINS_HIGHER_FINAL_LEVEL"
+  },
+  "formal_selection_claim": false,
+  "interaction_verdict": "NO_MATERIAL_CARRIER_BY_ACTIVITY_INTERACTION",
+  "recommended_frozen_system_basis": "H-C_CAUSAL_GROWING_RETAINS_HIGHER_FINAL_LEVEL",
+  "schema": "h1_date_lodo_activity_system_compare_interpretation_v2",
+  "status": "COMPLETE_CORRECTED_DIFFERENCE_IN_DIFFERENCES_INTERPRETATION",
+  "target_optimizer_backward_update": 0,
+  "target_sha256_by_date": {
+    "19250108": "b6c9f3c21fcb309a875f1a41aaf7b8e1a8f198ab5604d23aa8ba001400e34dd6",
+    "19250113": "2fa29342f414bb75af0e21ced541b088a853e9db1fed749a9386b1f0eb067886",
+    "19250115": "95d054642429323b6e3559511068ef459ade35c9f6775280437a6d5ff5b90696",
+    "19250119": "a2d6946bea23846f15e304bf5ef97769d85bc892c3f0e852588d68cfef82aca7",
+    "19250120": "4121a3a907a22476eb2d213c97dc2873908c1022687ecaf57bfb96c05782a1a3"
+  },
+  "v1": {
+    "raw_scores_unchanged": true,
+    "relative": "tfpd_exploration/results/h1_date_lodo_activity_system_compare_v1.json",
+    "sha256": "0dc4576b92b5df383252d164b29d869ca0888a431756338b4938d0269e29a862"
+  }
+}

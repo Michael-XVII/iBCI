@@ -1,0 +1,851 @@
+{
+  "cuda_initialized": true,
+  "date_order": [
+    "19250108",
+    "19250113",
+    "19250115",
+    "19250119",
+    "19250120"
+  ],
+  "date_results": [
+    {
+      "hs_authority": {
+        "checkpoint_relative": "tfpd_exploration/results/h1_date_lodo_checkpoint_cache_v1/19250108/hs_epoch_049.ckpt",
+        "checkpoint_sha256": "0d2454d8c37deb9a7855190f6d09866eaad356387e044cfd2940df7cebbf9cf4",
+        "config_relative": "tfpd_exploration/results/h1_date_lodo_checkpoint_cache_v1/19250108/hs_config.yaml",
+        "config_sha256": "6b179acac265e5694cfb490e22565c072f33afb01a7ddc896a5a1e9553b4c636",
+        "query_window_indices_sha256": "a0f9851d1a149cd62dbf4ee5561119861797664ec94bf132fd1380a23c702672",
+        "source_manifest_sha256": "647d9c91c11da0267b4781db180065c4038b2b8934ba2ce935a2396e30850cc5",
+        "terminal_relative": "SPINT-main/pilot_artifacts/h1_carrierid_date_lodo_phase2/terminal_evaluations/H1_CARRIERID_DATE_LODO_PHASE2_19250108_HS_HC_TERMINAL_EVALUATION_v1.json",
+        "terminal_sha256": "cd91ab7ddac7eed4bad715dbfc8cb82f432f11c889adc950d49832b9ab9c28a7"
+      },
+      "model_state_after_sha256": "efff7d922541bb6d439c03dc91e87f0e85ecf486f0e67fbd3ef0407392054dbb",
+      "model_state_before_sha256": "efff7d922541bb6d439c03dc91e87f0e85ecf486f0e67fbd3ef0407392054dbb",
+      "model_state_immutable": true,
+      "outer_date": "19250108",
+      "sessions": [
+        "ses-19250108T110520",
+        "ses-19250108T111022",
+        "ses-19250108T111455"
+      ],
+      "systems": {
+        "H-C": {
+          "CAUSAL_GROWING_CAP30": {
+            "activity_cardinality_max": 14,
+            "activity_cardinality_min": 4,
+            "arm": "CAUSAL_GROWING_CAP30",
+            "causal": true,
+            "deployment_status": "CAUSAL_CARDINALITY_OOD",
+            "elapsed_seconds": 3.1839840952306986,
+            "equal_recording_mean_r2": 0.5850010831759067,
+            "forward_batches": 419,
+            "h1_carrier_unchanged": true,
+            "label_free": true,
+            "n_windows": 13107,
+            "per_recording": {
+              "ses-19250108T110520": {
+                "n_windows": 8330,
+                "r2": 0.5957336788710815
+              },
+              "ses-19250108T111022": {
+                "n_windows": 2508,
+                "r2": 0.5385093378746573
+              },
+              "ses-19250108T111455": {
+                "n_windows": 2269,
+                "r2": 0.6207602327819813
+              }
+            },
+            "pooled_r2": 0.5906944118689685,
+            "prediction_sha256": "096a598e8bce2f125385d5487d378e86f489a297020ca32c8a1cb7203329246e",
+            "target_sha256": "b6c9f3c21fcb309a875f1a41aaf7b8e1a8f198ab5604d23aa8ba001400e34dd6",
+            "unique_activity_states": 19
+          },
+          "STATIC_SUPPORT": {
+            "activity_cardinality_max": 4,
+            "activity_cardinality_min": 4,
+            "arm": "STATIC_SUPPORT",
+            "cached_identity_parity": {
+              "abs_r2": 1.1531967603062299e-08,
+              "max_abs_prediction": 2.0489096641540527e-08,
+              "pass": true,
+              "tolerance_prediction": 2e-06,
+              "tolerance_r2": 2e-07
+            },
+            "causal": true,
+            "deployment_status": "CAUSAL_CARDINALITY_MATCHED",
+            "elapsed_seconds": 9.936650627292693,
+            "equal_recording_mean_r2": 0.5455143761039386,
+            "forward_batches": 410,
+            "forward_path": "accepted_eager_repeated_B32_identity_and_fixed_carrier",
+            "h1_carrier_unchanged": true,
+            "label_free": true,
+            "n_windows": 13107,
+            "per_recording": {
+              "ses-19250108T110520": {
+                "n_windows": 8330,
+                "r2": 0.5447923993317404
+              },
+              "ses-19250108T111022": {
+                "n_windows": 2508,
+                "r2": 0.5085340601346141
+              },
+              "ses-19250108T111455": {
+                "n_windows": 2269,
+                "r2": 0.5832166688454612
+              }
+            },
+            "pooled_r2": 0.5457671011805447,
+            "prediction_sha256": "c6771955a27a7756660eacf4ec65e21652ed6b2f5ff1df68a1b85638149fc3c5",
+            "target_sha256": "b6c9f3c21fcb309a875f1a41aaf7b8e1a8f198ab5604d23aa8ba001400e34dd6",
+            "unique_activity_states": 3
+          }
+        },
+        "H-S": {
+          "CAUSAL_GROWING_CAP30": {
+            "activity_cardinality_max": 14,
+            "activity_cardinality_min": 4,
+            "arm": "CAUSAL_GROWING_CAP30",
+            "carrier_used": false,
+            "causal": true,
+            "elapsed_seconds": 3.1581423841416836,
+            "equal_recording_mean_r2": 0.5061591466066887,
+            "forward_batches": 419,
+            "label_free": true,
+            "n_windows": 13107,
+            "per_recording": {
+              "ses-19250108T110520": {
+                "n_windows": 8330,
+                "r2": 0.5036726831354059
+              },
+              "ses-19250108T111022": {
+                "n_windows": 2508,
+                "r2": 0.4299742699970419
+              },
+              "ses-19250108T111455": {
+                "n_windows": 2269,
+                "r2": 0.5848304866876182
+              }
+            },
+            "pooled_r2": 0.5059356755151188,
+            "prediction_sha256": "f0eb0c47bed75c2db1506f602da297e0e0aca4600d1a763139e54d210486920f",
+            "system": "H-S",
+            "target_sha256": "b6c9f3c21fcb309a875f1a41aaf7b8e1a8f198ab5604d23aa8ba001400e34dd6",
+            "unique_activity_states": 19
+          },
+          "STATIC_SUPPORT": {
+            "activity_cardinality_max": 4,
+            "activity_cardinality_min": 4,
+            "arm": "STATIC_SUPPORT",
+            "cached_identity_parity": {
+              "abs_r2": 8.541397811256957e-09,
+              "max_abs_prediction": 1.8451828509569168e-08,
+              "pass": true,
+              "tolerance_prediction": 2e-06,
+              "tolerance_r2": 2e-07
+            },
+            "carrier_used": false,
+            "causal": true,
+            "deployment_status": "CAUSAL_CARDINALITY_MATCHED",
+            "elapsed_seconds": 12.764726751018316,
+            "equal_recording_mean_r2": 0.447210738812851,
+            "forward_batches": 410,
+            "forward_path": "accepted_eager_repeated_B32_identity_and_fixed_carrier",
+            "h1_carrier_unchanged": true,
+            "label_free": true,
+            "n_windows": 13107,
+            "per_recording": {
+              "ses-19250108T110520": {
+                "n_windows": 8330,
+                "r2": 0.4015560047333363
+              },
+              "ses-19250108T111022": {
+                "n_windows": 2508,
+                "r2": 0.4033243295123775
+              },
+              "ses-19250108T111455": {
+                "n_windows": 2269,
+                "r2": 0.5367518821928392
+              }
+            },
+            "pooled_r2": 0.426457567606665,
+            "prediction_sha256": "59560c3717a86bcb5aa73dd335338be8032340283177d5d41840c479e808fa42",
+            "system": "H-S",
+            "target_sha256": "b6c9f3c21fcb309a875f1a41aaf7b8e1a8f198ab5604d23aa8ba001400e34dd6",
+            "unique_activity_states": 3
+          }
+        }
+      },
+      "target_sha256": "b6c9f3c21fcb309a875f1a41aaf7b8e1a8f198ab5604d23aa8ba001400e34dd6"
+    },
+    {
+      "hs_authority": {
+        "checkpoint_relative": "tfpd_exploration/results/h1_date_lodo_checkpoint_cache_v1/19250113/hs_epoch_049.ckpt",
+        "checkpoint_sha256": "0d5c9482f41cfab421cd1474c8165b9d650485534059941bfc242b687a1c45e8",
+        "config_relative": "tfpd_exploration/results/h1_date_lodo_checkpoint_cache_v1/19250113/hs_config.yaml",
+        "config_sha256": "aaf93ab486303d90f9587c4bed430330f5c2cf792dc3a97c44b0bcdc435a0936",
+        "query_window_indices_sha256": "0e1ee7f45cf8728fb494a4e30c55f615def4797866fc128640fcd79fbac57905",
+        "source_manifest_sha256": "d910d088cbf222cde457b8e0ea833dec2e40fa4a65fd5dd33f28803dae61dec5",
+        "terminal_relative": "SPINT-main/pilot_artifacts/h1_carrierid_date_lodo_phase2/terminal_evaluations/H1_CARRIERID_DATE_LODO_PHASE2_19250113_HS_HC_TERMINAL_EVALUATION_v1.json",
+        "terminal_sha256": "30666d144326733e76615942d925731b0bf072549c453787b98b81d141532819"
+      },
+      "model_state_after_sha256": "f8da4d601d7a18b72eb6de55a24e201ee933f55eda75b6f7723fff08f40ffe04",
+      "model_state_before_sha256": "f8da4d601d7a18b72eb6de55a24e201ee933f55eda75b6f7723fff08f40ffe04",
+      "model_state_immutable": true,
+      "outer_date": "19250113",
+      "sessions": [
+        "ses-19250113T120811",
+        "ses-19250113T121303"
+      ],
+      "systems": {
+        "H-C": {
+          "CAUSAL_GROWING_CAP30": {
+            "activity_cardinality_max": 14,
+            "activity_cardinality_min": 4,
+            "arm": "CAUSAL_GROWING_CAP30",
+            "causal": true,
+            "deployment_status": "CAUSAL_CARDINALITY_OOD",
+            "elapsed_seconds": 3.8178689549677074,
+            "equal_recording_mean_r2": 0.3752854587445032,
+            "forward_batches": 497,
+            "h1_carrier_unchanged": true,
+            "label_free": true,
+            "n_windows": 15495,
+            "per_recording": {
+              "ses-19250113T120811": {
+                "n_windows": 7619,
+                "r2": 0.44645270929189196
+              },
+              "ses-19250113T121303": {
+                "n_windows": 7876,
+                "r2": 0.30411820819711444
+              }
+            },
+            "pooled_r2": 0.3748156004020512,
+            "prediction_sha256": "7aa1f975d27f73756896168aaeb0670f88495863abc292355d71d9e5d826a39b",
+            "target_sha256": "2fa29342f414bb75af0e21ced541b088a853e9db1fed749a9386b1f0eb067886",
+            "unique_activity_states": 21
+          },
+          "STATIC_SUPPORT": {
+            "activity_cardinality_max": 4,
+            "activity_cardinality_min": 4,
+            "arm": "STATIC_SUPPORT",
+            "cached_identity_parity": {
+              "abs_r2": 1.4737642217710345e-09,
+              "max_abs_prediction": 1.4901161193847656e-08,
+              "pass": true,
+              "tolerance_prediction": 2e-06,
+              "tolerance_r2": 2e-07
+            },
+            "causal": true,
+            "deployment_status": "CAUSAL_CARDINALITY_MATCHED",
+            "elapsed_seconds": 12.84021688438952,
+            "equal_recording_mean_r2": 0.33996187506850684,
+            "forward_batches": 485,
+            "forward_path": "accepted_eager_repeated_B32_identity_and_fixed_carrier",
+            "h1_carrier_unchanged": true,
+            "label_free": true,
+            "n_windows": 15495,
+            "per_recording": {
+              "ses-19250113T120811": {
+                "n_windows": 7619,
+                "r2": 0.42514720204083933
+              },
+              "ses-19250113T121303": {
+                "n_windows": 7876,
+                "r2": 0.25477654809617434
+              }
+            },
+            "pooled_r2": 0.33938969190534174,
+            "prediction_sha256": "5dd0b28a51e9e8c81ed5eeb8b18803abf2601889cc3cedfa8a6735d7a9834490",
+            "target_sha256": "2fa29342f414bb75af0e21ced541b088a853e9db1fed749a9386b1f0eb067886",
+            "unique_activity_states": 2
+          }
+        },
+        "H-S": {
+          "CAUSAL_GROWING_CAP30": {
+            "activity_cardinality_max": 14,
+            "activity_cardinality_min": 4,
+            "arm": "CAUSAL_GROWING_CAP30",
+            "carrier_used": false,
+            "causal": true,
+            "elapsed_seconds": 3.808231620118022,
+            "equal_recording_mean_r2": 0.3021106695577077,
+            "forward_batches": 497,
+            "label_free": true,
+            "n_windows": 15495,
+            "per_recording": {
+              "ses-19250113T120811": {
+                "n_windows": 7619,
+                "r2": 0.3735574360401608
+              },
+              "ses-19250113T121303": {
+                "n_windows": 7876,
+                "r2": 0.23066390307525464
+              }
+            },
+            "pooled_r2": 0.3016468458367826,
+            "prediction_sha256": "ac1eb980871b334d0d2faf66bf40a15d1e5fe41835562f079740ddaed7b49cc0",
+            "system": "H-S",
+            "target_sha256": "2fa29342f414bb75af0e21ced541b088a853e9db1fed749a9386b1f0eb067886",
+            "unique_activity_states": 21
+          },
+          "STATIC_SUPPORT": {
+            "activity_cardinality_max": 4,
+            "activity_cardinality_min": 4,
+            "arm": "STATIC_SUPPORT",
+            "cached_identity_parity": {
+              "abs_r2": 4.002064901698077e-09,
+              "max_abs_prediction": 1.4901161193847656e-08,
+              "pass": true,
+              "tolerance_prediction": 2e-06,
+              "tolerance_r2": 2e-07
+            },
+            "carrier_used": false,
+            "causal": true,
+            "deployment_status": "CAUSAL_CARDINALITY_MATCHED",
+            "elapsed_seconds": 16.209945471026003,
+            "equal_recording_mean_r2": 0.25701572522209937,
+            "forward_batches": 485,
+            "forward_path": "accepted_eager_repeated_B32_identity_and_fixed_carrier",
+            "h1_carrier_unchanged": true,
+            "label_free": true,
+            "n_windows": 15495,
+            "per_recording": {
+              "ses-19250113T120811": {
+                "n_windows": 7619,
+                "r2": 0.31493707379441016
+              },
+              "ses-19250113T121303": {
+                "n_windows": 7876,
+                "r2": 0.19909437664978857
+              }
+            },
+            "pooled_r2": 0.25665945239265486,
+            "prediction_sha256": "53fe9438e6cf5c566b976479e67a54165d166b628989cfb4e34c3f09309577a9",
+            "system": "H-S",
+            "target_sha256": "2fa29342f414bb75af0e21ced541b088a853e9db1fed749a9386b1f0eb067886",
+            "unique_activity_states": 2
+          }
+        }
+      },
+      "target_sha256": "2fa29342f414bb75af0e21ced541b088a853e9db1fed749a9386b1f0eb067886"
+    },
+    {
+      "hs_authority": {
+        "checkpoint_relative": "tfpd_exploration/results/h1_date_lodo_checkpoint_cache_v1/19250115/hs_epoch_049.ckpt",
+        "checkpoint_sha256": "1347a82ac5feac34ed787c09b187de623954a57464a666a0e1d65c02d77c06b8",
+        "config_relative": "tfpd_exploration/results/h1_date_lodo_checkpoint_cache_v1/19250115/hs_config.yaml",
+        "config_sha256": "664de9d8e4c92c0059bff3bc2e63530207c652210da189e46d69ad49b1796523",
+        "query_window_indices_sha256": "81ab5ca22c6c317d2af36b8bccb0feea0256da04beba2fa32478824157ad80be",
+        "source_manifest_sha256": "7611a4d4a6a9ddbf43ae5c16253c95a555faf7dc620b41d02f09c95a8b67fbe2",
+        "terminal_relative": "SPINT-main/pilot_artifacts/h1_carrierid_date_lodo_phase2/terminal_evaluations/H1_CARRIERID_DATE_LODO_PHASE2_19250115_HS_HC_TERMINAL_EVALUATION_v1.json",
+        "terminal_sha256": "3e2521ab190c36c33423abecd62c04457308cf0b84b3c2e0e0753c56615ce617"
+      },
+      "model_state_after_sha256": "a3969601b8c71f3047519e19f54acccb699a0b17559caf1c5cc841223f746ce0",
+      "model_state_before_sha256": "a3969601b8c71f3047519e19f54acccb699a0b17559caf1c5cc841223f746ce0",
+      "model_state_immutable": true,
+      "outer_date": "19250115",
+      "sessions": [
+        "ses-19250115T110633",
+        "ses-19250115T111328"
+      ],
+      "systems": {
+        "H-C": {
+          "CAUSAL_GROWING_CAP30": {
+            "activity_cardinality_max": 14,
+            "activity_cardinality_min": 4,
+            "arm": "CAUSAL_GROWING_CAP30",
+            "causal": true,
+            "deployment_status": "CAUSAL_CARDINALITY_OOD",
+            "elapsed_seconds": 3.5477674868889153,
+            "equal_recording_mean_r2": 0.5485563554522588,
+            "forward_batches": 459,
+            "h1_carrier_unchanged": true,
+            "label_free": true,
+            "n_windows": 14347,
+            "per_recording": {
+              "ses-19250115T110633": {
+                "n_windows": 6070,
+                "r2": 0.5235183252887885
+              },
+              "ses-19250115T111328": {
+                "n_windows": 8277,
+                "r2": 0.573594385615729
+              }
+            },
+            "pooled_r2": 0.5510581625600697,
+            "prediction_sha256": "8ea30c386b9fb5d063c68033da04a4817ae5e95887da48c7a11afeb521deaf8d",
+            "target_sha256": "95d054642429323b6e3559511068ef459ade35c9f6775280437a6d5ff5b90696",
+            "unique_activity_states": 20
+          },
+          "STATIC_SUPPORT": {
+            "activity_cardinality_max": 4,
+            "activity_cardinality_min": 4,
+            "arm": "STATIC_SUPPORT",
+            "cached_identity_parity": {
+              "abs_r2": 9.526234023837787e-09,
+              "max_abs_prediction": 1.955777406692505e-08,
+              "pass": true,
+              "tolerance_prediction": 2e-06,
+              "tolerance_r2": 2e-07
+            },
+            "causal": true,
+            "deployment_status": "CAUSAL_CARDINALITY_MATCHED",
+            "elapsed_seconds": 12.802286139689386,
+            "equal_recording_mean_r2": 0.5213202419887065,
+            "forward_batches": 449,
+            "forward_path": "accepted_eager_repeated_B32_identity_and_fixed_carrier",
+            "h1_carrier_unchanged": true,
+            "label_free": true,
+            "n_windows": 14347,
+            "per_recording": {
+              "ses-19250115T110633": {
+                "n_windows": 6070,
+                "r2": 0.49663573227182867
+              },
+              "ses-19250115T111328": {
+                "n_windows": 8277,
+                "r2": 0.5460047517055844
+              }
+            },
+            "pooled_r2": 0.5237869587011437,
+            "prediction_sha256": "bd779eb49792347037e61c715564e9fe46eccdea07f09200bd7f5a6b61be8448",
+            "target_sha256": "95d054642429323b6e3559511068ef459ade35c9f6775280437a6d5ff5b90696",
+            "unique_activity_states": 2
+          }
+        },
+        "H-S": {
+          "CAUSAL_GROWING_CAP30": {
+            "activity_cardinality_max": 14,
+            "activity_cardinality_min": 4,
+            "arm": "CAUSAL_GROWING_CAP30",
+            "carrier_used": false,
+            "causal": true,
+            "elapsed_seconds": 3.548704085405916,
+            "equal_recording_mean_r2": 0.4681489408749488,
+            "forward_batches": 459,
+            "label_free": true,
+            "n_windows": 14347,
+            "per_recording": {
+              "ses-19250115T110633": {
+                "n_windows": 6070,
+                "r2": 0.4463921421554099
+              },
+              "ses-19250115T111328": {
+                "n_windows": 8277,
+                "r2": 0.4899057395944877
+              }
+            },
+            "pooled_r2": 0.47032385589822245,
+            "prediction_sha256": "4cb3725aafe4b132554d6b11a28c172e22e6847fd5219cd1dafbfe55a232ec79",
+            "system": "H-S",
+            "target_sha256": "95d054642429323b6e3559511068ef459ade35c9f6775280437a6d5ff5b90696",
+            "unique_activity_states": 20
+          },
+          "STATIC_SUPPORT": {
+            "activity_cardinality_max": 4,
+            "activity_cardinality_min": 4,
+            "arm": "STATIC_SUPPORT",
+            "cached_identity_parity": {
+              "abs_r2": 6.3228180469110384e-09,
+              "max_abs_prediction": 1.4901161193847656e-08,
+              "pass": true,
+              "tolerance_prediction": 2e-06,
+              "tolerance_r2": 2e-07
+            },
+            "carrier_used": false,
+            "causal": true,
+            "deployment_status": "CAUSAL_CARDINALITY_MATCHED",
+            "elapsed_seconds": 14.264958209823817,
+            "equal_recording_mean_r2": 0.43942514951023837,
+            "forward_batches": 449,
+            "forward_path": "accepted_eager_repeated_B32_identity_and_fixed_carrier",
+            "h1_carrier_unchanged": true,
+            "label_free": true,
+            "n_windows": 14347,
+            "per_recording": {
+              "ses-19250115T110633": {
+                "n_windows": 6070,
+                "r2": 0.414741991969823
+              },
+              "ses-19250115T111328": {
+                "n_windows": 8277,
+                "r2": 0.46410830705065376
+              }
+            },
+            "pooled_r2": 0.4418923001545513,
+            "prediction_sha256": "c0c3ea0a8bc01edcb91b3722adfc4368cc15d838bf3ad8a587364799a8a50c88",
+            "system": "H-S",
+            "target_sha256": "95d054642429323b6e3559511068ef459ade35c9f6775280437a6d5ff5b90696",
+            "unique_activity_states": 2
+          }
+        }
+      },
+      "target_sha256": "95d054642429323b6e3559511068ef459ade35c9f6775280437a6d5ff5b90696"
+    },
+    {
+      "hs_authority": {
+        "checkpoint_relative": "tfpd_exploration/results/h1_date_lodo_checkpoint_cache_v1/19250119/hs_epoch_049.ckpt",
+        "checkpoint_sha256": "506d655617a9feee594ec4845bfb6034ef1126005e4a7633858d4fbd3d2fcc1f",
+        "config_relative": "tfpd_exploration/results/h1_date_lodo_checkpoint_cache_v1/19250119/hs_config.yaml",
+        "config_sha256": "8e947549b7383fe077c623bce45dfe8fab813296759ab5def09d77c8a2edf606",
+        "query_window_indices_sha256": "6c339c8e2b0b4691c20396ff691c10397c9308520252b1cc9486d7ac3db6427e",
+        "source_manifest_sha256": "792207cfa7599f89b4166a23c20f04f9ad8679afecc5afdf17a7782db0fab202",
+        "terminal_relative": "SPINT-main/pilot_artifacts/h1_carrierid_date_lodo_phase2/terminal_evaluations/H1_CARRIERID_DATE_LODO_PHASE2_19250119_HS_HC_TERMINAL_EVALUATION_v1.json",
+        "terminal_sha256": "af67a363e861f358bb541e03d000cfee15266809e7fbf50a7863fea30131906c"
+      },
+      "model_state_after_sha256": "583c7b103693f8dbe41dde3adaa374a022d7a08a4fc0f84ba6bedfdeee58f2de",
+      "model_state_before_sha256": "583c7b103693f8dbe41dde3adaa374a022d7a08a4fc0f84ba6bedfdeee58f2de",
+      "model_state_immutable": true,
+      "outer_date": "19250119",
+      "sessions": [
+        "ses-19250119T113543",
+        "ses-19250119T114045"
+      ],
+      "systems": {
+        "H-C": {
+          "CAUSAL_GROWING_CAP30": {
+            "activity_cardinality_max": 14,
+            "activity_cardinality_min": 4,
+            "arm": "CAUSAL_GROWING_CAP30",
+            "causal": true,
+            "deployment_status": "CAUSAL_CARDINALITY_OOD",
+            "elapsed_seconds": 3.8776362109929323,
+            "equal_recording_mean_r2": 0.3637798016616154,
+            "forward_batches": 499,
+            "h1_carrier_unchanged": true,
+            "label_free": true,
+            "n_windows": 15631,
+            "per_recording": {
+              "ses-19250119T113543": {
+                "n_windows": 7739,
+                "r2": 0.32536651693617724
+              },
+              "ses-19250119T114045": {
+                "n_windows": 7892,
+                "r2": 0.40219308638705353
+              }
+            },
+            "pooled_r2": 0.3635380361420104,
+            "prediction_sha256": "8f1ec4f4115745092c9b24012a03a477519e916d3355159a336eedd336a9ab92",
+            "target_sha256": "a2d6946bea23846f15e304bf5ef97769d85bc892c3f0e852588d68cfef82aca7",
+            "unique_activity_states": 22
+          },
+          "STATIC_SUPPORT": {
+            "activity_cardinality_max": 4,
+            "activity_cardinality_min": 4,
+            "arm": "STATIC_SUPPORT",
+            "cached_identity_parity": {
+              "abs_r2": 1.548665029549312e-08,
+              "max_abs_prediction": 2.0489096641540527e-08,
+              "pass": true,
+              "tolerance_prediction": 2e-06,
+              "tolerance_r2": 2e-07
+            },
+            "causal": true,
+            "deployment_status": "CAUSAL_CARDINALITY_MATCHED",
+            "elapsed_seconds": 16.0486916359514,
+            "equal_recording_mean_r2": 0.3174868620587386,
+            "forward_batches": 489,
+            "forward_path": "accepted_eager_repeated_B32_identity_and_fixed_carrier",
+            "h1_carrier_unchanged": true,
+            "label_free": true,
+            "n_windows": 15631,
+            "per_recording": {
+              "ses-19250119T113543": {
+                "n_windows": 7739,
+                "r2": 0.28701750242182333
+              },
+              "ses-19250119T114045": {
+                "n_windows": 7892,
+                "r2": 0.3479562216956539
+              }
+            },
+            "pooled_r2": 0.3173040351278045,
+            "prediction_sha256": "3ad9e66c57f1508cbb3a4f8963c776587eb19a8a8b6a5ada1fe885ed643bda94",
+            "target_sha256": "a2d6946bea23846f15e304bf5ef97769d85bc892c3f0e852588d68cfef82aca7",
+            "unique_activity_states": 2
+          }
+        },
+        "H-S": {
+          "CAUSAL_GROWING_CAP30": {
+            "activity_cardinality_max": 14,
+            "activity_cardinality_min": 4,
+            "arm": "CAUSAL_GROWING_CAP30",
+            "carrier_used": false,
+            "causal": true,
+            "elapsed_seconds": 3.874885917175561,
+            "equal_recording_mean_r2": 0.3406991120364443,
+            "forward_batches": 499,
+            "label_free": true,
+            "n_windows": 15631,
+            "per_recording": {
+              "ses-19250119T113543": {
+                "n_windows": 7739,
+                "r2": 0.31309275323797614
+              },
+              "ses-19250119T114045": {
+                "n_windows": 7892,
+                "r2": 0.3683054708349125
+              }
+            },
+            "pooled_r2": 0.340535521089405,
+            "prediction_sha256": "aae237d4abd1c095c3ff4045bcd3e11345dab01c9c5a1593f1d5641915b91d9e",
+            "system": "H-S",
+            "target_sha256": "a2d6946bea23846f15e304bf5ef97769d85bc892c3f0e852588d68cfef82aca7",
+            "unique_activity_states": 22
+          },
+          "STATIC_SUPPORT": {
+            "activity_cardinality_max": 4,
+            "activity_cardinality_min": 4,
+            "arm": "STATIC_SUPPORT",
+            "cached_identity_parity": {
+              "abs_r2": 4.492589078530784e-09,
+              "max_abs_prediction": 1.7695128917694092e-08,
+              "pass": true,
+              "tolerance_prediction": 2e-06,
+              "tolerance_r2": 2e-07
+            },
+            "carrier_used": false,
+            "causal": true,
+            "deployment_status": "CAUSAL_CARDINALITY_MATCHED",
+            "elapsed_seconds": 14.79007475078106,
+            "equal_recording_mean_r2": 0.2947559155671444,
+            "forward_batches": 489,
+            "forward_path": "accepted_eager_repeated_B32_identity_and_fixed_carrier",
+            "h1_carrier_unchanged": true,
+            "label_free": true,
+            "n_windows": 15631,
+            "per_recording": {
+              "ses-19250119T113543": {
+                "n_windows": 7739,
+                "r2": 0.26838382598077826
+              },
+              "ses-19250119T114045": {
+                "n_windows": 7892,
+                "r2": 0.3211280051535106
+              }
+            },
+            "pooled_r2": 0.2946034300320828,
+            "prediction_sha256": "4569b72ee1507bcf1c193f5644d21af0db73fe644e230178a6b8f8ec7f395ed7",
+            "system": "H-S",
+            "target_sha256": "a2d6946bea23846f15e304bf5ef97769d85bc892c3f0e852588d68cfef82aca7",
+            "unique_activity_states": 2
+          }
+        }
+      },
+      "target_sha256": "a2d6946bea23846f15e304bf5ef97769d85bc892c3f0e852588d68cfef82aca7"
+    },
+    {
+      "hs_authority": {
+        "checkpoint_relative": "tfpd_exploration/results/h1_date_lodo_checkpoint_cache_v1/19250120/hs_epoch_049.ckpt",
+        "checkpoint_sha256": "32bde896ac0ca1bb9ec5e222d17167e80dc1e4ad169058e63857c6204b9b39a5",
+        "config_relative": "tfpd_exploration/results/h1_date_lodo_checkpoint_cache_v1/19250120/hs_config.yaml",
+        "config_sha256": "afec359e020f04b4a6d3dd4130d72fd1f7f2f6b6c1a8b5e2d757443bf9185891",
+        "query_window_indices_sha256": "6b6bd44d20fcdb5418104422a8acc4583f0405f8fa5cf6c9e9e293a1fe9fda60",
+        "source_manifest_sha256": "df0ab72f191c3ccf7c8fdd32570ba9ced742cebef35ec2f16795868cfa2d2934",
+        "terminal_relative": "SPINT-main/pilot_artifacts/h1_carrierid_date_lodo_phase2/terminal_evaluations/H1_CARRIERID_DATE_LODO_PHASE2_19250120_HS_HC_TERMINAL_EVALUATION_v1.json",
+        "terminal_sha256": "aac68a947a902d55a7b31221e1b446efeec1598acc99e69280ee41f750ff5dcd"
+      },
+      "model_state_after_sha256": "2a746ec0b489c1b872c63ca0ecfa24380829f31c469088faa90f1ea47dcb0627",
+      "model_state_before_sha256": "2a746ec0b489c1b872c63ca0ecfa24380829f31c469088faa90f1ea47dcb0627",
+      "model_state_immutable": true,
+      "outer_date": "19250120",
+      "sessions": [
+        "ses-19250120T115044",
+        "ses-19250120T115537"
+      ],
+      "systems": {
+        "H-C": {
+          "CAUSAL_GROWING_CAP30": {
+            "activity_cardinality_max": 14,
+            "activity_cardinality_min": 4,
+            "arm": "CAUSAL_GROWING_CAP30",
+            "causal": true,
+            "deployment_status": "CAUSAL_CARDINALITY_OOD",
+            "elapsed_seconds": 3.8434383566491306,
+            "equal_recording_mean_r2": 0.44617334426982935,
+            "forward_batches": 500,
+            "h1_carrier_unchanged": true,
+            "label_free": true,
+            "n_windows": 15528,
+            "per_recording": {
+              "ses-19250120T115044": {
+                "n_windows": 7889,
+                "r2": 0.4624048124209271
+              },
+              "ses-19250120T115537": {
+                "n_windows": 7639,
+                "r2": 0.4299418761187316
+              }
+            },
+            "pooled_r2": 0.4466011500071163,
+            "prediction_sha256": "1184cbf0b82934ee7be6da68597a72b8244d5f338e9a7a4e81ee8e429d15566f",
+            "target_sha256": "4121a3a907a22476eb2d213c97dc2873908c1022687ecaf57bfb96c05782a1a3",
+            "unique_activity_states": 22
+          },
+          "STATIC_SUPPORT": {
+            "activity_cardinality_max": 4,
+            "activity_cardinality_min": 4,
+            "arm": "STATIC_SUPPORT",
+            "cached_identity_parity": {
+              "abs_r2": 9.319227944892816e-09,
+              "max_abs_prediction": 1.30385160446167e-08,
+              "pass": true,
+              "tolerance_prediction": 2e-06,
+              "tolerance_r2": 2e-07
+            },
+            "causal": true,
+            "deployment_status": "CAUSAL_CARDINALITY_MATCHED",
+            "elapsed_seconds": 16.06080258032307,
+            "equal_recording_mean_r2": 0.34982768454393137,
+            "forward_batches": 486,
+            "forward_path": "accepted_eager_repeated_B32_identity_and_fixed_carrier",
+            "h1_carrier_unchanged": true,
+            "label_free": true,
+            "n_windows": 15528,
+            "per_recording": {
+              "ses-19250120T115044": {
+                "n_windows": 7889,
+                "r2": 0.36526153894790214
+              },
+              "ses-19250120T115537": {
+                "n_windows": 7639,
+                "r2": 0.3343938301399606
+              }
+            },
+            "pooled_r2": 0.3502408612722473,
+            "prediction_sha256": "781c2a8a227c5d024f723a9288f5a5655d49b77cd46fd7ea589defb98af6df68",
+            "target_sha256": "4121a3a907a22476eb2d213c97dc2873908c1022687ecaf57bfb96c05782a1a3",
+            "unique_activity_states": 2
+          }
+        },
+        "H-S": {
+          "CAUSAL_GROWING_CAP30": {
+            "activity_cardinality_max": 14,
+            "activity_cardinality_min": 4,
+            "arm": "CAUSAL_GROWING_CAP30",
+            "carrier_used": false,
+            "causal": true,
+            "elapsed_seconds": 3.8676619580946863,
+            "equal_recording_mean_r2": 0.4735201959696121,
+            "forward_batches": 500,
+            "label_free": true,
+            "n_windows": 15528,
+            "per_recording": {
+              "ses-19250120T115044": {
+                "n_windows": 7889,
+                "r2": 0.4939187405465558
+              },
+              "ses-19250120T115537": {
+                "n_windows": 7639,
+                "r2": 0.45312165139266836
+              }
+            },
+            "pooled_r2": 0.47404905961519117,
+            "prediction_sha256": "949bf2ae58bf357c75fa6beba77dd3945394a9377acd6ebcf0e116d877ffcd6e",
+            "system": "H-S",
+            "target_sha256": "4121a3a907a22476eb2d213c97dc2873908c1022687ecaf57bfb96c05782a1a3",
+            "unique_activity_states": 22
+          },
+          "STATIC_SUPPORT": {
+            "activity_cardinality_max": 4,
+            "activity_cardinality_min": 4,
+            "arm": "STATIC_SUPPORT",
+            "cached_identity_parity": {
+              "abs_r2": 9.562037606158924e-09,
+              "max_abs_prediction": 1.5832483768463135e-08,
+              "pass": true,
+              "tolerance_prediction": 2e-06,
+              "tolerance_r2": 2e-07
+            },
+            "carrier_used": false,
+            "causal": true,
+            "deployment_status": "CAUSAL_CARDINALITY_MATCHED",
+            "elapsed_seconds": 14.60267565306276,
+            "equal_recording_mean_r2": 0.37537371110187956,
+            "forward_batches": 486,
+            "forward_path": "accepted_eager_repeated_B32_identity_and_fixed_carrier",
+            "h1_carrier_unchanged": true,
+            "label_free": true,
+            "n_windows": 15528,
+            "per_recording": {
+              "ses-19250120T115044": {
+                "n_windows": 7889,
+                "r2": 0.37688573836392847
+              },
+              "ses-19250120T115537": {
+                "n_windows": 7639,
+                "r2": 0.37386168383983065
+              }
+            },
+            "pooled_r2": 0.3754432132631862,
+            "prediction_sha256": "d191ddac1f4fe0bae1d9564e9b270737f8970327234367134285ba7117a408ed",
+            "system": "H-S",
+            "target_sha256": "4121a3a907a22476eb2d213c97dc2873908c1022687ecaf57bfb96c05782a1a3",
+            "unique_activity_states": 2
+          }
+        }
+      },
+      "target_sha256": "4121a3a907a22476eb2d213c97dc2873908c1022687ecaf57bfb96c05782a1a3"
+    }
+  ],
+  "decision": {
+    "equal_date_mean_deltas": {
+      "growing_hc_minus_hs": 0.045631595651742365,
+      "hc_growing_minus_static": 0.0489370007080583,
+      "hs_growing_minus_static": 0.05537136496623778,
+      "static_hc_minus_hs": 0.05206595990992184
+    },
+    "formal_selection_claim": false,
+    "per_date_deltas": {
+      "growing_hc_minus_hs": {
+        "19250108": 0.07884193656921801,
+        "19250113": 0.07317478918679549,
+        "19250115": 0.08040741457730999,
+        "19250119": 0.02308068962517107,
+        "19250120": -0.027346851699782737
+      },
+      "hc_growing_minus_static": {
+        "19250108": 0.03948670707196811,
+        "19250113": 0.03532358367599636,
+        "19250115": 0.02723611346355226,
+        "19250119": 0.04629293960287678,
+        "19250120": 0.09634565972589798
+      },
+      "hs_growing_minus_static": {
+        "19250108": 0.0589484077938377,
+        "19250113": 0.045094944335608345,
+        "19250115": 0.028723791364710427,
+        "19250119": 0.045943196469299896,
+        "19250120": 0.09814648486773253
+      },
+      "static_hc_minus_hs": {
+        "19250108": 0.0983036372910876,
+        "19250113": 0.08294614984640747,
+        "19250115": 0.08189509247846816,
+        "19250119": 0.022730946491594184,
+        "19250120": -0.025546026557948187
+      }
+    },
+    "positive_hc_growing_dates": 5,
+    "positive_hs_growing_dates": 5,
+    "system_effect_threshold": 0.01,
+    "verdict": "HC_ACTIVITY_SYNERGY_RETAIN_CARRIER_SYSTEM"
+  },
+  "device": "cuda:0",
+  "evalai_opened": false,
+  "formal_heldout_opened": false,
+  "formal_selection_claim": false,
+  "hc_predecessor": {
+    "relative": "tfpd_exploration/results/h1_date_lodo_activity_headroom_v1.json",
+    "sha256": "65c9bb40ad45ab7b74740da88fd8081504b7656e807e76b6eb9db903450adb68"
+  },
+  "minival_opened": false,
+  "schema": "h1_date_lodo_activity_system_compare_v1",
+  "status": "COMPLETE_FROZEN_WEIGHT_FIVE_DATE_HS_HC_ACTIVITY_COMPARISON",
+  "surface": "five_confirmatory_dates_strict_post_m4_support",
+  "target_optimizer_backward_update": 0,
+  "verdict": "HC_ACTIVITY_SYNERGY_RETAIN_CARRIER_SYSTEM"
+}

@@ -1,0 +1,215 @@
+{
+  "authority": {
+    "baseline_result_relative": "tfpd_exploration/results/m1_h1_activity_headroom_v1/h1_fold0_hc.json",
+    "baseline_result_sha256": "5ec15848efffd3d0d7d1f6d0cbc077c99dcbdc32787965de3ba36472b50990a9",
+    "query_window_indices_sha256": "665fe535e90a221123b778171685577f67c2cc1902648cde2c8b2523e990e4da",
+    "source_authority": {
+      "carrier_cache_sha256": "88261cc03532b605da1790e8669760d4d47e2f87d2db1428060445541638b0af",
+      "files": {
+        "fold0_all_source_m4_carriers.manifest.json": {
+          "mode": "0444",
+          "sha256": "bd228fe35dae3a1ab524219237023bc5a27272dab0d6fb52a8328b4ea54c0805",
+          "size_bytes": 20125
+        },
+        "fold0_all_source_m4_carriers.npz": {
+          "mode": "0444",
+          "sha256": "f21b1242f78b2cd487ff86a0f47caeb325bac4e9ad9b988b723aa78766afa330",
+          "size_bytes": 653582
+        },
+        "fold0_frozen_eb_plan.manifest.json": {
+          "mode": "0444",
+          "sha256": "cbf4610a1244ea528aa2b42b3a7ce85220dffa486c40010188523a98f4f0e26c",
+          "size_bytes": 1952
+        },
+        "fold0_frozen_eb_plan.npz": {
+          "mode": "0444",
+          "sha256": "ac0508cbd5f5502d27aeb8cfdf93ed6358f488415657df13077c042f96f4d4f4",
+          "size_bytes": 27554
+        }
+      },
+      "receipt_path": "/home/xinyuan/Work_host/SPINT/SPINT-main/pilot_artifacts/h1_carrierid_hu/source_authority_v1/H1_CARRIERID_HU_SOURCE_AUTHORITY_v1.json",
+      "receipt_sha256": "fcb0cf843f351715677f14e3cf80acdb613fc5a59fb96bfcf7efc23836b16fb8",
+      "schema": "h1_carrierid_hu_hc_source_authority_v1",
+      "source_only": true,
+      "target_nwb_opened": false,
+      "transform_sha256": "92c932d059d93aaffae3d676fe247b46971232027fe906cb4b28add93ddee66a"
+    },
+    "successor_checkpoint_relative": "tfpd_exploration/results/h1_variable_activity_exposure_v1/checkpoint.pt",
+    "successor_checkpoint_sha256": "69f642f6aeba78a2c136316b78338dec4d8f31968a6071d860c1dc5935c6e77a",
+    "successor_state_sha256": "fe6746208b54fd7dc03477a4154709f1f16930c9942141ab2d29a3110be6d60d",
+    "training_receipt_relative": "tfpd_exploration/results/h1_variable_activity_exposure_v1/full.json",
+    "training_receipt_sha256": "5cd23406dff6781e0105b60ccc778f349d0e494ce7f3a9a7f791828df381059f"
+  },
+  "cuda_initialized": true,
+  "decision_gates": {
+    "growing_better": false,
+    "growing_equal_recording_delta_must_be_positive": true,
+    "static_equal_recording_delta_min": -0.01,
+    "static_safe": true
+  },
+  "device": "cuda:0",
+  "model_state_after_sha256": "fe6746208b54fd7dc03477a4154709f1f16930c9942141ab2d29a3110be6d60d",
+  "model_state_before_sha256": "fe6746208b54fd7dc03477a4154709f1f16930c9942141ab2d29a3110be6d60d",
+  "model_state_immutable": true,
+  "paired_deltas_vs_sealed_hc": [
+    {
+      "arm": "STATIC_SUPPORT",
+      "equal_recording_delta": -0.0007923083935647557,
+      "per_recording_delta": {
+        "ses-19250101T111740": -0.001967307552186437,
+        "ses-19250101T112404": 0.00038269076505692556
+      },
+      "pooled_delta": -0.0013626897927000448
+    },
+    {
+      "arm": "ROLLING_FIXED_M",
+      "equal_recording_delta": -0.012792771056977181,
+      "per_recording_delta": {
+        "ses-19250101T111740": -0.011155957064361566,
+        "ses-19250101T112404": -0.014429585049592797
+      },
+      "pooled_delta": -0.011992962170937371
+    },
+    {
+      "arm": "CAUSAL_GROWING_CAP30",
+      "equal_recording_delta": -0.005436764519721082,
+      "per_recording_delta": {
+        "ses-19250101T111740": -0.007614873403894884,
+        "ses-19250101T112404": -0.0032586556355472807
+      },
+      "pooled_delta": -0.006492588240660568
+    },
+    {
+      "arm": "FULL_SESSION_ORACLE",
+      "equal_recording_delta": -0.009852238374531308,
+      "per_recording_delta": {
+        "ses-19250101T111740": -0.006992502930392774,
+        "ses-19250101T112404": -0.012711973818669842
+      },
+      "pooled_delta": -0.008459584194735026
+    }
+  ],
+  "results": [
+    {
+      "activity_cardinality_max": 4,
+      "activity_cardinality_min": 4,
+      "arm": "STATIC_SUPPORT",
+      "cached_identity_parity": {
+        "abs_r2": 1.2917211744678525e-10,
+        "max_abs_prediction": 1.5832483768463135e-08,
+        "pass": true,
+        "tolerance_prediction": 2e-06,
+        "tolerance_r2": 2e-07
+      },
+      "causal": true,
+      "deployment_status": "CAUSAL_CARDINALITY_MATCHED",
+      "elapsed_seconds": 5.66489715827629,
+      "equal_recording_mean_r2": 0.455695906458385,
+      "forward_batches": 281,
+      "forward_path": "accepted_eager_repeated_B32_identity_and_fixed_carrier",
+      "h1_carrier_unchanged": true,
+      "label_free": true,
+      "n_windows": 8965,
+      "per_recording": {
+        "ses-19250101T111740": {
+          "n_windows": 6735,
+          "r2": 0.59621184954047
+        },
+        "ses-19250101T112404": {
+          "n_windows": 2230,
+          "r2": 0.31517996337629994
+        }
+      },
+      "pooled_r2": 0.5241480902743699,
+      "prediction_sha256": "f2c94a3ddc86a1b1decdcd1884e876d7ca33c54f6b006090dcd22a6ef7cf8afc",
+      "target_sha256": "8a59e15e91798173b4753414612f01e4a2bd7d25a3f6f0efcf0a02c0cc4df7ec",
+      "unique_activity_states": 2
+    },
+    {
+      "activity_cardinality_max": 4,
+      "activity_cardinality_min": 4,
+      "arm": "ROLLING_FIXED_M",
+      "causal": true,
+      "deployment_status": "CAUSAL_CARDINALITY_MATCHED",
+      "elapsed_seconds": 1.3603909770026803,
+      "equal_recording_mean_r2": 0.45783271349573107,
+      "forward_batches": 287,
+      "h1_carrier_unchanged": true,
+      "label_free": true,
+      "n_windows": 8965,
+      "per_recording": {
+        "ses-19250101T111740": {
+          "n_windows": 6735,
+          "r2": 0.5666962224995236
+        },
+        "ses-19250101T112404": {
+          "n_windows": 2230,
+          "r2": 0.3489692044919386
+        }
+      },
+      "pooled_r2": 0.5109109468181219,
+      "prediction_sha256": "e778f5b6cde323775a9351c8feeb3e37573717642c770079cfc4f53ea7882e81",
+      "target_sha256": "8a59e15e91798173b4753414612f01e4a2bd7d25a3f6f0efcf0a02c0cc4df7ec",
+      "unique_activity_states": 13
+    },
+    {
+      "activity_cardinality_max": 12,
+      "activity_cardinality_min": 4,
+      "arm": "CAUSAL_GROWING_CAP30",
+      "causal": true,
+      "deployment_status": "CAUSAL_CARDINALITY_OOD",
+      "elapsed_seconds": 1.3661752888001502,
+      "equal_recording_mean_r2": 0.48334303716806865,
+      "forward_batches": 287,
+      "h1_carrier_unchanged": true,
+      "label_free": true,
+      "n_windows": 8965,
+      "per_recording": {
+        "ses-19250101T111740": {
+          "n_windows": 6735,
+          "r2": 0.6133926895383023
+        },
+        "ses-19250101T112404": {
+          "n_windows": 2230,
+          "r2": 0.353293384797835
+        }
+      },
+      "pooled_r2": 0.5467014491828512,
+      "prediction_sha256": "fe32f26a2b6deb48c66dedc3304110921ef800593131692c01e1dadc8d2e6028",
+      "target_sha256": "8a59e15e91798173b4753414612f01e4a2bd7d25a3f6f0efcf0a02c0cc4df7ec",
+      "unique_activity_states": 13
+    },
+    {
+      "activity_cardinality_max": 13,
+      "activity_cardinality_min": 8,
+      "arm": "FULL_SESSION_ORACLE",
+      "causal": false,
+      "deployment_status": "LABEL_FREE_BUT_NONCAUSAL",
+      "elapsed_seconds": 1.3520535994321108,
+      "equal_recording_mean_r2": 0.5018032128616894,
+      "forward_batches": 281,
+      "h1_carrier_unchanged": true,
+      "label_free": true,
+      "n_windows": 8965,
+      "per_recording": {
+        "ses-19250101T111740": {
+          "n_windows": 6735,
+          "r2": 0.620682474471081
+        },
+        "ses-19250101T112404": {
+          "n_windows": 2230,
+          "r2": 0.3829239512522977
+        }
+      },
+      "pooled_r2": 0.5597293510667571,
+      "prediction_sha256": "7c409aa01a2d28727735b5975e9a06490475cf699a0b877773da6e0cc10b8819",
+      "target_sha256": "8a59e15e91798173b4753414612f01e4a2bd7d25a3f6f0efcf0a02c0cc4df7ec",
+      "unique_activity_states": 2
+    }
+  ],
+  "schema": "h1_variable_activity_exposure_matched_score_v1",
+  "status": "COMPLETE_MATCHED_ACTIVITY_HEADROOM_SCORE",
+  "surface": "fold0_strict_post_m4_support_two_recordings",
+  "target_optimizer_backward_update": 0,
+  "verdict": "STOP_VARIABLE_ACTIVITY_SUCCESSOR"
+}
