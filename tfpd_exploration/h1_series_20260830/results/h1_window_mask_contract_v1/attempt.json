@@ -1,0 +1,54 @@
+{
+  "baseline_git_sha": "21d0881f50a8d88d78fb5d5b941a6bf470019e9f",
+  "branch": "exp/h1-window-mask-contract-v1",
+  "command": [
+    "/home/ial-mohd/workspace/envs/spint/bin/python3.10",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_h1_window_mask_contract_v1.py",
+    "tests/test_falcon_sampler.py",
+    "--junitxml=/home/ial-mohd/workspace/iBCI/tfpd_exploration/h1_series_20260830/results/h1_window_mask_contract_v1/pytest.xml"
+  ],
+  "created_at_utc": "2026-08-31T08:34:24.045219+00:00",
+  "executed_closure": {
+    "contract": {
+      "path": "streaming_calibration_exp/src/data/h1_window_mask_contract_v1.py",
+      "sha256": "ebac3f0dbed5c5a52f76179efa287101b19e0587d14fcaad68360834e2ca6bbd"
+    },
+    "contract_tests": {
+      "path": "streaming_calibration_exp/tests/test_h1_window_mask_contract_v1.py",
+      "sha256": "dcc6dcb31431301eb43453523679327c23ee27bcaab7f80fe78a8f976fe1d9ba"
+    },
+    "design": {
+      "path": "tfpd_exploration/h1_series_20260830/docs/DESIGN_H1_WINDOW_MASK_CONTRACT_V1_20260830.md",
+      "sha256": "f16f9de4a8911fd957619d6e1f6d5c8a5315b250daacecc652e30e65c0a0dd41"
+    },
+    "runner": {
+      "path": "tfpd_exploration/h1_series_20260830/scripts/run_h1_window_mask_contract_v1.py",
+      "sha256": "fd2d870a1fcff34b0e88f32585c0acf26a57591b24ea6703108788abf25710e3"
+    },
+    "sampler_regression": {
+      "path": "streaming_calibration_exp/tests/test_falcon_sampler.py",
+      "sha256": "959459dd995c55a49542bd62e875485f10b5aad1a4eef1eb86cdc8594e03b3c6"
+    },
+    "work_order": {
+      "path": "tfpd_exploration/h1_series_20260830/docs/WORKORDER_H1_WINDOW_MASK_CONTRACT_V1_20260831.md",
+      "sha256": "75f3918a66a54004886df75b9542a0e0dc613441bbf814d0a1e9a6ec1f36ab9d"
+    }
+  },
+  "python_executable": "/home/ial-mohd/workspace/envs/spint/bin/python3.10",
+  "schema": "h1_window_mask_contract_v1_attempt",
+  "scope": {
+    "automatic_retry": false,
+    "cuda_constructed": false,
+    "cuda_visible_devices": "",
+    "gpu_allocated": false,
+    "h1_data_root_opened": false,
+    "nwb_files_opened": 0,
+    "synthetic_sessions_only": true,
+    "training_steps": 0
+  },
+  "status": "ATTEMPT_H1_WINDOW_MASK_CONTRACT_V1_CPU_GATE",
+  "working_directory": "/home/ial-mohd/workspace/iBCI/streaming_calibration_exp"
+}

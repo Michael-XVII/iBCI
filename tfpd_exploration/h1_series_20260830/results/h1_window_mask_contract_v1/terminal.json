@@ -1,0 +1,33 @@
+{
+  "attempt": {
+    "path": "attempt.json",
+    "sha256": "3b0a9bc3146a0e78b5a44bf6a4663929960be5fdd8ec4c85604ff551b7e9ab5f"
+  },
+  "authorization_note": "A passing CPU gate is necessary but does not replace the separate work order and explicit authorization required for any GPU cell.",
+  "finished_at_utc": "2026-08-31T08:34:27.616430+00:00",
+  "gpu_cell_prerequisite_satisfied": true,
+  "later_gpu_cells_authorized_by_this_receipt": false,
+  "pytest": {
+    "junit_path": "pytest.xml",
+    "junit_sha256": "c9ed8399c774e0febdc4ca1b1d56ae472e7ec8332a4a3d1e2df27e41f30ac15f",
+    "summary": {
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "tests": 17,
+      "time_seconds": 2.732
+    }
+  },
+  "returncode": 0,
+  "schema": "h1_window_mask_contract_v1_terminal_or_failure",
+  "scope_confirmation": {
+    "cuda_constructed": false,
+    "cuda_visible_devices": "",
+    "gpu_allocated": false,
+    "h1_data_root_opened": false,
+    "nwb_files_opened": 0,
+    "training_steps": 0
+  },
+  "started_at_utc": "2026-08-31T08:34:24.051113+00:00",
+  "status": "PASS_WINDOW_MASK_CONTRACT_V1_CPU_GATE"
+}
