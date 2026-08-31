@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from functools import partial
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -14,6 +15,7 @@ from src.data.h1_masked_dense_aux_v1 import (
     SOURCE_SESSIONS,
     TARGET_SESSIONS,
     WindowValidDataset,
+    H1MaskedDenseAuxDataModule,
     session_date,
     source_date_split,
 )
@@ -194,3 +196,12 @@ def test_source_and_outer_gates_follow_preregistered_boundaries():
     assert selection["source_gate_passed"] is True
     outer = outer_gate({"a": 0.2, "b": 0.3}, {"a": 0.211, "b": 0.312})
     assert outer["outer_gate_passed"] is True
+
+
+def test_datamodule_preserves_path_typed_data_root(tmp_path):
+    dm = H1MaskedDenseAuxDataModule(
+        task="h1", data_dir=tmp_path, allowed_sessions=SOURCE_SESSIONS,
+        validation_date=SOURCE_DATES[0], num_workers=0,
+    )
+    assert isinstance(dm.hparams.data_dir, Path)
+    assert dm.hparams.data_dir == tmp_path

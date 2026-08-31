@@ -54,10 +54,12 @@ PYTHON = Path("/home/ial-mohd/workspace/envs/spint/bin/python")
 DEFAULT_DATA = Path("/home/ial-mohd/dataset/ial-mohd/000954")
 RESULT_ROOT = ROOT / "tfpd_exploration/h1_series_20260830/results/h1_masked_dense_aux_v1"
 LOG_DIR = ROOT / "logs/h1_masked_dense_aux_v1"
-GPU_ALLOWLIST = (0, 1)
+GPU_ALLOWLIST = (0, 1, 2, 3)
+MAX_PARALLEL_GPUS = 2
 EXPERIMENT1 = ROOT / "tfpd_exploration/h1_series_20260830/results/h1_window_mask_contract_v1"
 CONFIG = STREAMING / "configs/experiment/h1_masked_dense_aux_v1.yaml"
 WORKORDER = ROOT / "tfpd_exploration/h1_series_20260830/docs/WORKORDER_H1_MASKED_DENSE_AUX_V1_20260831.md"
+AMENDMENT = ROOT / "tfpd_exploration/h1_series_20260830/docs/AMENDMENT_H1_MASKED_DENSE_AUX_V1_GPU_AND_PATH_REPAIR_20260831.md"
 CLOSURE = (
     Path(__file__).resolve(),
     STREAMING / "src/data/h1_window_mask_contract_v1.py",
@@ -68,6 +70,7 @@ CLOSURE = (
     STREAMING / "tests/test_h1_masked_dense_aux_v1.py",
     CONFIG,
     WORKORDER,
+    AMENDMENT,
 )
 
 
@@ -118,7 +121,7 @@ def state_sha256(state: Mapping[str, torch.Tensor]) -> str:
 
 def build_dm(data_root: Path, validation_date: str | None, *, target: bool = False):
     return H1MaskedDenseAuxDataModule(
-        task="h1", data_dir=str(data_root),
+        task="h1", data_dir=data_root,
         allowed_sessions=TARGET_SESSIONS if target else SOURCE_SESSIONS,
         validation_date=validation_date, batch_size=32, window_size=700,
         calibration_n_trials=2, random_calibration=True, smooth_calibration=False,
@@ -184,6 +187,17 @@ def wait_for_gpu(index: int) -> dict[str, Any]:
         if idle:
             return row
         print(f"[{utcnow()}] physical GPU {index} no longer idle; waiting 30s: {row}", flush=True)
+        time.sleep(30)
+
+
+def wait_for_two_idle_gpus() -> tuple[int, int]:
+    while True:
+        rows = gpu_rows()
+        idle = [index for index in GPU_ALLOWLIST
+                if rows[index]["memory_used_mib"] < 1024 and rows[index]["utilization_percent"] < 10]
+        if len(idle) >= MAX_PARALLEL_GPUS:
+            return idle[0], idle[1]
+        print(f"[{utcnow()}] fewer than two authorized GPUs are idle; waiting 30s: {rows}", flush=True)
         time.sleep(30)
 
 
@@ -287,6 +301,58 @@ def closure_amendment_gate(log_path: Path) -> None:
     print(json.dumps(receipt, indent=2, sort_keys=True))
 
 
+def repair_gate(log_path: Path) -> None:
+    """Authorize one repaired attempt after the recorded pre-data type failure."""
+    failure_path = RESULT_ROOT / "failure.json"
+    failure_sha = verify_immutable(failure_path)
+    failure = load_json(failure_path)
+    expected_fragment = "'str' object has no attribute 'rglob'"
+    if failure.get("target_opened") is not False or expected_fragment not in failure.get("error", ""):
+        raise RuntimeError("historical failure is not the bounded pre-data Path-type failure")
+    closure = closure_manifest()
+    write_immutable_json(RESULT_ROOT / "repair_attempt_v2.json", {
+        "schema": SCHEMA, "artifact": "repair_attempt_v2", "status": "ATTEMPT_REPAIR_CPU_NO_DATA_GATE",
+        "created_at_utc": utcnow(), "historical_failure_path": str(failure_path),
+        "historical_failure_sha256": failure_sha, "historical_nwb_opened": False,
+        "historical_cuda_initialized": False, "repair": "preserve pathlib.Path in DataModule hparams",
+        "gpu_authorization_amendment": {"allowed": [0, 1, 2, 3], "max_parallel": 2,
+                                        "gpu_2_3_authorized_by_user": True},
+        "closure": closure, "closure_sha256": closure_sha256(closure),
+    })
+    command = [str(PYTHON), "-m", "pytest", "-q",
+               "tests/test_h1_window_mask_contract_v1.py",
+               "tests/test_h1_masked_dense_aux_v1.py", "tests/test_falcon_sampler.py"]
+    environment = dict(os.environ)
+    environment.update({"PYTHONNOUSERSITE": "1", "CUDA_VISIBLE_DEVICES": ""})
+    started = time.monotonic()
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    with log_path.open("wb") as stream:
+        process = subprocess.run(command, cwd=STREAMING, env=environment,
+                                 stdout=stream, stderr=subprocess.STDOUT)
+    receipt = {
+        "schema": SCHEMA, "artifact": "cpu_gate_closure_repair_v3",
+        "status": "PASS_H1_MASKED_DENSE_AUX_V1_CPU_NO_DATA_GATE" if process.returncode == 0
+                  else "FAIL_H1_MASKED_DENSE_AUX_V1_CPU_NO_DATA_GATE",
+        "finished_at_utc": utcnow(), "command": command, "returncode": process.returncode,
+        "log_path": str(log_path), "log_sha256": sha256_file(log_path),
+        "elapsed_seconds": time.monotonic() - started, "closure": closure,
+        "closure_sha256": closure_sha256(closure),
+        "scope": {"h1_data_opened": False, "cuda_visible_devices": "",
+                  "cuda_initialized": torch.cuda.is_initialized(), "training_steps": 0},
+    }
+    gate_path, gate_sha = write_immutable_json(RESULT_ROOT / "cpu_gate_closure_v3.json", receipt)
+    if process.returncode:
+        raise SystemExit(process.returncode)
+    write_immutable_json(RESULT_ROOT / "resume_authority_v2.json", {
+        "schema": SCHEMA, "artifact": "resume_authority_v2",
+        "status": "PASS_REPAIRED_SUPERVISOR_MAY_OPEN_SOURCE_DATA",
+        "created_at_utc": utcnow(), "repair_gate_path": str(gate_path),
+        "repair_gate_sha256": gate_sha, "historical_failure_sha256": failure_sha,
+        "target_open_authorized_now": False, "gpu_2_3_user_authorized": True,
+    })
+    print(json.dumps(receipt, indent=2, sort_keys=True))
+
+
 def fit_cell(args: argparse.Namespace) -> None:
     result_dir = Path(args.result_dir).resolve()
     if result_dir.exists():
@@ -294,7 +360,7 @@ def fit_cell(args: argparse.Namespace) -> None:
     result_dir.mkdir(parents=True)
     physical_gpu = int(os.environ["H1_PHYSICAL_GPU"])
     if physical_gpu not in GPU_ALLOWLIST or os.environ.get("CUDA_VISIBLE_DEVICES") != str(physical_gpu):
-        raise RuntimeError("cell GPU environment is outside the physical 0/1 allowlist")
+        raise RuntimeError("cell GPU environment is outside the user-authorized physical 0-3 allowlist")
     closure = closure_manifest()
     write_immutable_json(result_dir / "attempt.json", {
         "schema": SCHEMA, "artifact": "cell_attempt", "cell_id": args.cell_id,
@@ -454,8 +520,8 @@ def launch_cell(spec: Mapping[str, Any], physical_gpu: int, data_root: Path,
 
 
 def run_parallel(specs: list[Mapping[str, Any]], data_root: Path,
-                 *, final_all_source: bool = False) -> list[dict[str, Any]]:
-    assignments = {gpu: specs[offset::len(GPU_ALLOWLIST)] for offset, gpu in enumerate(GPU_ALLOWLIST)}
+                 physical_gpus: tuple[int, int], *, final_all_source: bool = False) -> list[dict[str, Any]]:
+    assignments = {gpu: specs[offset::len(physical_gpus)] for offset, gpu in enumerate(physical_gpus)}
     outputs: list[dict[str, Any]] = []
     errors: list[BaseException] = []
     lock = threading.Lock()
@@ -475,7 +541,7 @@ def run_parallel(specs: list[Mapping[str, Any]], data_root: Path,
                 stop.set()
                 return
 
-    threads = [threading.Thread(target=worker, args=(gpu,), name=f"gpu-{gpu}") for gpu in GPU_ALLOWLIST]
+    threads = [threading.Thread(target=worker, args=(gpu,), name=f"gpu-{gpu}") for gpu in physical_gpus]
     for thread in threads:
         thread.start()
     for thread in threads:
@@ -573,8 +639,11 @@ def write_record(status: str, *, selection: Mapping[str, Any] | None = None,
     if error is not None:
         lines.extend(["## Failure", "", error, ""])
     lines.extend(["## GPU authorization conclusion", "",
-                  "GPU training was authorized only after the experiment-1 contract gate, this experiment's CPU/no-data gate, source data audit, and two smoke cells passed. Physical GPUs were restricted to 0 and 1 and were checked idle before each cell; GPUs 2 and 3 were forbidden. A failed source gate does not authorize outer target access.", ""])
-    return write_immutable_bytes(RESULT_ROOT / "EXPERIMENT_RECORD.md", "\n".join(lines).encode())
+                  "GPU training was authorized only after the experiment-1 contract gate, this experiment's CPU/no-data gate, source data audit, and two smoke cells passed. Following the user amendment, physical GPUs 0–3 were eligible, but the supervisor selected at most two idle devices and checked them again before every cell. A failed source gate does not authorize outer target access.", ""])
+    destination = RESULT_ROOT / "EXPERIMENT_RECORD.md"
+    if destination.exists():
+        destination = RESULT_ROOT / "EXPERIMENT_RECORD_v2.md"
+    return write_immutable_bytes(destination, "\n".join(lines).encode())
 
 
 def supervise(data_root: Path) -> None:
@@ -585,13 +654,20 @@ def supervise(data_root: Path) -> None:
         subprocess.run(["git", "merge-base", "--is-ancestor", BASE_COMMIT, "HEAD"], cwd=ROOT, check=True)
         if run_text(["git", "status", "--porcelain", "--untracked-files=no"]):
             raise RuntimeError("tracked worktree must be clean before the one-shot supervisor")
+        repaired_gate = RESULT_ROOT / "cpu_gate_closure_v3.json"
         amended_gate = RESULT_ROOT / "cpu_gate_closure_v2.json"
-        cpu_gate_path = amended_gate if amended_gate.exists() else RESULT_ROOT / "cpu_gate.json"
+        cpu_gate_path = (repaired_gate if repaired_gate.exists() else amended_gate
+                         if amended_gate.exists() else RESULT_ROOT / "cpu_gate.json")
         verify_immutable(RESULT_ROOT / "attempt.json")
         verify_immutable(cpu_gate_path)
         cpu_gate = load_json(cpu_gate_path)
         if cpu_gate["status"] != "PASS_H1_MASKED_DENSE_AUX_V1_CPU_NO_DATA_GATE":
             raise RuntimeError("CPU/no-data gate is not PASS")
+        if (RESULT_ROOT / "failure.json").exists():
+            resume_path = RESULT_ROOT / "resume_authority_v2.json"
+            verify_immutable(resume_path)
+            if load_json(resume_path).get("status") != "PASS_REPAIRED_SUPERVISOR_MAY_OPEN_SOURCE_DATA":
+                raise RuntimeError("pre-data repair does not have additive resume authority")
         closure = closure_manifest()
         if closure_sha256(closure) != cpu_gate["closure_sha256"]:
             raise RuntimeError("execution closure changed after CPU/no-data gate")
@@ -601,10 +677,13 @@ def supervise(data_root: Path) -> None:
         for index in GPU_ALLOWLIST:
             if index not in initial_gpu_rows:
                 raise RuntimeError(f"allowed physical GPU missing: {index}")
+        active_gpus = wait_for_two_idle_gpus()
         write_immutable_json(RESULT_ROOT / "gpu_allocation.json", {
             "schema": SCHEMA, "artifact": "gpu_allocation", "created_at_utc": utcnow(),
-            "allowlist": list(GPU_ALLOWLIST), "initial_rows": {str(i): initial_gpu_rows[i] for i in GPU_ALLOWLIST},
-            "gpu_2_3_forbidden": True, "idle_rule": "memory_used_mib<1024 and utilization_percent<10",
+            "allowlist": list(GPU_ALLOWLIST), "selected_physical_gpus": list(active_gpus),
+            "max_parallel_cells": MAX_PARALLEL_GPUS,
+            "initial_rows": {str(i): initial_gpu_rows[i] for i in GPU_ALLOWLIST},
+            "gpu_2_3_user_authorized": True, "idle_rule": "memory_used_mib<1024 and utilization_percent<10",
             "user_local_gpu_override_authorized": True,
         })
 
@@ -612,7 +691,7 @@ def supervise(data_root: Path) -> None:
             {"cell_id": "smoke_t0", "validation_date": SOURCE_DATES[0], "lambda": 0.0},
             {"cell_id": "smoke_lambda_1", "validation_date": SOURCE_DATES[0], "lambda": 1.0},
         ]
-        smoke = [launch_cell(spec, 0, data_root, smoke=True) for spec in smoke_specs]
+        smoke = [launch_cell(spec, active_gpus[0], data_root, smoke=True) for spec in smoke_specs]
         if len({row["batch_sha256"] for row in smoke}) != 1:
             raise RuntimeError("T0/lambda1 smoke batch digest mismatch")
         if len({row["initial_net_state_sha256"] for row in smoke}) != 1:
@@ -624,7 +703,7 @@ def supervise(data_root: Path) -> None:
             "created_at_utc": utcnow(), "cells": smoke,
         })
 
-        source_receipts = run_parallel(list(source_cell_specs()), data_root)
+        source_receipts = run_parallel(list(source_cell_specs()), data_root, active_gpus)
         for date in SOURCE_DATES:
             matched = [row for row in source_receipts if row["validation_date"] == date]
             if len(matched) != 4 or len({row["batch_sha256"] for row in matched}) != 1:
@@ -660,13 +739,13 @@ def supervise(data_root: Path) -> None:
             {"cell_id": "final_all_source_t0", "lambda": 0.0, "validation_date": None},
             {"cell_id": f"final_all_source_lambda_{selected_lam:g}", "lambda": selected_lam, "validation_date": None},
         ]
-        final_receipts = run_parallel(final_specs, data_root, final_all_source=True)
+        final_receipts = run_parallel(final_specs, data_root, active_gpus, final_all_source=True)
         if len({row["batch_sha256"] for row in final_receipts}) != 1:
             raise RuntimeError("final paired fits do not share first batch")
         if len({row["initial_net_state_sha256"] for row in final_receipts}) != 1:
             raise RuntimeError("final paired fits do not share initialization")
-        wait_for_gpu(0)
-        torch.cuda.set_device(0)
+        wait_for_gpu(active_gpus[0])
+        torch.cuda.set_device(active_gpus[0])
         target_opened = True
         outer = evaluate_outer(data_root, final_receipts, selected_lam)
         status = outer["gate"]["verdict"]
@@ -685,9 +764,12 @@ def supervise(data_root: Path) -> None:
             "formal_heldout_opened": False, "error_type": type(error).__name__,
             "error": str(error), "traceback": traceback.format_exc(),
         }
-        if not (RESULT_ROOT / "failure.json").exists():
-            write_immutable_json(RESULT_ROOT / "failure.json", failure)
-        if not (RESULT_ROOT / "EXPERIMENT_RECORD.md").exists():
+        failure_path = RESULT_ROOT / "failure.json"
+        if failure_path.exists():
+            failure_path = RESULT_ROOT / "failure_v2.json"
+        if not failure_path.exists():
+            write_immutable_json(failure_path, failure)
+        if not (RESULT_ROOT / "EXPERIMENT_RECORD_v2.md").exists():
             write_record(failure["status"], error=f"`{type(error).__name__}: {error}`")
         raise
 
@@ -699,6 +781,8 @@ def main() -> None:
     preflight_parser.add_argument("--log", type=Path, required=True)
     amendment_parser = subparsers.add_parser("closure-amendment-gate")
     amendment_parser.add_argument("--log", type=Path, required=True)
+    repair_parser = subparsers.add_parser("repair-gate")
+    repair_parser.add_argument("--log", type=Path, required=True)
     supervisor_parser = subparsers.add_parser("supervise")
     supervisor_parser.add_argument("--data-root", type=Path, default=DEFAULT_DATA)
     fit_parser = subparsers.add_parser("fit")
@@ -714,6 +798,8 @@ def main() -> None:
         preflight(args.log.resolve())
     elif args.command == "closure-amendment-gate":
         closure_amendment_gate(args.log.resolve())
+    elif args.command == "repair-gate":
+        repair_gate(args.log.resolve())
     elif args.command == "fit":
         fit_cell(args)
     else:
