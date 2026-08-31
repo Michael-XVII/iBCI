@@ -1,0 +1,62 @@
+# Additive work-order binding for H1 masked dense-auxiliary experiment V1.
+experiment: h1_masked_dense_aux_v1
+base_commit: d1c66774a8b1e081972b72e9d4f5a89829b4c700
+seed: 42
+outer_date: "19250101"
+source_dates: ["19250108", "19250113", "19250115", "19250119", "19250120"]
+dense_aux_lambdas: [0.0, 0.1, 0.3, 1.0]
+data:
+  window_size: 700
+  calibration_n_trials: 2
+  batch_size: 32
+  random_calibration: true
+  smooth_calibration: false
+  max_trial_length: 1024
+  standardize_covariates: false
+  use_intertrials: true
+  use_calib_intertrials: false
+  trial_feature_type: raw
+  remove_still_times: false
+  remove_calib_still_times: false
+  use_calib_active_segments: true
+  calib_n_active_segments: 1
+  interpolate_trials: true
+  interpolate_trials_kind: cubic
+  pad_value: -1.0
+model:
+  component: src.models.components.spint.SpintModel
+  model_dim: 1024
+  num_covariates: 7
+  num_heads: 64
+  num_layers: 1
+  num_id_layers: 3
+  use_learnable_id: true
+  learnable_id_type: mlp
+  learnable_rep: true
+  dropout_rate: 0.0
+  dynamic_dropout: true
+  dynamic_dropout_low: 0.0
+  dynamic_dropout_high: 1.0
+  tf_drop_rate: 0.1
+  readin_layer_type: mlp
+optimization:
+  optimizer: Adam
+  learning_rate: 5.0e-5
+  weight_decay: 0.0
+  precision: 32-true
+  min_epochs: 50
+  max_epochs: 50
+  checkpoint_epoch_zero_based: 49
+  early_stopping: false
+source_gate:
+  mean_delta_r2_min: 0.01
+  positive_dates_min: 4
+  worst_date_delta_r2_min: -0.02
+outer_gate:
+  mean_delta_r2_min: 0.01
+  positive_recordings_min: 2
+execution:
+  physical_gpu_allowlist: [0, 1]
+  max_parallel_cells: 2
+  retry_failed_cells: false
+  formal_heldout_forbidden: true
