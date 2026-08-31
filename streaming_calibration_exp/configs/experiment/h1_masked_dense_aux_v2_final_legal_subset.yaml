@@ -1,0 +1,31 @@
+experiment: h1_masked_dense_aux_v2_final_legal_subset
+ancestor_v1_terminal_commit: b1dfc9d
+seed: 42
+outer_date: "19250101"
+source_dates: ["19250108", "19250113", "19250115", "19250119", "19250120"]
+dense_aux_lambdas: [0.0, 0.1, 0.3, 1.0]
+training_population: final_eval_true_and_nonstill
+validation_population: unchanged_legacy_eval_mask_windows
+attrition_gate:
+  minimum_recording_retention_fraction: 0.25
+  every_original_trial_retains_a_window: true
+  every_retained_final_is_legal: true
+training:
+  window_size: 700
+  calibration_n_trials: 2
+  batch_size: 32
+  optimizer: Adam
+  learning_rate: 5.0e-5
+  weight_decay: 0.0
+  seed: 42
+  precision: 32-true
+  epochs: 50
+  terminal_epoch_zero_based: 49
+  early_stopping: false
+  held_source_r2_every_epoch: true
+execution:
+  authorized_physical_gpus: [0, 1, 2, 3]
+  max_parallel_cells: 2
+  failed_cell_retry: false
+  target_before_source_gate: false
+  formal_heldout_forbidden: true
