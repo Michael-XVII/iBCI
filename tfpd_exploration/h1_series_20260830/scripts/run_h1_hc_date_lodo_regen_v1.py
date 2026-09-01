@@ -34,10 +34,11 @@ from src.h1_m4_cce_contract import CONFIRMATORY_DATES, sha256_file  # noqa: E402
 
 
 DEFAULT_DATA_ROOT = Path("/data/ial-dataset/ial-mohd/000954")
-DEFAULT_RESULT_ROOT = REPO_ROOT / "tfpd_exploration/h1_series_20260830/results/h1_hc_date_lodo_regen_v1_detached_a1"
-DEFAULT_LOG_ROOT = REPO_ROOT / "logs/h1_hc_date_lodo_regen_v1_detached_a1"
+DEFAULT_RESULT_ROOT = REPO_ROOT / "tfpd_exploration/h1_series_20260830/results/h1_hc_date_lodo_regen_v1_detached_a2"
+DEFAULT_LOG_ROOT = REPO_ROOT / "logs/h1_hc_date_lodo_regen_v1_detached_a2"
 WORK_ORDER = REPO_ROOT / "tfpd_exploration/h1_series_20260830/H1_HC_DATE_LODO_REGEN_V1_WORK_ORDER.md"
 AMENDMENT = REPO_ROOT / "tfpd_exploration/h1_series_20260830/H1_HC_DATE_LODO_REGEN_V1_AMENDMENT_1.md"
+AMENDMENT_2 = REPO_ROOT / "tfpd_exploration/h1_series_20260830/H1_HC_DATE_LODO_REGEN_V1_AMENDMENT_2.md"
 TEST_FILE = SPINT_ROOT / "tests/test_h1_hc_date_lodo_regen_v1.py"
 
 
@@ -45,6 +46,7 @@ def _closure() -> dict[str, str]:
     paths = (
         WORK_ORDER,
         AMENDMENT,
+        AMENDMENT_2,
         Path(__file__).resolve(),
         SPINT_ROOT / "src/h1_hc_date_lodo_regen_v1.py",
         TEST_FILE,
@@ -133,7 +135,7 @@ def _cpu_gate(result_root: Path) -> None:
         raise RuntimeError(f"CPU gate failed; see {result_root / 'cpu_gate.log'}")
 
 
-def _gpu_row(index: int) -> dict[str, Any]:
+def _gpu_row(index: int, *, require_idle: bool = True) -> dict[str, Any]:
     output = subprocess.check_output(
         [
             "nvidia-smi",
@@ -154,7 +156,7 @@ def _gpu_row(index: int) -> dict[str, Any]:
         "memory_used_mib": int(fields[3]),
         "utilization_percent": int(fields[4]),
     }
-    if row["memory_used_mib"] >= 1024 or row["utilization_percent"] > 5:
+    if require_idle and (row["memory_used_mib"] >= 1024 or row["utilization_percent"] > 5):
         raise RuntimeError(f"GPU {index} is not idle: {row}")
     return row
 
@@ -198,7 +200,7 @@ def _run_smoke(args: argparse.Namespace) -> None:
     if source.get("target_bytes_read") != 0:
         raise RuntimeError("source authority records target access")
     gpu = _parse_gpus(args.gpus)[0]
-    profile = _gpu_row(gpu)
+    profile = _gpu_row(gpu, require_idle=not args.allow_authorized_busy_gpus)
     command = _cell_command(args, CONFIRMATORY_DATES[0], gpu, smoke=True)
     args.log_root.mkdir(parents=True, exist_ok=True)
     log_path = args.log_root.resolve() / "smoke.log"
@@ -226,7 +228,7 @@ def _run_training(args: argparse.Namespace) -> None:
         raise RuntimeError("training requires a source-only PASS smoke")
     gpus = _parse_gpus(args.gpus)
     for gpu in gpus:
-        _gpu_row(gpu)
+        _gpu_row(gpu, require_idle=not args.allow_authorized_busy_gpus)
     args.log_root.mkdir(parents=True, exist_ok=True)
     pending = list(CONFIRMATORY_DATES)
     running: dict[str, tuple[subprocess.Popen[str], int, Any, Path]] = {}
@@ -281,6 +283,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--result-root", type=Path, default=DEFAULT_RESULT_ROOT)
     parser.add_argument("--log-root", type=Path, default=DEFAULT_LOG_ROOT)
     parser.add_argument("--gpus", help="one or two comma-separated physical GPU indices")
+    parser.add_argument("--allow-authorized-busy-gpus", action="store_true")
     parser.add_argument("--outer-date", choices=CONFIRMATORY_DATES, help=argparse.SUPPRESS)
     parser.add_argument("--physical-gpu", type=int, help=argparse.SUPPRESS)
     parser.add_argument("--smoke-cell", action="store_true", help=argparse.SUPPRESS)
