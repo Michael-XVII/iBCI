@@ -1,0 +1,12 @@
+{
+  "artifact": "cell_attempt",
+  "cell_id": "19250113",
+  "created_at_utc": "2026-09-01T03:42:54.606596+00:00",
+  "outer_date": "19250113",
+  "physical_gpu": 1,
+  "schema": "h1_hc_date_lodo_regen_v1",
+  "smoke": false,
+  "target_bytes_read": 0,
+  "target_recordings_opened": 0,
+  "warm_start": false
+}

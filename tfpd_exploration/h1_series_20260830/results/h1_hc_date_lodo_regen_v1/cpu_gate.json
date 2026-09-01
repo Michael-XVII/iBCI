@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/home/ial-mohd/workspace/envs/spint/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "/home/ial-mohd/workspace/iBCI/SPINT-main/tests/test_h1_hc_date_lodo_regen_v1.py"
+  ],
+  "cuda_visible_devices": "",
+  "data_files_opened": 0,
+  "log_sha256": "d55a920d019b0092710500e41c2f0d56a43ea2f99f143612d95ca2c45bb99360",
+  "nwb_files_opened": 0,
+  "returncode": 0,
+  "schema": "h1_hc_date_lodo_regen_v1_cpu_gate",
+  "status": "PASS_H1_HC_DATE_LODO_REGEN_V1_CPU_GATE",
+  "target_bytes_read": 0,
+  "target_recordings_opened": 0
+}

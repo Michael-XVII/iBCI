@@ -1,0 +1,13 @@
+{
+  "batch_order_file_sha256": "566fb872f47c29f60c68897595612d7cb9fc6583c85e027b5c210bc632faa140",
+  "batch_order_tensor_sha256": "92e25d16b39ba641884705989d6f214aed8819664d183ca09d130d16c1af9ab1",
+  "batch_size": 32,
+  "batches_per_epoch": 3422,
+  "epochs": 50,
+  "outer_date": "19250113",
+  "schedule_file_sha256": "3a481d88743c2bbeba22889f757f4b067adcfdff558eb53d3ea6d5efde59000f",
+  "schedule_tensor_sha256": "b45d44247f66d0b81a6b11c268f16973e16f7f30432ea7a6ce3b42a7e26c6403",
+  "schema": "h1_hc_date_lodo_regen_v1_schedule",
+  "steps_total": 171100,
+  "window_indices_sha256": "87af546612de54e8237916b107597120871c5650359ab8907825c9017e8976bb"
+}

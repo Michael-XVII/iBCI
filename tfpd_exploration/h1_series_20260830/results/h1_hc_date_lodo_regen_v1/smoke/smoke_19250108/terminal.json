@@ -1,0 +1,32 @@
+{
+  "adam_state_finite": true,
+  "all_gradients_finite": true,
+  "all_losses_finite": true,
+  "cell_id": "smoke_19250108",
+  "code_closure_sha256": "7dca610ca9b1356ff3dc56030dd5e4e268ce7804e26e174190bfce65cff3d091",
+  "config_sha256": "d9fd74381bbc9769a116f47657f5762225ef56258714fe9de20f0498e0496f4f",
+  "elapsed_seconds": 8.158462213003077,
+  "epoch_zero_based": 0,
+  "experiment_attempt_sha256": "5cb8e506fc9ace5443b8704cccad2ee336e199f00b8c2fdeff4042ce126de690",
+  "finished_at_utc": "2026-09-01T03:20:11.779228+00:00",
+  "global_step": 20,
+  "gpu": {
+    "memory_total_bytes": 33671348224,
+    "name": "NVIDIA GeForce RTX 5090",
+    "uuid": "GPU-4939047f-448c-ca8f-1297-84432dc27d0b",
+    "visible_index": 0
+  },
+  "initial_state_sha256": "bc6dc8a0543c760811f770206c7ee22ae35eaf970c6dad0ec259a84172e4d04b",
+  "loss_first": 0.00019419516320340335,
+  "loss_last": 0.0008308615069836378,
+  "outer_date": "19250108",
+  "physical_gpu": 0,
+  "schema": "h1_hc_date_lodo_regen_v1",
+  "smoke": true,
+  "source_authority_sha256": "8cdecf55d406ebf1175009140b44a1e5cf7d515a8d054c2416695834f4a9fd2b",
+  "status": "PASS_H1_HC_DATE_LODO_REGEN_V1_GPU_SMOKE",
+  "target_bytes_read": 0,
+  "target_optimizer_steps": 0,
+  "target_recordings_opened": 0,
+  "terminal_state_sha256": "280fa1f2e54352c45d1b7d1f4caeedc1c2fd51b163631ffcbd62fb6ff89cdb47"
+}

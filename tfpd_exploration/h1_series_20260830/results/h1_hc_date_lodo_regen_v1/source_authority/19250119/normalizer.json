@@ -1,0 +1,8 @@
+{
+  "cache_sha256": "615b2ac1f992c8027f9a935b60f2ef73b4890f27ec5e02f0df5bc7f1a9303a90",
+  "floor": 1e-12,
+  "formula": "s_src=sqrt(mean(C_src_raw**2)); C_norm=C_raw/max(s_src,1e-12)",
+  "normalized_tensor_sha256": "c061e4404ab7ea2bc8fa9665e4b836dfbcb9f22a6cbdd7b965b8aba76e250e19",
+  "s_src": 5.931212349866121e-06,
+  "schema": "h1_hc_date_lodo_regen_v1_normalizer"
+}

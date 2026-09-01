@@ -1,0 +1,77 @@
+{
+  "carrier_cache_sha256": "c0ee1c779cab2250a1d7083e6e13e57c6306a37fa77eda5b3d602b50ae77b742",
+  "elapsed_seconds": 10.606911691000278,
+  "normalizer_sha256": "cfe5d7c8f9307ecb2e0962001272e9c37f5309809b63521182df9c3933b6b1ee",
+  "outer_date": "19250108",
+  "plan_sha256": "3f525e5f2b2fb59aadebe8efc4375671d0737a2995a399cea44b381beaa20f1e",
+  "schedule_sha256": "74af04fe64037dd1ab0d484e73bea1c4f1b7ddbafb48bf7e32ac03951759da45",
+  "schema": "h1_hc_date_lodo_regen_v1_date_source_authority",
+  "selection_sha256": "5a196d153da08004ffed08a8bcefc1e7da31248824e2e21a1a692a7ef7591731",
+  "source_files": [
+    {
+      "session": "ses-19250101T111740",
+      "sha256": "f8af652a31228f08b26ff8a7ecfd2a6bd05a345e368da8c98be649229f80adb2"
+    },
+    {
+      "session": "ses-19250101T112404",
+      "sha256": "b946c4cf49f00c2ea8f0051481765ed090294e3e1e5a035cc5716ad93aa052b2"
+    },
+    {
+      "session": "ses-19250113T120811",
+      "sha256": "477410e16b8c1ccfcb3caba9403169ec21ab8bee35c4846376bae781003c5f92"
+    },
+    {
+      "session": "ses-19250113T121303",
+      "sha256": "29d01954747e028dc8b91f82ece28ef11b95a1a33ab3a57e55eb5f967706419f"
+    },
+    {
+      "session": "ses-19250115T110633",
+      "sha256": "ed0760aaa946e42f8ad812d3aef7f5faf66b21b5f2804aa77574c7f7ee853451"
+    },
+    {
+      "session": "ses-19250115T111328",
+      "sha256": "022956ab01c8cb645e19327ba3457f2a065b30dd402bb4541e51c684d6a46e20"
+    },
+    {
+      "session": "ses-19250119T113543",
+      "sha256": "f176ad4e1221843a94b67f87e0676bbcb83b7b1f5e49a58b2ae1d85b30e445d6"
+    },
+    {
+      "session": "ses-19250119T114045",
+      "sha256": "a9548924522750f6217409a9797b37389d22c9a0fe3ef145b87343192ff7d6ac"
+    },
+    {
+      "session": "ses-19250120T115044",
+      "sha256": "34e0f0d229942516aec6148d2deaf0bbeabda3d10b86cd889fedf0563366c084"
+    },
+    {
+      "session": "ses-19250120T115537",
+      "sha256": "df0ba7830d01e82b716d7a1eaac0b0400ebc84e8cbf0c9e2e047437a31c43e70"
+    }
+  ],
+  "source_sessions": [
+    "ses-19250101T111740",
+    "ses-19250101T112404",
+    "ses-19250113T120811",
+    "ses-19250113T121303",
+    "ses-19250115T110633",
+    "ses-19250115T111328",
+    "ses-19250119T113543",
+    "ses-19250119T114045",
+    "ses-19250120T115044",
+    "ses-19250120T115537"
+  ],
+  "status": "PASS_H1_HC_DATE_LODO_REGEN_V1_SOURCE_AUTHORITY",
+  "target_bytes_read": 0,
+  "target_filenames_indexed_only": [
+    "sub-HumanPitt-held-in-calib_ses-19250108T110520.nwb",
+    "sub-HumanPitt-held-in-calib_ses-19250108T111022.nwb",
+    "sub-HumanPitt-held-in-calib_ses-19250108T111455.nwb"
+  ],
+  "target_recordings_opened": 0,
+  "target_sessions_indexed": [
+    "ses-19250108T110520",
+    "ses-19250108T111022",
+    "ses-19250108T111455"
+  ]
+}

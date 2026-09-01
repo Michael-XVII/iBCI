@@ -1,0 +1,9 @@
+{
+  "artifact": "detached_training_failure",
+  "error": "GPU 0 is not idle: {'physical_index': 0, 'uuid': 'GPU-4939047f-448c-ca8f-1297-84432dc27d0b', 'name': 'NVIDIA GeForce RTX 5090', 'memory_used_mib': 3489, 'utilization_percent': 15}",
+  "error_type": "RuntimeError",
+  "schema": "h1_hc_date_lodo_regen_v1",
+  "status": "FAIL_IMMUTABLE_NO_AUTOMATIC_RETRY",
+  "target_bytes_read": 0,
+  "target_recordings_opened": 0
+}

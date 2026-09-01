@@ -1,0 +1,19 @@
+{
+  "affected_outer_dates": [
+    "19250108",
+    "19250113"
+  ],
+  "artifact": "training_failure",
+  "automatic_retry": false,
+  "reason": "operator-stopped Codex-PTY-managed cells to migrate to user-requested detached supervisor",
+  "schema": "h1_hc_date_lodo_regen_v1",
+  "status": "FAIL_IMMUTABLE_NO_AUTOMATIC_RETRY",
+  "successor_requires_additive_amendment": true,
+  "target_bytes_read": 0,
+  "target_recordings_opened": 0,
+  "unlaunched_outer_dates": [
+    "19250115",
+    "19250119",
+    "19250120"
+  ]
+}

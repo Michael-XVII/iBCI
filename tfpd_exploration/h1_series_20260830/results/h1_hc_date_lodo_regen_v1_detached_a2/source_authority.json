@@ -1,0 +1,41 @@
+{
+  "created_at_utc": "2026-09-01T03:41:56.124434+00:00",
+  "date_order": [
+    "19250108",
+    "19250113",
+    "19250115",
+    "19250119",
+    "19250120"
+  ],
+  "dates": [
+    {
+      "outer_date": "19250108",
+      "relative": "source_authority/19250108/authority.json",
+      "sha256": "c740fcf56980b4d308d2030ad0b606a7a8d282abee70aaca4f56e17eaf7edb93"
+    },
+    {
+      "outer_date": "19250113",
+      "relative": "source_authority/19250113/authority.json",
+      "sha256": "6e12eb63a93c4de9e548548d01d2ff85f26900bda7dee63f6fea4188680f2b7d"
+    },
+    {
+      "outer_date": "19250115",
+      "relative": "source_authority/19250115/authority.json",
+      "sha256": "5949d3fb1c10880ca1db69a983f332afd0f1fc340531d5836ae22f566a3e27b5"
+    },
+    {
+      "outer_date": "19250119",
+      "relative": "source_authority/19250119/authority.json",
+      "sha256": "fba7d5054104aded142875cacda1cf2636b918dc9c340edd099cf7b3cae6cde4"
+    },
+    {
+      "outer_date": "19250120",
+      "relative": "source_authority/19250120/authority.json",
+      "sha256": "fc4d6a6ae756aea9247018bc1d9368a0cc28d4d062eaa224aadc16039fab06f8"
+    }
+  ],
+  "schema": "h1_hc_date_lodo_regen_v1_source_authority",
+  "status": "PASS_H1_HC_DATE_LODO_REGEN_V1_SOURCE_AUTHORITY",
+  "target_bytes_read": 0,
+  "target_recordings_opened": 0
+}
