@@ -1,0 +1,87 @@
+{
+  "array_sha256": {
+    "output_bins_0": "f3e85ef45aa2ed8af9cbbf2b46573d3013802e5c532847b2684e20f895a6db5f",
+    "output_bins_1": "bc1f8abda9ca84caaabab541fc9594cb4c43b441c20464129ad2b24e9529dc60",
+    "raw_0": "78b5ca623a5c4819ed2e159f66eb558f94dfce2b94ace9e3847b3a0e46c92344",
+    "raw_1": "de3906d237e56f39365b02c08d05d4f3008a275e54b4c96d42804063dc7894e3",
+    "score_mask_0": "7d8ca2a994142f0a360f49ce521bfee0900e770b9e576dc1d820f2c5c4365f19",
+    "score_mask_1": "7898e693412a80d3dabe3f3117f654ff35767fe71a4640a7c1dc119c173d28be",
+    "target_0": "36e369462f5a08528c21a40878b0cff2bcefacaa637438734055e46b0deb8033",
+    "target_1": "7b2892f653aa69d2aa9192f22e41c5613d92300617f45871bc900f7c934d1eb1"
+  },
+  "array_shape": {
+    "output_bins_0": [
+      8132
+    ],
+    "output_bins_1": [
+      7879
+    ],
+    "raw_0": [
+      8132,
+      7
+    ],
+    "raw_1": [
+      7879,
+      7
+    ],
+    "score_mask_0": [
+      8132
+    ],
+    "score_mask_1": [
+      7879
+    ],
+    "target_0": [
+      8132,
+      7
+    ],
+    "target_1": [
+      7879,
+      7
+    ]
+  },
+  "arrays_file": "prediction_cache.npz",
+  "arrays_file_sha256": "90714611b6de16c3781607ede0bd1f4786f2cb25669c7b48194e2e29a7f6405a",
+  "continuous_post_m4": true,
+  "outer_date": "19250120",
+  "reset": "recording_boundary_only",
+  "schema": "h1_causal_output_ema_v1_prediction_cache",
+  "score_mask_applied_after_filtering": true,
+  "sessions": [
+    "ses-19250120T115044",
+    "ses-19250120T115537"
+  ],
+  "support": {
+    "ses-19250120T115044": {
+      "continuous_outputs": 8132,
+      "fifth_trial": 5.0,
+      "first_output_bin": 3946,
+      "identity_sha256": "bd238ff8165e4e94ec454f39ae0c61bf3a355a3987266d48111ff418a05f2ee5",
+      "last_output_bin": 12077,
+      "normalized_carrier_sha256": "d0f002927e8ac0be443a4e0b4dbdcb5ae058e1da54501eb6e6ebd73c9a5c12b0",
+      "scored_outputs": 7889,
+      "support_boundary_bin": 3247,
+      "support_trials": [
+        1.0,
+        2.0,
+        3.0,
+        4.0
+      ]
+    },
+    "ses-19250120T115537": {
+      "continuous_outputs": 7879,
+      "fifth_trial": 5.0,
+      "first_output_bin": 3546,
+      "identity_sha256": "c37611af7db61665d105970bf284edc07be19a84317e06291e0a24c20f7ab2f2",
+      "last_output_bin": 11424,
+      "normalized_carrier_sha256": "e3320f7458dd2af8e3b36d9b92fdb05ba7c6b4be8ce8b667cd002232673eb366",
+      "scored_outputs": 7639,
+      "support_boundary_bin": 2847,
+      "support_trials": [
+        1.0,
+        2.0,
+        3.0,
+        4.0
+      ]
+    }
+  }
+}

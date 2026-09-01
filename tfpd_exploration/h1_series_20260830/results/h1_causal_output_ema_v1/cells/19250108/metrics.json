@@ -1,0 +1,125 @@
+{
+  "alpha_metrics": {
+    "0.0": {
+      "alpha": 0.0,
+      "delta_equal_recording_mean_r2_vs_raw": 0.0,
+      "equal_recording_mean_r2": 0.49733844021694923,
+      "pooled_r2": 0.49197255052250166
+    },
+    "0.3": {
+      "alpha": 0.3,
+      "delta_equal_recording_mean_r2_vs_raw": 0.0035421615058335854,
+      "equal_recording_mean_r2": 0.5008806017227828,
+      "pooled_r2": 0.4949393560224632
+    },
+    "0.5": {
+      "alpha": 0.5,
+      "delta_equal_recording_mean_r2_vs_raw": 0.0038858546885152667,
+      "equal_recording_mean_r2": 0.5012242949054645,
+      "pooled_r2": 0.49457554935510795
+    },
+    "0.7": {
+      "alpha": 0.7,
+      "delta_equal_recording_mean_r2_vs_raw": -0.0014841533893222292,
+      "equal_recording_mean_r2": 0.495854286827627,
+      "pooled_r2": 0.48790590789701105
+    },
+    "0.9": {
+      "alpha": 0.9,
+      "delta_equal_recording_mean_r2_vs_raw": -0.06998935031318332,
+      "equal_recording_mean_r2": 0.4273490899037659,
+      "pooled_r2": 0.4174874607346105
+    }
+  },
+  "alpha_order": [
+    0.0,
+    0.3,
+    0.5,
+    0.7,
+    0.9
+  ],
+  "float64_ema_and_r2": true,
+  "governing_alpha": 0.7,
+  "outer_date": "19250108",
+  "per_recording": {
+    "ses-19250108T110520": {
+      "continuous_outputs": 8507,
+      "delta_r2_by_alpha": {
+        "0.0": 0.0,
+        "0.3": 0.0023354701647733123,
+        "0.5": 0.001176847712745177,
+        "0.7": -0.0069676331753656395,
+        "0.9": -0.07958098686988957
+      },
+      "first_output_bin": 3726,
+      "last_output_bin": 12232,
+      "output_bins_sha256": "85c201e6055a50b12e2e490509a770c2b7da99fddf96142c68be6d9bbe67544c",
+      "r2_by_alpha": {
+        "0.0": 0.4847128787008427,
+        "0.3": 0.487048348865616,
+        "0.5": 0.48588972641358785,
+        "0.7": 0.47774524552547704,
+        "0.9": 0.4051318918309531
+      },
+      "raw_prediction_sha256": "21fa1ced2d446b0ec546e6337d53f971e92e9190560f25d3125c41e839734313",
+      "score_mask_sha256": "a2703de2f60a470a778e7eb4a9312d451e1dc526e79c64ebc2de4550fb747587",
+      "scored_outputs": 8330,
+      "target_output_sha256": "1ed612be463362af42092ca4e9187b51c05fe56dfbc19139bbc35af9d8e4bbeb"
+    },
+    "ses-19250108T111022": {
+      "continuous_outputs": 2533,
+      "delta_r2_by_alpha": {
+        "0.0": 0.0,
+        "0.3": 0.004238406780611714,
+        "0.5": 0.004699359699299688,
+        "0.7": -0.0008416105525742568,
+        "0.9": -0.06644889685108857
+      },
+      "first_output_bin": 4253,
+      "last_output_bin": 6785,
+      "output_bins_sha256": "ef2b50eb1bd8e1dd22e6a0c5031224a2c05d08d0854443fd8b6e1f4fea9cd61f",
+      "r2_by_alpha": {
+        "0.0": 0.46656833541739473,
+        "0.3": 0.47080674219800644,
+        "0.5": 0.4712676951166944,
+        "0.7": 0.4657267248648205,
+        "0.9": 0.40011943856630616
+      },
+      "raw_prediction_sha256": "39de6ccd250542dea1d32ea0376264076d140a3e2d16c68a1b137366f80e0dde",
+      "score_mask_sha256": "29c90161d920f8f6956cac4cd52aa448ed7bc429b36c26719f8e949263369204",
+      "scored_outputs": 2508,
+      "target_output_sha256": "fb48deeb802e28679b465b99dc3374576eb7e18c229642dfb669e95ee35aa624"
+    },
+    "ses-19250108T111455": {
+      "continuous_outputs": 2350,
+      "delta_r2_by_alpha": {
+        "0.0": 0.0,
+        "0.3": 0.004052607572115674,
+        "0.5": 0.005781356653500991,
+        "0.7": 0.0033567835599730422,
+        "0.9": -0.06393816721857204
+      },
+      "first_output_bin": 4155,
+      "last_output_bin": 6504,
+      "output_bins_sha256": "90dc173ca6d6a922b9f16859faf2e987a187a619eeb7c027ef115bbde049b4a0",
+      "r2_by_alpha": {
+        "0.0": 0.5407341065326103,
+        "0.3": 0.544786714104726,
+        "0.5": 0.5465154631861113,
+        "0.7": 0.5440908900925834,
+        "0.9": 0.4767959393140383
+      },
+      "raw_prediction_sha256": "d73b4ac17be694d368073d3880a7eb94f16dc5f352a90d17d98a5fb953a8c8fa",
+      "score_mask_sha256": "a4d4a0a7b547708d1bd96df57d0f4dd492cfb99b0f2df55b2cc6b04d1ff36390",
+      "scored_outputs": 2269,
+      "target_output_sha256": "8ce13fc18c46168d18d07f21307b72d54b7c87da14f7adb44a741ded29dd7f0c"
+    }
+  },
+  "schema": "h1_causal_output_ema_v1_metrics",
+  "selection_performed": false,
+  "sessions": [
+    "ses-19250108T110520",
+    "ses-19250108T111022",
+    "ses-19250108T111455"
+  ]
+}

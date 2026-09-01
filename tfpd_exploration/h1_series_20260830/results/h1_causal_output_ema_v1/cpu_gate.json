@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/home/ial-mohd/workspace/envs/spint/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "/home/ial-mohd/workspace/iBCI/SPINT-main/tests/test_h1_causal_output_ema_v1.py"
+  ],
+  "cuda_visible_devices": "",
+  "data_files_opened": 0,
+  "log_sha256": "2537b34a8afaefacb1db1bb0fca4f8f51dff0c6694fbaf8f8d27eddb3b147c04",
+  "nwb_files_opened": 0,
+  "returncode": 0,
+  "schema": "h1_causal_output_ema_v1_cpu_gate",
+  "status": "PASS_H1_CAUSAL_OUTPUT_EMA_V1_CPU_GATE",
+  "target_bytes_read": 0,
+  "target_recordings_opened": 0
+}

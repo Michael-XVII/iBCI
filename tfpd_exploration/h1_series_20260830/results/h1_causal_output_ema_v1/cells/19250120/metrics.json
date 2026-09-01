@@ -1,0 +1,100 @@
+{
+  "alpha_metrics": {
+    "0.0": {
+      "alpha": 0.0,
+      "delta_equal_recording_mean_r2_vs_raw": 0.0,
+      "equal_recording_mean_r2": 0.4594612748654831,
+      "pooled_r2": 0.45986374275467623
+    },
+    "0.3": {
+      "alpha": 0.3,
+      "delta_equal_recording_mean_r2_vs_raw": 0.005693747878589783,
+      "equal_recording_mean_r2": 0.4651550227440729,
+      "pooled_r2": 0.46550449538877614
+    },
+    "0.5": {
+      "alpha": 0.5,
+      "delta_equal_recording_mean_r2_vs_raw": 0.009010361508724307,
+      "equal_recording_mean_r2": 0.4684716363742074,
+      "pooled_r2": 0.46876070957765636
+    },
+    "0.7": {
+      "alpha": 0.7,
+      "delta_equal_recording_mean_r2_vs_raw": 0.010772153615657754,
+      "equal_recording_mean_r2": 0.47023342848114086,
+      "pooled_r2": 0.47039775438668086
+    },
+    "0.9": {
+      "alpha": 0.9,
+      "delta_equal_recording_mean_r2_vs_raw": -0.031816721260017666,
+      "equal_recording_mean_r2": 0.42764455360546544,
+      "pooled_r2": 0.427442469106033
+    }
+  },
+  "alpha_order": [
+    0.0,
+    0.3,
+    0.5,
+    0.7,
+    0.9
+  ],
+  "float64_ema_and_r2": true,
+  "governing_alpha": 0.7,
+  "outer_date": "19250120",
+  "per_recording": {
+    "ses-19250120T115044": {
+      "continuous_outputs": 8132,
+      "delta_r2_by_alpha": {
+        "0.0": 0.0,
+        "0.3": 0.003550668451823835,
+        "0.5": 0.004418108080314065,
+        "0.7": 0.0011107391800603272,
+        "0.9": -0.05646788320391305
+      },
+      "first_output_bin": 3946,
+      "last_output_bin": 12077,
+      "output_bins_sha256": "f3e85ef45aa2ed8af9cbbf2b46573d3013802e5c532847b2684e20f895a6db5f",
+      "r2_by_alpha": {
+        "0.0": 0.4746903349355739,
+        "0.3": 0.4782410033873977,
+        "0.5": 0.47910844301588795,
+        "0.7": 0.4758010741156342,
+        "0.9": 0.41822245173166084
+      },
+      "raw_prediction_sha256": "78b5ca623a5c4819ed2e159f66eb558f94dfce2b94ace9e3847b3a0e46c92344",
+      "score_mask_sha256": "7d8ca2a994142f0a360f49ce521bfee0900e770b9e576dc1d820f2c5c4365f19",
+      "scored_outputs": 7889,
+      "target_output_sha256": "36e369462f5a08528c21a40878b0cff2bcefacaa637438734055e46b0deb8033"
+    },
+    "ses-19250120T115537": {
+      "continuous_outputs": 7879,
+      "delta_r2_by_alpha": {
+        "0.0": 0.0,
+        "0.3": 0.007836827305355731,
+        "0.5": 0.01360261493713455,
+        "0.7": 0.02043356805125518,
+        "0.9": -0.007165559316122283
+      },
+      "first_output_bin": 3546,
+      "last_output_bin": 11424,
+      "output_bins_sha256": "bc1f8abda9ca84caaabab541fc9594cb4c43b441c20464129ad2b24e9529dc60",
+      "r2_by_alpha": {
+        "0.0": 0.4442322147953923,
+        "0.3": 0.45206904210074805,
+        "0.5": 0.45783482973252687,
+        "0.7": 0.4646657828466475,
+        "0.9": 0.43706665547927004
+      },
+      "raw_prediction_sha256": "de3906d237e56f39365b02c08d05d4f3008a275e54b4c96d42804063dc7894e3",
+      "score_mask_sha256": "7898e693412a80d3dabe3f3117f654ff35767fe71a4640a7c1dc119c173d28be",
+      "scored_outputs": 7639,
+      "target_output_sha256": "7b2892f653aa69d2aa9192f22e41c5613d92300617f45871bc900f7c934d1eb1"
+    }
+  },
+  "schema": "h1_causal_output_ema_v1_metrics",
+  "selection_performed": false,
+  "sessions": [
+    "ses-19250120T115044",
+    "ses-19250120T115537"
+  ]
+}

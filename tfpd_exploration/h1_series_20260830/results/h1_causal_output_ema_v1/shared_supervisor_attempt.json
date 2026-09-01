@@ -1,0 +1,26 @@
+{
+  "attempt_sha256": "8cfd5f365c2f62e020024f32160c1218c4ac04a16a1807088cfff3f565dce6bc",
+  "automatic_retry": false,
+  "created_at_utc": "2026-09-01T09:43:48.759898+00:00",
+  "detached_via": "nohup+setsid",
+  "gpu_sharing_authorization_sha256": "72dd0136c4eb643a470a73cc6b3ce35e182c937c680074fb75d931a759c2d27c",
+  "logs_only": true,
+  "predecessor_authority_sha256": "5b26edb51e26d186887146f19a9f0197659978939f5d27d643b2356b4b873e31",
+  "progress_bar": false,
+  "queues": {
+    "0": [
+      "19250108",
+      "19250115",
+      "19250120"
+    ],
+    "1": [
+      "19250113",
+      "19250119"
+    ]
+  },
+  "schema": "h1_causal_output_ema_v1_shared_supervisor_attempt",
+  "smoke_physical_gpu": 0,
+  "status": "SHARED_GPU_SUPERVISOR_ATTEMPT_PUBLISHED_BEFORE_CUDA_OR_TARGET_ACCESS",
+  "target_bytes_read": 0,
+  "target_recordings_opened": 0
+}

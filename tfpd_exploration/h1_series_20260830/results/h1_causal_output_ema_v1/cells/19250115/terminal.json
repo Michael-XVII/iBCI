@@ -1,0 +1,164 @@
+{
+  "backward_steps": 0,
+  "checkpoint_sha256": "470fa3fc3e023fd98fb0ac52a304bb75e167b2e15caa5afae5e94e6111da0249",
+  "config_sha256": "d9fd74381bbc9769a116f47657f5762225ef56258714fe9de20f0498e0496f4f",
+  "elapsed_seconds": 5.532862159001525,
+  "finished_at_utc": "2026-09-01T09:44:14.416640+00:00",
+  "gpu": {
+    "memory_total_bytes": 33671348224,
+    "name": "NVIDIA GeForce RTX 5090",
+    "physical_index": 0,
+    "uuid": "GPU-4939047f-448c-ca8f-1297-84432dc27d0b",
+    "visible_index": 0
+  },
+  "metrics": {
+    "alpha_metrics": {
+      "0.0": {
+        "alpha": 0.0,
+        "delta_equal_recording_mean_r2_vs_raw": 0.0,
+        "equal_recording_mean_r2": 0.5456725677600995,
+        "pooled_r2": 0.5477737820483439
+      },
+      "0.3": {
+        "alpha": 0.3,
+        "delta_equal_recording_mean_r2_vs_raw": 0.005826596759685887,
+        "equal_recording_mean_r2": 0.5514991645197854,
+        "pooled_r2": 0.5537190836378042
+      },
+      "0.5": {
+        "alpha": 0.5,
+        "delta_equal_recording_mean_r2_vs_raw": 0.008406226325091137,
+        "equal_recording_mean_r2": 0.5540787940851907,
+        "pooled_r2": 0.5564145448196987
+      },
+      "0.7": {
+        "alpha": 0.7,
+        "delta_equal_recording_mean_r2_vs_raw": 0.007344360436051023,
+        "equal_recording_mean_r2": 0.5530169281961506,
+        "pooled_r2": 0.5555788143444649
+      },
+      "0.9": {
+        "alpha": 0.9,
+        "delta_equal_recording_mean_r2_vs_raw": -0.051910018669223124,
+        "equal_recording_mean_r2": 0.4937625490908764,
+        "pooled_r2": 0.49695426411128774
+      }
+    },
+    "alpha_order": [
+      0.0,
+      0.3,
+      0.5,
+      0.7,
+      0.9
+    ],
+    "float64_ema_and_r2": true,
+    "governing_alpha": 0.7,
+    "outer_date": "19250115",
+    "per_recording": {
+      "ses-19250115T110633": {
+        "continuous_outputs": 6236,
+        "delta_r2_by_alpha": {
+          "0.0": 0.0,
+          "0.3": 0.004636704922750701,
+          "0.5": 0.006055459803512742,
+          "0.7": 0.0027276692967815874,
+          "0.9": -0.06283380954578466
+        },
+        "first_output_bin": 3835,
+        "last_output_bin": 10070,
+        "output_bins_sha256": "63690a43d486cb3147ac3154fa1497d944c2b57206956922340c457e8d743d70",
+        "r2_by_alpha": {
+          "0.0": 0.524648893937846,
+          "0.3": 0.5292855988605967,
+          "0.5": 0.5307043537413587,
+          "0.7": 0.5273765632346276,
+          "0.9": 0.4618150843920613
+        },
+        "raw_prediction_sha256": "3ee8f2c253f20a0656b6087e897d441802e40d36f5be8270ab670ca8be4007bf",
+        "score_mask_sha256": "d4f42b9a3a810df644dc028995deae409bdbda653802986d1e1edeeb793a6193",
+        "scored_outputs": 6070,
+        "target_output_sha256": "4f5ce46ba93dd3e20c702a6bf0b7c89d9b90d3db1904bbcb716d661f180c9fcb"
+      },
+      "ses-19250115T111328": {
+        "continuous_outputs": 8484,
+        "delta_r2_by_alpha": {
+          "0.0": 0.0,
+          "0.3": 0.007016488596621073,
+          "0.5": 0.010756992846669533,
+          "0.7": 0.011961051575320347,
+          "0.9": -0.04098622779266159
+        },
+        "first_output_bin": 3783,
+        "last_output_bin": 12266,
+        "output_bins_sha256": "7a2ab6477c26bed593c2bc2fee8f4fef0599cee8f72ecd01f7e16b547732c08d",
+        "r2_by_alpha": {
+          "0.0": 0.5666962415823531,
+          "0.3": 0.5737127301789742,
+          "0.5": 0.5774532344290226,
+          "0.7": 0.5786572931576734,
+          "0.9": 0.5257100137896915
+        },
+        "raw_prediction_sha256": "d4d04eb50aef77aa8cc775f65ddd9132fe069756c1223881971697a39bb69846",
+        "score_mask_sha256": "ba7cf5e8263636519e6337b0d6e55c7490d0f7921600f559a3b406acdfd4cbb9",
+        "scored_outputs": 8277,
+        "target_output_sha256": "9b4269cf206cb78443813efe583311198a64682a252326bc1b0077cfe8fc60d3"
+      }
+    },
+    "schema": "h1_causal_output_ema_v1_metrics",
+    "selection_performed": false,
+    "sessions": [
+      "ses-19250115T110633",
+      "ses-19250115T111328"
+    ]
+  },
+  "metrics_sha256": "e1b65c48b3422068183315fc45f13afdf5cfe55e2fedf5189c409dd1f764aa86",
+  "model_state_after_sha256": "3cb305725b7ac7abe947eba1d1207f3285480071ed9368b6b69a0271ec6d7af3",
+  "model_state_before_sha256": "3cb305725b7ac7abe947eba1d1207f3285480071ed9368b6b69a0271ec6d7af3",
+  "model_state_immutable": true,
+  "model_updates": 0,
+  "normalizer_sha256": "560137bda5d945ba1fa9487b37d5b7981b3385727a8b2dc877a5978b4d1741a4",
+  "optimizer_steps": 0,
+  "outer_date": "19250115",
+  "plan_sha256": "304b0b09d334322e531b4fab95ff8936b9a64a335588d209b70568d95d46f98b",
+  "predecessor_cell_terminal_sha256": "2e6fc4ead6351c708363c61395a475bcfb854941a72f32bcd363e1f1da74dfac",
+  "predecessor_terminal_sha256": "470634334480c33fd8d4679baa470454984dadeb57a25b9dec8d05612c43b9ec",
+  "prediction_cache_manifest_sha256": "272cefae235c18a0419b7ca6a84dcd7d10022610301e1ef43d3c1ddc59cfceac",
+  "prediction_cache_sha256": "b7508226cfdf3314af9a131aa9b8c1d10cd3830f47b27f27f369d94480f4783e",
+  "schema": "h1_causal_output_ema_v1",
+  "selection_performed": false,
+  "source_authority_sha256": "5949d3fb1c10880ca1db69a983f332afd0f1fc340531d5836ae22f566a3e27b5",
+  "status": "PASS_H1_CAUSAL_OUTPUT_EMA_V1_DATE_EVALUATED",
+  "target_access": {
+    "authorized_outer_date_only": true,
+    "backward_steps": 0,
+    "expected_sessions": [
+      "ses-19250115T110633",
+      "ses-19250115T111328"
+    ],
+    "files": [
+      {
+        "bytes": 5944811,
+        "filename": "sub-HumanPitt-held-in-calib_ses-19250115T110633.nwb",
+        "session": "ses-19250115T110633",
+        "sha256": "ed0760aaa946e42f8ad812d3aef7f5faf66b21b5f2804aa77574c7f7ee853451"
+      },
+      {
+        "bytes": 6858862,
+        "filename": "sub-HumanPitt-held-in-calib_ses-19250115T111328.nwb",
+        "session": "ses-19250115T111328",
+        "sha256": "022956ab01c8cb645e19327ba3457f2a065b30dd402bb4541e51c684d6a46e20"
+      }
+    ],
+    "model_updates": 0,
+    "optimizer_steps": 0,
+    "outer_date": "19250115",
+    "target_bytes_read": 12803673,
+    "target_driven_selection": false,
+    "target_recordings_opened": 2,
+    "target_sessions_opened": [
+      "ses-19250115T110633",
+      "ses-19250115T111328"
+    ]
+  },
+  "target_access_sha256": "b6577c739bc4617dcf2d5ff3464f3d6311f6943c06b57190c8e992a10e482d4f"
+}

@@ -1,0 +1,38 @@
+{
+  "attempt_sha256": "8cfd5f365c2f62e020024f32160c1218c4ac04a16a1807088cfff3f565dce6bc",
+  "authorized_at_utc": "2026-09-01T09:42:33.119540+00:00",
+  "automatic_retry": false,
+  "physical_gpus": [
+    {
+      "memory_used_mib_at_authorization": 6001,
+      "name": "NVIDIA GeForce RTX 5090",
+      "physical_index": 0,
+      "utilization_percent_at_authorization": 92,
+      "uuid": "GPU-4939047f-448c-ca8f-1297-84432dc27d0b"
+    },
+    {
+      "memory_used_mib_at_authorization": 2844,
+      "name": "NVIDIA GeForce RTX 5090",
+      "physical_index": 1,
+      "utilization_percent_at_authorization": 91,
+      "uuid": "GPU-e2821dd7-a910-e611-5f5d-306b5f793db7"
+    }
+  ],
+  "queues": {
+    "0": [
+      "19250108",
+      "19250115",
+      "19250120"
+    ],
+    "1": [
+      "19250113",
+      "19250119"
+    ]
+  },
+  "schema": "h1_causal_output_ema_v1_gpu_sharing_authorization",
+  "scope": "Experiment 3 may share physical GPU0 and GPU1 with existing workloads; no other process is modified.",
+  "status": "AUTHORIZED_SHARED_GPU0_GPU1_BEFORE_CUDA_OR_TARGET_ACCESS",
+  "target_bytes_read": 0,
+  "target_recordings_opened": 0,
+  "user_authorization": "GPU\u53ef\u4ee5\u5171\u7528"
+}
