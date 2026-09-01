@@ -126,6 +126,17 @@ def publish_npy(path: Path, value: np.ndarray) -> str:
     return _publish_bytes(path, buffer.getvalue())
 
 
+def seal_existing_log(path: Path) -> str:
+    """Seal a completed runtime log in place and add its one-level sidecar."""
+    output = path.resolve()
+    _need(output.is_file() and not output.is_symlink(), f"missing runtime log: {output}")
+    _need(stat.S_IMODE(output.stat().st_mode) & 0o222 != 0, f"runtime log is already sealed: {output}")
+    os.chmod(output, 0o444)
+    digest = sha256_file(output)
+    _publish_bytes(output.with_name(output.name + ".sha256"), f"{digest}  {output.name}\n".encode("ascii"), sidecar=False)
+    return digest
+
+
 def verify_sidecar(path: Path) -> str:
     _need(path.is_file() and not path.is_symlink(), f"missing artifact: {path}")
     _need(stat.S_IMODE(path.stat().st_mode) == 0o444, f"artifact is not 0444: {path}")
@@ -674,7 +685,6 @@ def run_cell(data_root: Path, result_root: Path, outer_date: str, physical_gpu: 
                 optimizer.step(); global_step += 1; losses.append(float(loss.detach().cpu()))
             if smoke and global_step >= smoke_steps:
                 break
-            print(json.dumps({"outer_date": outer_date, "epoch_zero_based": epoch, "global_step": global_step, "mean_loss": float(np.mean(losses[-max(1, len(order)//BATCH_SIZE):], dtype=np.float64))}), flush=True)
         _need(global_step == (smoke_steps if smoke else FIXED_EPOCHS * len(order) // BATCH_SIZE), "cell step count drift")
         _need(_finite_optimizer(optimizer), "Adam state is nonfinite")
         terminal_state = state_hash(model.state_dict())
@@ -811,5 +821,5 @@ __all__ = (
     "BATCH_SIZE", "CHECKPOINT_SCHEMA", "LAMBDA_GRID", "MODEL_PARAMETERS", "Q_GRID", "RegenError", "SCHEMA",
     "STATUS_CELL", "STATUS_SMOKE", "STATUS_SOURCE", "STATUS_TERMINAL", "create_attempt", "dry_plan",
     "load_attempt", "model_config", "prepare_source_authority", "publish_json", "run_cell", "select_candidate",
-    "validate_checkpoint_contract", "variance_weighted_r2", "verify_sidecar", "verify_terminal",
+    "seal_existing_log", "validate_checkpoint_contract", "variance_weighted_r2", "verify_sidecar", "verify_terminal",
 )

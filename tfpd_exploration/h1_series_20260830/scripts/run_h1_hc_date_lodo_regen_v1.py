@@ -26,6 +26,7 @@ from src.h1_hc_date_lodo_regen_v1 import (  # noqa: E402
     publish_json,
     publish_text,
     run_cell,
+    seal_existing_log,
     verify_sidecar,
     verify_terminal,
 )
@@ -33,14 +34,17 @@ from src.h1_m4_cce_contract import CONFIRMATORY_DATES, sha256_file  # noqa: E402
 
 
 DEFAULT_DATA_ROOT = Path("/data/ial-dataset/ial-mohd/000954")
-DEFAULT_RESULT_ROOT = REPO_ROOT / "tfpd_exploration/h1_series_20260830/results/h1_hc_date_lodo_regen_v1"
+DEFAULT_RESULT_ROOT = REPO_ROOT / "tfpd_exploration/h1_series_20260830/results/h1_hc_date_lodo_regen_v1_detached_a1"
+DEFAULT_LOG_ROOT = REPO_ROOT / "logs/h1_hc_date_lodo_regen_v1_detached_a1"
 WORK_ORDER = REPO_ROOT / "tfpd_exploration/h1_series_20260830/H1_HC_DATE_LODO_REGEN_V1_WORK_ORDER.md"
+AMENDMENT = REPO_ROOT / "tfpd_exploration/h1_series_20260830/H1_HC_DATE_LODO_REGEN_V1_AMENDMENT_1.md"
 TEST_FILE = SPINT_ROOT / "tests/test_h1_hc_date_lodo_regen_v1.py"
 
 
 def _closure() -> dict[str, str]:
     paths = (
         WORK_ORDER,
+        AMENDMENT,
         Path(__file__).resolve(),
         SPINT_ROOT / "src/h1_hc_date_lodo_regen_v1.py",
         TEST_FILE,
@@ -196,16 +200,19 @@ def _run_smoke(args: argparse.Namespace) -> None:
     gpu = _parse_gpus(args.gpus)[0]
     profile = _gpu_row(gpu)
     command = _cell_command(args, CONFIRMATORY_DATES[0], gpu, smoke=True)
-    completed = subprocess.run(
-        command,
-        cwd=REPO_ROOT,
-        env=_cell_env(gpu),
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        check=False,
-    )
-    log_sha = publish_text(args.result_root.resolve() / "smoke.log", completed.stdout)
+    args.log_root.mkdir(parents=True, exist_ok=True)
+    log_path = args.log_root.resolve() / "smoke.log"
+    with log_path.open("x", encoding="utf-8") as output:
+        completed = subprocess.run(
+            command,
+            cwd=REPO_ROOT,
+            env=_cell_env(gpu),
+            text=True,
+            stdout=output,
+            stderr=subprocess.STDOUT,
+            check=False,
+        )
+    log_sha = seal_existing_log(log_path)
     if completed.returncode != 0:
         raise RuntimeError(f"GPU smoke failed on {profile['uuid']}; log SHA {log_sha}")
     terminal = _load_json(args.result_root.resolve() / "smoke" / f"smoke_{CONFIRMATORY_DATES[0]}" / "terminal.json")
@@ -218,39 +225,44 @@ def _run_training(args: argparse.Namespace) -> None:
     if smoke.get("status") != STATUS_SMOKE or smoke.get("target_bytes_read") != 0:
         raise RuntimeError("training requires a source-only PASS smoke")
     gpus = _parse_gpus(args.gpus)
-    profiles = {gpu: _gpu_row(gpu) for gpu in gpus}
+    for gpu in gpus:
+        _gpu_row(gpu)
+    args.log_root.mkdir(parents=True, exist_ok=True)
     pending = list(CONFIRMATORY_DATES)
-    running: dict[str, tuple[subprocess.Popen[str], int]] = {}
+    running: dict[str, tuple[subprocess.Popen[str], int, Any, Path]] = {}
     failed = False
     while pending or running:
         while pending and len(running) < len(gpus) and not failed:
             date = pending.pop(0)
             gpu = next(value for value in gpus if value not in {item[1] for item in running.values()})
+            log_path = args.log_root.resolve() / f"{date}.log"
+            output = log_path.open("x", encoding="utf-8")
             process = subprocess.Popen(
                 _cell_command(args, date, gpu, smoke=False),
                 cwd=REPO_ROOT,
                 env=_cell_env(gpu),
                 text=True,
-                stdout=subprocess.PIPE,
+                stdout=output,
                 stderr=subprocess.STDOUT,
             )
-            running[date] = (process, gpu)
-            print(json.dumps({"launched": date, "gpu": profiles[gpu]}), flush=True)
+            running[date] = (process, gpu, output, log_path)
         completed_dates = []
-        for date, (process, gpu) in running.items():
+        for date, (process, _gpu, output, log_path) in running.items():
             returncode = process.poll()
             if returncode is None:
                 continue
-            output, _ = process.communicate()
-            publish_text(args.result_root.resolve() / "logs" / f"{date}.log", output)
+            process.wait()
+            output.close()
+            seal_existing_log(log_path)
             completed_dates.append(date)
-            print(json.dumps({"finished": date, "physical_gpu": gpu, "returncode": returncode}), flush=True)
             if returncode != 0:
                 failed = True
         for date in completed_dates:
             del running[date]
         if running and not completed_dates:
             time.sleep(2.0)
+        if failed and not running:
+            break
     if failed or pending:
         raise RuntimeError(f"one or more training cells failed; unlaunched dates: {pending}")
 
@@ -263,9 +275,11 @@ def build_parser() -> argparse.ArgumentParser:
     phases.add_argument("--smoke", action="store_true")
     phases.add_argument("--train", action="store_true")
     phases.add_argument("--verify-terminal", action="store_true")
+    phases.add_argument("--detached-supervisor", action="store_true", help=argparse.SUPPRESS)
     phases.add_argument("--cell", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--data-root", type=Path, default=DEFAULT_DATA_ROOT)
     parser.add_argument("--result-root", type=Path, default=DEFAULT_RESULT_ROOT)
+    parser.add_argument("--log-root", type=Path, default=DEFAULT_LOG_ROOT)
     parser.add_argument("--gpus", help="one or two comma-separated physical GPU indices")
     parser.add_argument("--outer-date", choices=CONFIRMATORY_DATES, help=argparse.SUPPRESS)
     parser.add_argument("--physical-gpu", type=int, help=argparse.SUPPRESS)
@@ -276,7 +290,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    if not any((args.prepare_source_authority, args.smoke, args.train, args.verify_terminal, args.cell)):
+    if not any((args.prepare_source_authority, args.smoke, args.train, args.verify_terminal, args.detached_supervisor, args.cell)):
         print(json.dumps(dry_plan(), indent=2, sort_keys=True))
         return 0
     if args.cell:
@@ -310,6 +324,12 @@ def main(argv: list[str] | None = None) -> int:
         elif args.verify_terminal:
             phase = "terminal_verification"
             _assert_code_closure(args.result_root)
+            verify_terminal(args.result_root)
+        elif args.detached_supervisor:
+            phase = "detached_training"
+            _assert_code_closure(args.result_root)
+            _run_training(args)
+            phase = "terminal_verification"
             verify_terminal(args.result_root)
         return 0
     except BaseException as error:

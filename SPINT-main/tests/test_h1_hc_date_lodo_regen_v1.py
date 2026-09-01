@@ -257,6 +257,20 @@ def test_state_hash_changes_with_model_state() -> None:
     assert state_hash(first) != state_hash(second)
 
 
+def test_completed_runtime_log_is_immutable_and_verified(tmp_path: Path) -> None:
+    path = tmp_path / "cell.log"
+    path.write_text("terminal output\n", encoding="utf-8")
+    digest = regen.seal_existing_log(path)
+    assert regen.verify_sidecar(path) == digest
+    assert path.stat().st_mode & 0o777 == 0o444
+
+
+def test_training_loop_has_no_progress_print_or_tqdm() -> None:
+    source = Path(regen.__file__).read_text(encoding="utf-8")
+    body = source[source.index("def run_cell("):source.index("def validate_checkpoint_contract(")]
+    assert "tqdm" not in body and "print(" not in body
+
+
 def test_malformed_source_batch_is_rejected() -> None:
     dataset = object.__new__(regen.SourceDataset)
     dataset.windows = (("a", 0), ("b", 0))
