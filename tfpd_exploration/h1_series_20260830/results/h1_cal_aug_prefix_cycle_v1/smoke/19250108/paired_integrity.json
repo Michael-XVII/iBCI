@@ -1,0 +1,20 @@
+{
+  "c1_terminal_sha256": "3bec460869c92681fb7da152df08ce7ab2d385b860a01470a27adf38492c7e91",
+  "dropout_probability_sha256": "3897b09c8d6a269e65eef6fd633fba6d668b2272bbc8fa2c9aba7605e5ee8a2c",
+  "global_step_per_arm": 20,
+  "gpu": {
+    "memory_total_bytes": 33671348224,
+    "name": "NVIDIA GeForce RTX 5090",
+    "physical_index": 0,
+    "uuid": "GPU-4939047f-448c-ca8f-1297-84432dc27d0b",
+    "visible_index": 0
+  },
+  "initial_state_sha256": "bc6dc8a0543c760811f770206c7ee22ae35eaf970c6dad0ec259a84172e4d04b",
+  "outer_date": "19250108",
+  "schema": "h1_cal_aug_prefix_cycle_v1_paired_integrity",
+  "smoke": true,
+  "status": "PASS_PAIRED_SMOKE_INTEGRITY",
+  "t0_terminal_sha256": "4ef465350d11971b8be5020cff6ab8c4a68d158c77a7f03900e10bedd9ed5dc9",
+  "target_bytes_read": 0,
+  "target_recordings_opened": 0
+}

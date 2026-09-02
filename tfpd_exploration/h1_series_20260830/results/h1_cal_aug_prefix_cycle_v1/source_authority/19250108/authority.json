@@ -1,0 +1,51 @@
+{
+  "array_sha256": {
+    "c1_prefixes": "303c252271e127f386f1ecaeeb64b08f8c8daf441f83a4dfe2ddb12b88cec5fb",
+    "m7_starts": "ed7cb5187d4fc995dfc1f50068cf4b3210c75a1bc26879a59a4abe14a043036e",
+    "order": "a8409095240684399bc5124b41e020e3bad2a10111a034ea4bc8747ed90f44f3"
+  },
+  "batch_size": 32,
+  "batches_per_epoch": 3356,
+  "c1_cycle": [
+    7,
+    5,
+    4
+  ],
+  "epochs": 50,
+  "m7_prefix": true,
+  "minimum_trial_count": 8,
+  "normalizer_s_src": 5.481521267601705e-06,
+  "outer_date": "19250108",
+  "predecessor_carrier_cache_sha256": "43a89f1a77c690b2a496e6594271c92ba61bec27f751bea4588f8ce27a7b5bdb",
+  "predecessor_date_source_authority_sha256": "c740fcf56980b4d308d2030ad0b606a7a8d282abee70aaca4f56e17eaf7edb93",
+  "schedule_file_sha256": "4425e0b055771b106cbe345e3cd1a0c9482cf9123151ab19a2090be82cd646a3",
+  "schema": "h1_cal_aug_prefix_cycle_v1_date_source_authority",
+  "source_input_sha256": [
+    "f8af652a31228f08b26ff8a7ecfd2a6bd05a345e368da8c98be649229f80adb2",
+    "b946c4cf49f00c2ea8f0051481765ed090294e3e1e5a035cc5716ad93aa052b2",
+    "477410e16b8c1ccfcb3caba9403169ec21ab8bee35c4846376bae781003c5f92",
+    "29d01954747e028dc8b91f82ece28ef11b95a1a33ab3a57e55eb5f967706419f",
+    "ed0760aaa946e42f8ad812d3aef7f5faf66b21b5f2804aa77574c7f7ee853451",
+    "022956ab01c8cb645e19327ba3457f2a065b30dd402bb4541e51c684d6a46e20",
+    "f176ad4e1221843a94b67f87e0676bbcb83b7b1f5e49a58b2ae1d85b30e445d6",
+    "a9548924522750f6217409a9797b37389d22c9a0fe3ef145b87343192ff7d6ac",
+    "34e0f0d229942516aec6148d2deaf0bbeabda3d10b86cd889fedf0563366c084",
+    "df0ba7830d01e82b716d7a1eaac0b0400ebc84e8cbf0c9e2e047437a31c43e70"
+  ],
+  "source_sessions": [
+    "ses-19250101T111740",
+    "ses-19250101T112404",
+    "ses-19250113T120811",
+    "ses-19250113T121303",
+    "ses-19250115T110633",
+    "ses-19250115T111328",
+    "ses-19250119T113543",
+    "ses-19250119T114045",
+    "ses-19250120T115044",
+    "ses-19250120T115537"
+  ],
+  "status": "PASS_H1_CAL_AUG_PREFIX_CYCLE_V1_SOURCE_AUTHORITY",
+  "steps_per_arm": 167800,
+  "target_bytes_read": 0,
+  "target_recordings_opened": 0
+}

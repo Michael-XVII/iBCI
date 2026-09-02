@@ -1,0 +1,12 @@
+{
+  "arm": "t0",
+  "artifact": "arm_attempt",
+  "created_at_utc": "2026-09-01T16:20:06.087380+00:00",
+  "outer_date": "19250108",
+  "physical_gpu": 1,
+  "schema": "h1_cal_aug_prefix_cycle_v1",
+  "smoke": false,
+  "target_bytes_read": 0,
+  "target_recordings_opened": 0,
+  "warm_start": false
+}

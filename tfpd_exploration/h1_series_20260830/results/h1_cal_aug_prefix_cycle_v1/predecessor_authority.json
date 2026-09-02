@@ -1,0 +1,10 @@
+{
+  "experiment3_commit": "c9ad06f96d811fdf6be94c391128f0735060f4c6",
+  "experiment3_terminal_sha256": "69ca9ac9eedabc6328bd0e6afa6556b40b479ecb6ffcfa6e66294580fd37258f",
+  "regeneration_source_authority_sha256": "6cf656048af20174c3cf164406e25051137bfe687b0dda93d06ff1835c80500e",
+  "regeneration_terminal_sha256": "470634334480c33fd8d4679baa470454984dadeb57a25b9dec8d05612c43b9ec",
+  "schema": "h1_cal_aug_prefix_cycle_v1_predecessor_authority",
+  "status": "PASS_H1_CAL_AUG_PREFIX_CYCLE_V1_PREDECESSORS",
+  "target_bytes_read": 0,
+  "target_recordings_opened": 0
+}

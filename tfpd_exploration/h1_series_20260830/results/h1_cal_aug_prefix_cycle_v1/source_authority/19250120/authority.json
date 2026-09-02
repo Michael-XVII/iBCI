@@ -1,0 +1,53 @@
+{
+  "array_sha256": {
+    "c1_prefixes": "f018fb4d3381bad9c97f426322b1c0997e265e612378f8315101c469ce4a4e34",
+    "m7_starts": "98f6d05bc901755740d56b33253c30b5b5e1e2077dfbbccd72dda0a632b0d7e1",
+    "order": "45be0a7b5bac645867262b3abd4ebb70bf6eeae0c5e532c7d4b92efc18b58193"
+  },
+  "batch_size": 32,
+  "batches_per_epoch": 3419,
+  "c1_cycle": [
+    7,
+    5,
+    4
+  ],
+  "epochs": 50,
+  "m7_prefix": true,
+  "minimum_trial_count": 8,
+  "normalizer_s_src": 6.923691309423385e-06,
+  "outer_date": "19250120",
+  "predecessor_carrier_cache_sha256": "ea1a0d887f8b723962cff4cfd389220dd4ed87878dcaf15a4feb7953df4ffa49",
+  "predecessor_date_source_authority_sha256": "fc4d6a6ae756aea9247018bc1d9368a0cc28d4d062eaa224aadc16039fab06f8",
+  "schedule_file_sha256": "16b46d6118ece31720ec5400abea5286790b62636ae8cef6cfae41bd1b4c736c",
+  "schema": "h1_cal_aug_prefix_cycle_v1_date_source_authority",
+  "source_input_sha256": [
+    "f8af652a31228f08b26ff8a7ecfd2a6bd05a345e368da8c98be649229f80adb2",
+    "b946c4cf49f00c2ea8f0051481765ed090294e3e1e5a035cc5716ad93aa052b2",
+    "8a09f6ead8a44776d2cee62850ff489bd16b1323799c986cad070dad784a2b83",
+    "9398f27c6164e84a379c4a0b8d40d8acf642659c175b9411d4573147881c0e68",
+    "3a093dd558a7c5b3dbb38eaa1bb1699742a4b865066a336e65c5fe3abdfdd861",
+    "477410e16b8c1ccfcb3caba9403169ec21ab8bee35c4846376bae781003c5f92",
+    "29d01954747e028dc8b91f82ece28ef11b95a1a33ab3a57e55eb5f967706419f",
+    "ed0760aaa946e42f8ad812d3aef7f5faf66b21b5f2804aa77574c7f7ee853451",
+    "022956ab01c8cb645e19327ba3457f2a065b30dd402bb4541e51c684d6a46e20",
+    "f176ad4e1221843a94b67f87e0676bbcb83b7b1f5e49a58b2ae1d85b30e445d6",
+    "a9548924522750f6217409a9797b37389d22c9a0fe3ef145b87343192ff7d6ac"
+  ],
+  "source_sessions": [
+    "ses-19250101T111740",
+    "ses-19250101T112404",
+    "ses-19250108T110520",
+    "ses-19250108T111022",
+    "ses-19250108T111455",
+    "ses-19250113T120811",
+    "ses-19250113T121303",
+    "ses-19250115T110633",
+    "ses-19250115T111328",
+    "ses-19250119T113543",
+    "ses-19250119T114045"
+  ],
+  "status": "PASS_H1_CAL_AUG_PREFIX_CYCLE_V1_SOURCE_AUTHORITY",
+  "steps_per_arm": 170950,
+  "target_bytes_read": 0,
+  "target_recordings_opened": 0
+}

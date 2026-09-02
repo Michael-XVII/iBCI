@@ -1,0 +1,9 @@
+{
+  "error": "refusing existing artifact: /home/ial-mohd/workspace/iBCI/tfpd_exploration/h1_series_20260830/results/h1_cal_aug_prefix_cycle_v1/pairs/19250108/paired_integrity.json",
+  "error_type": "FileExistsError",
+  "phase": "training",
+  "schema": "h1_cal_aug_prefix_cycle_v1",
+  "status": "FAIL_IMMUTABLE_NO_AUTOMATIC_RETRY",
+  "target_bytes_read": 0,
+  "target_recordings_opened": 0
+}

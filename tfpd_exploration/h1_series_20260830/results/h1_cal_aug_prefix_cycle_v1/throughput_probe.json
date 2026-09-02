@@ -1,0 +1,18 @@
+{
+  "arm_timeout_seconds": 28800,
+  "peak_memory_reserved_bytes": 991952896,
+  "projected_seconds_per_arm_by_date": {
+    "19250108": 14443.527294357335,
+    "19250113": 14727.577592756496,
+    "19250115": 14865.298949556089,
+    "19250119": 14650.109329556724,
+    "19250120": 14714.666215556534
+  },
+  "required_free_memory_mib": 8192,
+  "schema": "h1_cal_aug_prefix_cycle_v1_throughput_probe",
+  "seconds_per_step_worst_arm": 0.08607584799974574,
+  "smoke_steps_per_arm": 20,
+  "status": "PASS_H1_CAL_AUG_PREFIX_CYCLE_V1_THROUGHPUT_PROBE",
+  "target_bytes_read": 0,
+  "target_recordings_opened": 0
+}

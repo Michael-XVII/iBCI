@@ -1,0 +1,40 @@
+{
+  "date_order": [
+    "19250108",
+    "19250113",
+    "19250115",
+    "19250119",
+    "19250120"
+  ],
+  "dates": [
+    {
+      "outer_date": "19250108",
+      "relative": "source_authority/19250108/authority.json",
+      "sha256": "99985c6c8679a32acabea513ad0679ca274c50ea773407a1ca84ffbe2c8a81e8"
+    },
+    {
+      "outer_date": "19250113",
+      "relative": "source_authority/19250113/authority.json",
+      "sha256": "b4b02e0f982a995f18f1387dfad4a485cdc20e6f06aaedb5ae8a57dc2a76c10b"
+    },
+    {
+      "outer_date": "19250115",
+      "relative": "source_authority/19250115/authority.json",
+      "sha256": "f051d3c1b14fd151b34cfafafa751321608e768a57d229ea4ece66f810d98e56"
+    },
+    {
+      "outer_date": "19250119",
+      "relative": "source_authority/19250119/authority.json",
+      "sha256": "2b3755ee4694a7fc04dbb296fcf56be57efadfc6ecfee8b4bee2c095e8ea5180"
+    },
+    {
+      "outer_date": "19250120",
+      "relative": "source_authority/19250120/authority.json",
+      "sha256": "6f8c7cf1e6035daa3449f7dc18e0356d0870866b3b82d7c6e80500f4041c05f6"
+    }
+  ],
+  "schema": "h1_cal_aug_prefix_cycle_v1_source_authority",
+  "status": "PASS_H1_CAL_AUG_PREFIX_CYCLE_V1_SOURCE_AUTHORITY",
+  "target_bytes_read": 0,
+  "target_recordings_opened": 0
+}

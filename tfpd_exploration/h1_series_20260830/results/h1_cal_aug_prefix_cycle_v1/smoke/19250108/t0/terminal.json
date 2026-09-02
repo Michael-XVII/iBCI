@@ -1,0 +1,46 @@
+{
+  "arm": "t0",
+  "checkpoint": null,
+  "config_sha256": "3092a395a5972be2985af5ab3b05001e8bdeb6c30cfd7286cf382d985866690b",
+  "dropout_probability_count": 20,
+  "dropout_probability_sha256": "3897b09c8d6a269e65eef6fd633fba6d668b2272bbc8fa2c9aba7605e5ee8a2c",
+  "elapsed_seconds": 8.54407227099,
+  "epoch_zero_based": 0,
+  "epochs": [
+    {
+      "epoch_zero_based": 0,
+      "mean_loss": 0.001231158754671924,
+      "steps": 20
+    }
+  ],
+  "finished_at_utc": "2026-09-01T16:19:52.113160+00:00",
+  "global_step": 20,
+  "gpu": {
+    "memory_total_bytes": 33671348224,
+    "name": "NVIDIA GeForce RTX 5090",
+    "physical_index": 0,
+    "uuid": "GPU-4939047f-448c-ca8f-1297-84432dc27d0b",
+    "visible_index": 0
+  },
+  "initial_state_sha256": "bc6dc8a0543c760811f770206c7ee22ae35eaf970c6dad0ec259a84172e4d04b",
+  "loss_first": 0.000194162770640105,
+  "loss_last": 0.0008304285001941025,
+  "outer_date": "19250108",
+  "peak_memory_reserved_bytes": 784334848,
+  "predecessor_source_authority_sha256": "c740fcf56980b4d308d2030ad0b606a7a8d282abee70aaca4f56e17eaf7edb93",
+  "prefix_step_counts": {
+    "4": 0,
+    "5": 0,
+    "7": 20
+  },
+  "schema": "h1_cal_aug_prefix_cycle_v1",
+  "smoke": true,
+  "source_authority_sha256": "99985c6c8679a32acabea513ad0679ca274c50ea773407a1ca84ffbe2c8a81e8",
+  "status": "PASS_H1_CAL_AUG_PREFIX_CYCLE_V1_PAIRED_SMOKE",
+  "target_backward_steps": 0,
+  "target_bytes_read": 0,
+  "target_optimizer_steps": 0,
+  "target_recordings_opened": 0,
+  "terminal_state_sha256": "d65bda2f6d34ddec248e596219f868569d39b3aa8f73d6628fdc7718ffd04e3c",
+  "training_elapsed_seconds": 1.721516959994915
+}

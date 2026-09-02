@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/home/ial-mohd/workspace/envs/spint/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "/home/ial-mohd/workspace/iBCI/SPINT-main/tests/test_h1_cal_aug_prefix_cycle_v1.py"
+  ],
+  "cuda_visible_devices": "",
+  "log_sha256": "7f72645db1c549d6a454c346f8f763d0d78521f792a0a470ee53cee7d3e43b01",
+  "nwb_files_opened": 0,
+  "returncode": 0,
+  "schema": "h1_cal_aug_prefix_cycle_v1_cpu_gate",
+  "status": "PASS_H1_CAL_AUG_PREFIX_CYCLE_V1_CPU_GATE",
+  "target_bytes_read": 0,
+  "target_recordings_opened": 0
+}
