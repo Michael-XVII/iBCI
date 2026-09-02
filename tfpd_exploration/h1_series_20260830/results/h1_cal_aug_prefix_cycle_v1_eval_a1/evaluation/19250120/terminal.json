@@ -1,0 +1,117 @@
+{
+  "backward_steps": 0,
+  "elapsed_seconds": 15.190350713994121,
+  "finished_at_utc": "2026-09-02T08:38:19.361310+00:00",
+  "gpu": {
+    "memory_total_bytes": 33671348224,
+    "name": "NVIDIA GeForce RTX 5090",
+    "physical_index": 0,
+    "uuid": "GPU-4939047f-448c-ca8f-1297-84432dc27d0b",
+    "visible_index": 0
+  },
+  "metrics": {
+    "budgets": {
+      "4": {
+        "delta_c1_minus_t0": 0.0802137071625797,
+        "equal_recording_mean_r2": {
+          "c1": 0.3867101435178702,
+          "t0": 0.3064964363552905
+        },
+        "per_recording_r2": {
+          "c1": {
+            "ses-19250120T115044": 0.3879971002812629,
+            "ses-19250120T115537": 0.3854231867544775
+          },
+          "t0": {
+            "ses-19250120T115044": 0.31061551325753034,
+            "ses-19250120T115537": 0.30237735945305066
+          }
+        }
+      },
+      "5": {
+        "delta_c1_minus_t0": 0.061494485904003304,
+        "equal_recording_mean_r2": {
+          "c1": 0.4073913078209327,
+          "t0": 0.3458968219169294
+        },
+        "per_recording_r2": {
+          "c1": {
+            "ses-19250120T115044": 0.40650527188650265,
+            "ses-19250120T115537": 0.40827734375536273
+          },
+          "t0": {
+            "ses-19250120T115044": 0.34396292584474586,
+            "ses-19250120T115537": 0.3478307179891129
+          }
+        }
+      },
+      "7": {
+        "delta_c1_minus_t0": 0.0361954003261154,
+        "equal_recording_mean_r2": {
+          "c1": 0.4211537205182235,
+          "t0": 0.38495832019210807
+        },
+        "per_recording_r2": {
+          "c1": {
+            "ses-19250120T115044": 0.4458264934384538,
+            "ses-19250120T115537": 0.3964809475979931
+          },
+          "t0": {
+            "ses-19250120T115044": 0.3859693194860486,
+            "ses-19250120T115537": 0.3839473208981675
+          }
+        }
+      }
+    },
+    "outer_date": "19250120",
+    "schema": "h1_cal_aug_prefix_cycle_v1_eval_a1_metrics"
+  },
+  "metrics_sha256": "0e14db4544d3305c7ce412e927fc1cb26de19d196021bef6bcc7a3f6ab879f40",
+  "model_state_immutable": true,
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "outer_date": "19250120",
+  "prediction_cache_manifest_sha256": "09f7fab7b8340ded51f7b0bb927cad85acf09391a94e2e17ebde028841855be2",
+  "prediction_cache_sha256": "35295c802315babde6f47d0bac4a9882a22aadf2f3605a63e21a8c580d1155c4",
+  "schema": "h1_cal_aug_prefix_cycle_v1_eval_a1",
+  "selection_performed": false,
+  "status": "PASS_H1_CAL_AUG_PREFIX_CYCLE_V1_EVAL_A1_DATE_EVALUATED",
+  "target_access": {
+    "authorized_outer_date_only": true,
+    "backward_steps": 0,
+    "expected_sessions": [
+      "ses-19250120T115044",
+      "ses-19250120T115537"
+    ],
+    "files": [
+      {
+        "bytes": 6725140,
+        "filename": "sub-HumanPitt-held-in-calib_ses-19250120T115044.nwb",
+        "session": "ses-19250120T115044",
+        "sha256": "34e0f0d229942516aec6148d2deaf0bbeabda3d10b86cd889fedf0563366c084"
+      },
+      {
+        "bytes": 6144273,
+        "filename": "sub-HumanPitt-held-in-calib_ses-19250120T115537.nwb",
+        "session": "ses-19250120T115537",
+        "sha256": "df0ba7830d01e82b716d7a1eaac0b0400ebc84e8cbf0c9e2e047437a31c43e70"
+      }
+    ],
+    "model_updates": 0,
+    "optimizer_steps": 0,
+    "outer_date": "19250120",
+    "target_bytes_read": 12869413,
+    "target_driven_selection": false,
+    "target_recordings_opened": 2,
+    "target_sessions_opened": [
+      "ses-19250120T115044",
+      "ses-19250120T115537"
+    ]
+  },
+  "target_access_sha256": "565ad90efe2820c7614e686c542040a069ef0ead993c6be05539986e6be6c693",
+  "training_authority_sha256": "3e13fd414c284242a3f4a1c51598dacc6f59b5cc9e35d99a1488817c29cc6433",
+  "training_terminal_sha256": {
+    "c1": "6a754210892c7a714c7ea2fdc9e44b21d34489c10226d6be137b3f3f0d8fa0de",
+    "t0": "2a80789d4629894182248196e3ccb131242d2f728425fd8597a55ba72e5dba27"
+  }
+}

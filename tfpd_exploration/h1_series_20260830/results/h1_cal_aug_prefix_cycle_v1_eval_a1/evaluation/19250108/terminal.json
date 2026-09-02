@@ -1,0 +1,131 @@
+{
+  "backward_steps": 0,
+  "elapsed_seconds": 12.771356679004384,
+  "finished_at_utc": "2026-09-02T08:37:42.838688+00:00",
+  "gpu": {
+    "memory_total_bytes": 33671348224,
+    "name": "NVIDIA GeForce RTX 5090",
+    "physical_index": 0,
+    "uuid": "GPU-4939047f-448c-ca8f-1297-84432dc27d0b",
+    "visible_index": 0
+  },
+  "metrics": {
+    "budgets": {
+      "4": {
+        "delta_c1_minus_t0": 0.023165952505882326,
+        "equal_recording_mean_r2": {
+          "c1": 0.46750157897408645,
+          "t0": 0.4443356264682041
+        },
+        "per_recording_r2": {
+          "c1": {
+            "ses-19250108T110520": 0.4383163376455972,
+            "ses-19250108T111022": 0.43121427829134473,
+            "ses-19250108T111455": 0.5329741209853175
+          },
+          "t0": {
+            "ses-19250108T110520": 0.39137418782149336,
+            "ses-19250108T111022": 0.37947362820429076,
+            "ses-19250108T111455": 0.5621590633788281
+          }
+        }
+      },
+      "5": {
+        "delta_c1_minus_t0": 0.012235082602524372,
+        "equal_recording_mean_r2": {
+          "c1": 0.46442644775753283,
+          "t0": 0.45219136515500846
+        },
+        "per_recording_r2": {
+          "c1": {
+            "ses-19250108T110520": 0.41284324685375484,
+            "ses-19250108T111022": 0.4411629130042912,
+            "ses-19250108T111455": 0.5392731834145523
+          },
+          "t0": {
+            "ses-19250108T110520": 0.3904034143440941,
+            "ses-19250108T111022": 0.41535311662273633,
+            "ses-19250108T111455": 0.550817564498195
+          }
+        }
+      },
+      "7": {
+        "delta_c1_minus_t0": 0.04069142783668439,
+        "equal_recording_mean_r2": {
+          "c1": 0.4331934445288712,
+          "t0": 0.3925020166921868
+        },
+        "per_recording_r2": {
+          "c1": {
+            "ses-19250108T110520": 0.45293179794392935,
+            "ses-19250108T111022": 0.33885353144098007,
+            "ses-19250108T111455": 0.5077950042017042
+          },
+          "t0": {
+            "ses-19250108T110520": 0.43661485529733557,
+            "ses-19250108T111022": 0.2146862609367105,
+            "ses-19250108T111455": 0.5262049338425143
+          }
+        }
+      }
+    },
+    "outer_date": "19250108",
+    "schema": "h1_cal_aug_prefix_cycle_v1_eval_a1_metrics"
+  },
+  "metrics_sha256": "003d0bf961149cd1267ea4ab3cf8ed683c9cbf3d8780e96ef2b0ec43280ec1e5",
+  "model_state_immutable": true,
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "outer_date": "19250108",
+  "prediction_cache_manifest_sha256": "2d50867e153a0175f0ad0e35948392289cae1c179fb37e3c24e6f4ec2876ca42",
+  "prediction_cache_sha256": "7592e689bdd07bee391935fc85deb345f1658c268d696ef40912252713edec85",
+  "schema": "h1_cal_aug_prefix_cycle_v1_eval_a1",
+  "selection_performed": false,
+  "status": "PASS_H1_CAL_AUG_PREFIX_CYCLE_V1_EVAL_A1_DATE_EVALUATED",
+  "target_access": {
+    "authorized_outer_date_only": true,
+    "backward_steps": 0,
+    "expected_sessions": [
+      "ses-19250108T110520",
+      "ses-19250108T111022",
+      "ses-19250108T111455"
+    ],
+    "files": [
+      {
+        "bytes": 5801669,
+        "filename": "sub-HumanPitt-held-in-calib_ses-19250108T110520.nwb",
+        "session": "ses-19250108T110520",
+        "sha256": "8a09f6ead8a44776d2cee62850ff489bd16b1323799c986cad070dad784a2b83"
+      },
+      {
+        "bytes": 3308274,
+        "filename": "sub-HumanPitt-held-in-calib_ses-19250108T111022.nwb",
+        "session": "ses-19250108T111022",
+        "sha256": "9398f27c6164e84a379c4a0b8d40d8acf642659c175b9411d4573147881c0e68"
+      },
+      {
+        "bytes": 3151141,
+        "filename": "sub-HumanPitt-held-in-calib_ses-19250108T111455.nwb",
+        "session": "ses-19250108T111455",
+        "sha256": "3a093dd558a7c5b3dbb38eaa1bb1699742a4b865066a336e65c5fe3abdfdd861"
+      }
+    ],
+    "model_updates": 0,
+    "optimizer_steps": 0,
+    "outer_date": "19250108",
+    "target_bytes_read": 12261084,
+    "target_driven_selection": false,
+    "target_recordings_opened": 3,
+    "target_sessions_opened": [
+      "ses-19250108T110520",
+      "ses-19250108T111022",
+      "ses-19250108T111455"
+    ]
+  },
+  "target_access_sha256": "9f47b7f6bc76a6dc42c80f4b8d05dbf4842e13908e830d4a67fdad62350aa528",
+  "training_authority_sha256": "3e13fd414c284242a3f4a1c51598dacc6f59b5cc9e35d99a1488817c29cc6433",
+  "training_terminal_sha256": {
+    "c1": "083a6016d4fc053be34beb2f21bc6b9b24343c134f62ba257ea69fec05a1eec3",
+    "t0": "03f88d9e735b0a1c418e5b5ec3e5f2149a8b56a261f9ae865ff2efdc0b005d4f"
+  }
+}

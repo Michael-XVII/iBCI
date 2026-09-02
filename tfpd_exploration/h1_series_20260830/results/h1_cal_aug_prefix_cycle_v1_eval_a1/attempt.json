@@ -1,0 +1,30 @@
+{
+  "artifact": "attempt",
+  "closure": {
+    "SPINT-main/src/data/h1_m4_eb_pilot.py": "8f459b7a06c1b18865fc602b10e46876b4bb1dbf7ecba0fdf8e8f654737c86cb",
+    "SPINT-main/src/h1_cal_aug_prefix_cycle_eval_a1.py": "fb80dbad11c4d3c9f4cab68c68da7b6a7a4800b4eaca3d1e4e65ced795c4a4d1",
+    "SPINT-main/src/h1_cal_aug_prefix_cycle_v1.py": "5fff58c44e7d926ce429803ae31ca78b7c1a41a9572732730178bd5a9c583278",
+    "SPINT-main/src/h1_hc_date_lodo_regen_v1.py": "7e8a3000270b7eb7c703889a62fbd473738b0a5f3f272d9cbc57b46db1495a4e",
+    "SPINT-main/src/h1_m4_cce_contract.py": "6793090642b819436995dd20f1db74c51d8d5f787836904afcda6cc2a5a2b293",
+    "SPINT-main/src/models/components/h1_carrierid_spint.py": "fcea04965e8fd80bf84ca290ad3d22971b37df3050f9d178e0ac1c3dc91b4618",
+    "SPINT-main/tests/test_h1_cal_aug_prefix_cycle_eval_a1.py": "5c5559562216b2788c85fd1a3ab2cd9196bfa0c92cc786b7c776fe62956d3d83",
+    "tfpd_exploration/h1_series_20260830/H1_CAL_AUG_PREFIX_CYCLE_V1_EVAL_A1_WORK_ORDER.md": "dd9672160a232602b932fb7f4de9db39a0241a0e23e459306a4717cc7681e16c",
+    "tfpd_exploration/h1_series_20260830/scripts/run_h1_cal_aug_prefix_cycle_eval_a1.py": "08ccd5258b096c692a9aaab268e32ac2c9e258c3d74b9135aa9c6e6d26ed37eb"
+  },
+  "code_closure_sha256": "5082744d6f78a04f81857eec88ff9a0236b05d534155c1db0134fc18640ebfe1",
+  "created_at_utc": "2026-09-02T08:36:15.670226+00:00",
+  "cuda_initialized": false,
+  "head": "0404bd2b500884037a2312009ffb2a22e7b2c7e6",
+  "outer_dates": [
+    "19250108",
+    "19250113",
+    "19250115",
+    "19250119",
+    "19250120"
+  ],
+  "schema": "h1_cal_aug_prefix_cycle_v1_eval_a1",
+  "status": "ATTEMPT_BEFORE_TRAINING_AUTHORITY_CUDA_AND_TARGET",
+  "target_bytes_read": 0,
+  "target_recordings_opened": 0,
+  "training_seal_commit": "a162018f5195fc30578a6d3e8de43a216b216937"
+}

@@ -1,0 +1,32 @@
+{
+  "authorized_outer_date_only": true,
+  "backward_steps": 0,
+  "expected_sessions": [
+    "ses-19250115T110633",
+    "ses-19250115T111328"
+  ],
+  "files": [
+    {
+      "bytes": 5944811,
+      "filename": "sub-HumanPitt-held-in-calib_ses-19250115T110633.nwb",
+      "session": "ses-19250115T110633",
+      "sha256": "ed0760aaa946e42f8ad812d3aef7f5faf66b21b5f2804aa77574c7f7ee853451"
+    },
+    {
+      "bytes": 6858862,
+      "filename": "sub-HumanPitt-held-in-calib_ses-19250115T111328.nwb",
+      "session": "ses-19250115T111328",
+      "sha256": "022956ab01c8cb645e19327ba3457f2a065b30dd402bb4541e51c684d6a46e20"
+    }
+  ],
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "outer_date": "19250115",
+  "target_bytes_read": 12803673,
+  "target_driven_selection": false,
+  "target_recordings_opened": 2,
+  "target_sessions_opened": [
+    "ses-19250115T110633",
+    "ses-19250115T111328"
+  ]
+}
