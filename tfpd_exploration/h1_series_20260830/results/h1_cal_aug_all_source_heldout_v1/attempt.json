@@ -1,0 +1,41 @@
+{
+  "artifact": "attempt",
+  "closure": {
+    "SPINT-main/src/data/h1_cal_aug_all_source_heldout_v1.py": "ec23464b185e288609c5418f38f6ec3dbf0a7f741590ae4e7ee7c4b5b7790248",
+    "SPINT-main/src/data/h1_m4_eb_pilot.py": "8f459b7a06c1b18865fc602b10e46876b4bb1dbf7ecba0fdf8e8f654737c86cb",
+    "SPINT-main/src/h1_cal_aug_all_source_heldout_v1.py": "21c0a6b6491b323f10b337f8baa0fb93609a93bd236b0a761fc902a289473811",
+    "SPINT-main/src/h1_cal_aug_prefix_cycle_eval_a1.py": "fb80dbad11c4d3c9f4cab68c68da7b6a7a4800b4eaca3d1e4e65ced795c4a4d1",
+    "SPINT-main/src/h1_cal_aug_prefix_cycle_v1.py": "5fff58c44e7d926ce429803ae31ca78b7c1a41a9572732730178bd5a9c583278",
+    "SPINT-main/tests/test_h1_cal_aug_all_source_heldout_v1.py": "5b0655854b15d9623a38461779fb2c53c5f1b90bf3883278a702d84f37193f21",
+    "tfpd_exploration/h1_series_20260830/H1_CAL_AUG_ALL_SOURCE_HELDOUT_V1_WORK_ORDER.md": "9a12d08e7c1190bf74a37b5de16fca079895279b7acd52098e6ee33bb98ee7b8",
+    "tfpd_exploration/h1_series_20260830/docs/AMENDMENT_H1_CAL_AUG_ALL_SOURCE_HELDOUT_V1_METADATA_FEASIBILITY.md": "1550dda9dabcabd97c0884c22d3157189e02ff07d5a37fe3fd160b746ac4f9e4",
+    "tfpd_exploration/h1_series_20260830/scripts/run_h1_cal_aug_all_source_heldout_v1.py": "2619fd6ae2517dec3489d97a2e2af23204b47908887aedbc4a91a7fca5a3765d"
+  },
+  "code_closure_sha256": "07056c25db5d80aadaaa7e3dd5a4e31770c75181ea459a5e791d244e6d004477",
+  "created_at_utc": "2026-09-02T13:19:54.910380+00:00",
+  "cuda_initialized": false,
+  "head": "4ff891879a1836fd6840ea54690031478c8e71ab",
+  "heldout_behavior_arrays_read": 0,
+  "heldout_files_opened": 0,
+  "heldout_neural_arrays_read": 0,
+  "predecessor_commit": "c60052c9d8ccb8391d6ce53bde9ccfb4f2319884",
+  "predecessor_terminal_sha256": "dc9e7ab44954d3d193f67f9bf8936aafdaf2b05be9968d5e0091c0b0ecf092fd",
+  "registered_heldout_sessions": [
+    "ses-19250126T113454",
+    "ses-19250126T114029",
+    "ses-19250127T120333",
+    "ses-19250127T120826",
+    "ses-19250129T112555",
+    "ses-19250129T113059",
+    "ses-19250202T113958",
+    "ses-19250202T114452",
+    "ses-19250203T113515",
+    "ses-19250203T114018",
+    "ses-19250206T112219",
+    "ses-19250206T112712",
+    "ses-19250209T111826",
+    "ses-19250209T112327"
+  ],
+  "schema": "h1_cal_aug_all_source_heldout_v1",
+  "status": "ATTEMPT_BEFORE_HELDOUT_METADATA_ACCESS_AND_GPU"
+}

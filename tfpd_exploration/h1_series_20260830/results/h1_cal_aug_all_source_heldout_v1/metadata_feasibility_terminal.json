@@ -1,0 +1,18 @@
+{
+  "automatic_budget_change": false,
+  "carrier_fitted_on_heldout": false,
+  "continuation_to_training_allowed": false,
+  "finished_at_utc": "2026-09-02T13:20:01.337139+00:00",
+  "gpu_training_started": false,
+  "heldout_behavior_arrays_read": 0,
+  "heldout_neural_arrays_read": 0,
+  "m4_evaluable_recordings": 0,
+  "metadata_access_sha256": "8a250513f3d679a1ec18f8d223206e6ff1f63c3abc03eafbd695b2775471e73e",
+  "metadata_feasibility_sha256": "068a661311ca0da147a2777c3f94d7490d5f0070c2a49a657bfe42b577e50c23",
+  "next_action": "TERMINATE_CURRENT_M4_EXPERIMENT",
+  "prediction_performed": false,
+  "r2_calculated": false,
+  "registered_recordings": 14,
+  "schema": "h1_cal_aug_all_source_heldout_v1_metadata_feasibility_terminal",
+  "status": "STOP_H1_ALL_SOURCE_HELDOUT_M4_PROTOCOL_INFEASIBLE"
+}

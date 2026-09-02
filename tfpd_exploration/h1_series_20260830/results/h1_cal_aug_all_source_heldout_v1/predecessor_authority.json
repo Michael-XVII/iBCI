@@ -1,0 +1,7 @@
+{
+  "heldout_metadata_accessed": false,
+  "predecessor_commit": "c60052c9d8ccb8391d6ce53bde9ccfb4f2319884",
+  "predecessor_terminal_sha256": "dc9e7ab44954d3d193f67f9bf8936aafdaf2b05be9968d5e0091c0b0ecf092fd",
+  "schema": "h1_cal_aug_all_source_heldout_v1_predecessor_authority",
+  "status": "PASS_H1_ALL_SOURCE_HELDOUT_V1_PREDECESSOR"
+}

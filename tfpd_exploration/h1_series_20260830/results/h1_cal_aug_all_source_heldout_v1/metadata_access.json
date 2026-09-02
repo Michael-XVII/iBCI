@@ -1,0 +1,92 @@
+{
+  "carrier_fits": 0,
+  "datasets_read_by_session": {
+    "ses-19250126T113454": [
+      "TrialNum",
+      "eval_mask"
+    ],
+    "ses-19250126T114029": [
+      "TrialNum",
+      "eval_mask"
+    ],
+    "ses-19250127T120333": [
+      "TrialNum",
+      "eval_mask"
+    ],
+    "ses-19250127T120826": [
+      "TrialNum",
+      "eval_mask"
+    ],
+    "ses-19250129T112555": [
+      "TrialNum",
+      "eval_mask"
+    ],
+    "ses-19250129T113059": [
+      "TrialNum",
+      "eval_mask"
+    ],
+    "ses-19250202T113958": [
+      "TrialNum",
+      "eval_mask"
+    ],
+    "ses-19250202T114452": [
+      "TrialNum",
+      "eval_mask"
+    ],
+    "ses-19250203T113515": [
+      "TrialNum",
+      "eval_mask"
+    ],
+    "ses-19250203T114018": [
+      "TrialNum",
+      "eval_mask"
+    ],
+    "ses-19250206T112219": [
+      "TrialNum",
+      "eval_mask"
+    ],
+    "ses-19250206T112712": [
+      "TrialNum",
+      "eval_mask"
+    ],
+    "ses-19250209T111826": [
+      "TrialNum",
+      "eval_mask"
+    ],
+    "ses-19250209T112327": [
+      "TrialNum",
+      "eval_mask"
+    ]
+  },
+  "gpu_training_steps": 0,
+  "heldout_behavior_arrays_read": 0,
+  "heldout_files_opened": 14,
+  "heldout_neural_arrays_read": 0,
+  "heldout_velocity_arrays_read": 0,
+  "loss_calculations": 0,
+  "model_inference_calls": 0,
+  "normalizer_fits": 0,
+  "plan_fits": 0,
+  "prediction_rows": 0,
+  "r2_calculations": 0,
+  "registered_sessions": [
+    "ses-19250126T113454",
+    "ses-19250126T114029",
+    "ses-19250127T120333",
+    "ses-19250127T120826",
+    "ses-19250129T112555",
+    "ses-19250129T113059",
+    "ses-19250202T113958",
+    "ses-19250202T114452",
+    "ses-19250203T113515",
+    "ses-19250203T114018",
+    "ses-19250206T112219",
+    "ses-19250206T112712",
+    "ses-19250209T111826",
+    "ses-19250209T112327"
+  ],
+  "schema": "h1_cal_aug_all_source_heldout_v1_metadata_access",
+  "selection_performed": false,
+  "status": "COMPLETE_METADATA_ONLY_ACCESS",
+  "trial_level_arrays_persisted": false
+}
