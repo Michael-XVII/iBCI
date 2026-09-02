@@ -1,0 +1,60 @@
+{
+  "backward_steps": 0,
+  "checkpoint_authority_sha256": "92ce37da97767ddea9df4efc22e6ef01d349fcbfca2dd371036925815a25aa9c",
+  "checkpoint_selections": 0,
+  "elapsed_seconds": 8.007986279000761,
+  "finished_at_utc": "2026-09-02T14:00:24.785225+00:00",
+  "gpu": {
+    "memory_total_bytes": 33671348224,
+    "name": "NVIDIA GeForce RTX 5090",
+    "physical_index": 1,
+    "uuid": "GPU-e2821dd7-a910-e611-5f5d-306b5f793db7",
+    "visible_index": 0
+  },
+  "metrics": {
+    "budget": 3,
+    "equal_recording_mean": {
+      "R2_C1": 0.3272427201570864,
+      "R2_T0": 0.2509117755264035,
+      "delta_c1_minus_t0": 0.0763309446306829
+    },
+    "outer_date": "19250120",
+    "per_recording": {
+      "ses-19250120T115044": {
+        "R2_C1": 0.3142615104532559,
+        "R2_T0": 0.22631565607656856,
+        "delta_c1_minus_t0": 0.08794585437668734
+      },
+      "ses-19250120T115537": {
+        "R2_C1": 0.3402239298609169,
+        "R2_T0": 0.2755078949762384,
+        "delta_c1_minus_t0": 0.06471603488467847
+      }
+    },
+    "pooled_bin_r2_calculated": false,
+    "schema": "h1_cal_aug_prefix_cycle_m3_transfer_v1_metrics"
+  },
+  "metrics_sha256": "d8c62d99f4ed06417439f93b862ce73a6a1cf82485532303bc107ca800e18394",
+  "model_state_after_sha256": {
+    "c1": "bda95cbd8f9b71db0f3e48012153b1789f3280eec33e8036202e442af4e96786",
+    "t0": "2296589385164eff7a8c0cfdae67d659c6434dc656be4271e26227f1d904f88f"
+  },
+  "model_state_before_sha256": {
+    "c1": "bda95cbd8f9b71db0f3e48012153b1789f3280eec33e8036202e442af4e96786",
+    "t0": "2296589385164eff7a8c0cfdae67d659c6434dc656be4271e26227f1d904f88f"
+  },
+  "model_state_immutable": true,
+  "optimizer_steps": 0,
+  "outer_date": "19250120",
+  "parameter_updates": 0,
+  "prediction_cache_manifest_sha256": "1e461ce063da242b86aed1eb74a8c485e7da4b23614d9f57137f112d2cfa985a",
+  "prediction_cache_sha256": "706e6cfae1b238a15ef29c8739c6cf50669c6e47c8d757ce89a7757e0ec57560",
+  "schema": "h1_cal_aug_prefix_cycle_m3_transfer_v1",
+  "status": "PASS_H1_CAL_AUG_PREFIX_CYCLE_M3_DATE_EVALUATED",
+  "target_access_sha256": "dc946264a2677c896cb08e2f60b61dc7eba36bffd155c88d8a7fc63b9d276e92",
+  "training_terminal_sha256": {
+    "c1": "6a754210892c7a714c7ea2fdc9e44b21d34489c10226d6be137b3f3f0d8fa0de",
+    "t0": "2a80789d4629894182248196e3ccb131242d2f728425fd8597a55ba72e5dba27"
+  },
+  "warm_starts": 0
+}

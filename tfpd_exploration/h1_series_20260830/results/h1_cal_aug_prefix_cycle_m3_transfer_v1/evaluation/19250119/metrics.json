@@ -1,0 +1,23 @@
+{
+  "budget": 3,
+  "equal_recording_mean": {
+    "R2_C1": 0.31342308716499495,
+    "R2_T0": 0.28874830210628694,
+    "delta_c1_minus_t0": 0.024674785058708015
+  },
+  "outer_date": "19250119",
+  "per_recording": {
+    "ses-19250119T113543": {
+      "R2_C1": 0.2841253810996637,
+      "R2_T0": 0.24931249638567354,
+      "delta_c1_minus_t0": 0.03481288471399013
+    },
+    "ses-19250119T114045": {
+      "R2_C1": 0.3427207932303262,
+      "R2_T0": 0.32818410782690033,
+      "delta_c1_minus_t0": 0.014536685403425897
+    }
+  },
+  "pooled_bin_r2_calculated": false,
+  "schema": "h1_cal_aug_prefix_cycle_m3_transfer_v1_metrics"
+}

@@ -1,0 +1,145 @@
+{
+  "array_sha256": {
+    "recording_0_c1_prediction": "90dd9fcee08e4f07ad90cff8ccdcb49b3d11fabb469ba78c659b8ee677b0f9d4",
+    "recording_0_output_bins": "97845dcf00d97017c209b0b20cf02cb3d344ad463e1149f4bd6c98adc6765a8d",
+    "recording_0_score_mask": "b49e7f5da954bc9a5620b1bb7e6ec9ba057ec44ccf518320416cd389996f03b0",
+    "recording_0_starts": "661b3ee187a28f8125d0a673ee3da2c373752b160887d7347eb4d9500e1c3493",
+    "recording_0_t0_prediction": "c2e3713633e442cc213da6c815193e70de15e21cfdfe3f92bc476add2b21277d",
+    "recording_0_target": "783b3266e6c450f678bf461cd476270964a9f4f00c81d7aafceeef6d87118678",
+    "recording_1_c1_prediction": "52ce0876e31f911eb36770703141970328e64ea9fab235e841a7d9d4877922e6",
+    "recording_1_output_bins": "f04e33c67125223015edf1de16d7c36365c15635ce379cdd727c8a0fa2412d3d",
+    "recording_1_score_mask": "30d5a798c5dfe76d7baf6f6f16bd04f7e74c1532a63417eac4a7429c972e8bd5",
+    "recording_1_starts": "f36aba3fd568c9bba36a634f40baea398758a1a4ad90d520cbf9776c7f1e9239",
+    "recording_1_t0_prediction": "b68d0b68c74fa3c84805aa9ca673525b7b764a8157e841575af60849eef95be8",
+    "recording_1_target": "5c8febb043ac74ffcd6b8c4f25c8104d9572e4b5d68220fee60b0e06da698b5e",
+    "recording_2_c1_prediction": "71dc041f24f7c2737dbaf282266d44e240ca08fdc6461de5effb04498ee0b9c8",
+    "recording_2_output_bins": "d47b332ef138588ba34c40111542ff49ef4c4abc9901c48125a11d243dce9fe0",
+    "recording_2_score_mask": "78a277dcd9c50e3f4168f2cb1e41cdb70d0278d2e66014f80990018b06476423",
+    "recording_2_starts": "5ac90d4758d38fb63eefad6160e4713f853d8caeddec8595d572e2417b5645ea",
+    "recording_2_t0_prediction": "09acffba541bd3359978f6ef50d65cffd778f1043910bc8c9a4b0d6888c92358",
+    "recording_2_target": "0bdf37a7257e0b10b2d073208ebc23c41d406c6ce76220e25b146fee494d6339"
+  },
+  "array_shape": {
+    "recording_0_c1_prediction": [
+      9181,
+      7
+    ],
+    "recording_0_output_bins": [
+      9181
+    ],
+    "recording_0_score_mask": [
+      9181
+    ],
+    "recording_0_starts": [
+      9181
+    ],
+    "recording_0_t0_prediction": [
+      9181,
+      7
+    ],
+    "recording_0_target": [
+      9181,
+      7
+    ],
+    "recording_1_c1_prediction": [
+      3336,
+      7
+    ],
+    "recording_1_output_bins": [
+      3336
+    ],
+    "recording_1_score_mask": [
+      3336
+    ],
+    "recording_1_starts": [
+      3336
+    ],
+    "recording_1_t0_prediction": [
+      3336,
+      7
+    ],
+    "recording_1_target": [
+      3336,
+      7
+    ],
+    "recording_2_c1_prediction": [
+      3105,
+      7
+    ],
+    "recording_2_output_bins": [
+      3105
+    ],
+    "recording_2_score_mask": [
+      3105
+    ],
+    "recording_2_starts": [
+      3105
+    ],
+    "recording_2_t0_prediction": [
+      3105,
+      7
+    ],
+    "recording_2_target": [
+      3105,
+      7
+    ]
+  },
+  "arrays_file_sha256": "273e22fe04d02e5db347977a998bd58884ec3bdb8c323a5ed125c7ed07fbe4c6",
+  "last_bin_only": true,
+  "outer_date": "19250108",
+  "prediction_divisor": 20.0,
+  "recordings": [
+    {
+      "boundary_bin": 2353,
+      "carrier_sha256": "6fe8287e22882c3afc853a4d9667f00210db0b3c6a597751d8b1490703f845a0",
+      "first_output_bin": 3052,
+      "first_query_trial": 4.0,
+      "first_start_bin": 2353,
+      "identity_sha256": "cc6cc67e315e23cfae123d1e405ccc89e9d5989f190b9959d112433ddba325e1",
+      "score_rows": 8985,
+      "session": "ses-19250108T110520",
+      "support": [
+        1.0,
+        2.0,
+        3.0
+      ]
+    },
+    {
+      "boundary_bin": 2751,
+      "carrier_sha256": "ed6a1d5679f0e0585070505375d6a4b61140cd93476e886926c20b4eeb66cef6",
+      "first_output_bin": 3450,
+      "first_query_trial": 4.0,
+      "first_start_bin": 2751,
+      "identity_sha256": "0c33ecef0f9c0a36b512c7d5c378ba720a1703a2af6e7fd53e3e0c4100a95d59",
+      "score_rows": 3281,
+      "session": "ses-19250108T111022",
+      "support": [
+        1.0,
+        2.0,
+        3.0
+      ]
+    },
+    {
+      "boundary_bin": 2701,
+      "carrier_sha256": "92139a747c4e58776678f740b8195d1ea83066691d9c50cd8d9c7173f0f9faa3",
+      "first_output_bin": 3400,
+      "first_query_trial": 4.0,
+      "first_start_bin": 2701,
+      "identity_sha256": "037f0a38abe009efb3bc3026d2b4fc116a2d9a0c2e26ed087943f4da370401e5",
+      "score_rows": 2995,
+      "session": "ses-19250108T111455",
+      "support": [
+        1.0,
+        2.0,
+        3.0
+      ]
+    }
+  ],
+  "schema": "h1_cal_aug_prefix_cycle_m3_transfer_v1_prediction_cache",
+  "sessions": [
+    "ses-19250108T110520",
+    "ses-19250108T111022",
+    "ses-19250108T111455"
+  ],
+  "window_bins": 700
+}

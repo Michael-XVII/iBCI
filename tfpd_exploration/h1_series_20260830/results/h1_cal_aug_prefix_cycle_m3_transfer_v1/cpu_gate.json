@@ -1,0 +1,20 @@
+{
+  "checkpoint_files_opened": 0,
+  "command": [
+    "/home/ial-mohd/workspace/envs/spint/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "/home/ial-mohd/workspace/iBCI/SPINT-main/tests/test_h1_cal_aug_prefix_cycle_m3_transfer_v1.py",
+    "/home/ial-mohd/workspace/iBCI/SPINT-main/tests/test_h1_cal_aug_prefix_cycle_m3_transfer_v1_exec.py"
+  ],
+  "cuda_visible_devices": "",
+  "executed_before_attempt": true,
+  "heldout_calib_recordings_opened": 0,
+  "log_sha256": "fbf639bb9303cc4e540cb3938ce0009af127cee892ec08e9acf103e2ff49d188",
+  "nwb_files_opened": 0,
+  "returncode": 0,
+  "schema": "h1_cal_aug_prefix_cycle_m3_transfer_v1_cpu_gate",
+  "status": "PASS_H1_CAL_AUG_PREFIX_CYCLE_M3_TRANSFER_V1_CPU_GATE",
+  "target_recordings_opened": 0
+}

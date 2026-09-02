@@ -1,0 +1,49 @@
+{
+  "arms": [
+    "t0",
+    "c1"
+  ],
+  "artifact": "attempt",
+  "backward_steps": 0,
+  "checkpoint_selections": 0,
+  "closure": {
+    "SPINT-main/src/data/h1_m4_eb_pilot.py": "8f459b7a06c1b18865fc602b10e46876b4bb1dbf7ecba0fdf8e8f654737c86cb",
+    "SPINT-main/src/h1_cal_aug_prefix_cycle_eval_a1.py": "fb80dbad11c4d3c9f4cab68c68da7b6a7a4800b4eaca3d1e4e65ced795c4a4d1",
+    "SPINT-main/src/h1_cal_aug_prefix_cycle_m3_transfer_v1.py": "dc738c9b81c6f4afaa1b61735377e7f0e790a5ef4e752065cc3ed07b84acf30f",
+    "SPINT-main/src/h1_cal_aug_prefix_cycle_m3_transfer_v1_exec.py": "35f5d42827a8e83613b599f1887dab58ca6bf10465925330f61474b7946afbb4",
+    "SPINT-main/src/h1_cal_aug_prefix_cycle_v1.py": "5fff58c44e7d926ce429803ae31ca78b7c1a41a9572732730178bd5a9c583278",
+    "SPINT-main/src/h1_hc_date_lodo_regen_v1.py": "7e8a3000270b7eb7c703889a62fbd473738b0a5f3f272d9cbc57b46db1495a4e",
+    "SPINT-main/src/h1_m4_cce_contract.py": "6793090642b819436995dd20f1db74c51d8d5f787836904afcda6cc2a5a2b293",
+    "SPINT-main/src/models/components/h1_carrierid_spint.py": "fcea04965e8fd80bf84ca290ad3d22971b37df3050f9d178e0ac1c3dc91b4618",
+    "SPINT-main/tests/test_h1_cal_aug_prefix_cycle_m3_transfer_v1.py": "b9b564ed3a2e8a556cdc7ae22c642bd4e11b55dafc7cd2aba5b1792ba472f4f9",
+    "SPINT-main/tests/test_h1_cal_aug_prefix_cycle_m3_transfer_v1_exec.py": "91c65000ebc54ff03a6b955dadd0f84970fe2294c2f80a6aed2216e405fb522c",
+    "tfpd_exploration/h1_series_20260830/H1_CAL_AUG_PREFIX_CYCLE_M3_TRANSFER_V1_WORK_ORDER.md": "99692bd5a4a587ef510f630028a2cccb5a4e9d99322060e84699b6563276f704",
+    "tfpd_exploration/h1_series_20260830/docs/AMENDMENT_H1_CAL_AUG_PREFIX_CYCLE_M3_TRANSFER_V1_EXECUTION.md": "8fb882979086caa3982b4c96703e6369bb0c497cf7921af8f917738a8594a61e",
+    "tfpd_exploration/h1_series_20260830/scripts/run_h1_cal_aug_prefix_cycle_m3_transfer_v1_exec.py": "c71558943b90218a8b24051e76c7b9d93cb96d9863015063bc4ab1655b3654c4"
+  },
+  "code_closure_sha256": "4d913e95403dd64e27f659a5c0b987e54207aeb8682395ac38383bc2071b2725",
+  "cpu_gate_stdout_sha256": "fbf639bb9303cc4e540cb3938ce0009af127cee892ec08e9acf103e2ff49d188",
+  "created_at_utc": "2026-09-02T13:59:07.261179+00:00",
+  "cuda_initialized": false,
+  "experiment4_a1_commit": "c60052c9d8ccb8391d6ce53bde9ccfb4f2319884",
+  "experiment4_a1_terminal_sha256": "dc9e7ab44954d3d193f67f9bf8936aafdaf2b05be9968d5e0091c0b0ecf092fd",
+  "head": "42b825f6ba0507d8b95c27be016aef44cbd2daa7",
+  "heldout_calib_recordings_opened": 0,
+  "m4_audit_commit": "0d0ab2f",
+  "m4_audit_terminal_sha256": "3ff971dc576958b13ace990bcca8aea2e8b999e2af2ed50f418296d05f8d5cfc",
+  "m4_metadata_terminal_sha256": "e692db3b744a7831610c2338ce34504ccedc4c8696e4d73333de899ed295b563",
+  "optimizer_steps": 0,
+  "outer_dates": [
+    "19250108",
+    "19250113",
+    "19250115",
+    "19250119",
+    "19250120"
+  ],
+  "parameter_updates": 0,
+  "schema": "h1_cal_aug_prefix_cycle_m3_transfer_v1",
+  "status": "ATTEMPT_AFTER_CPU_GATE_BEFORE_AUTHORITY_CUDA_AND_TARGET",
+  "target_bytes_read": 0,
+  "target_recordings_opened": 0,
+  "warm_starts": 0
+}

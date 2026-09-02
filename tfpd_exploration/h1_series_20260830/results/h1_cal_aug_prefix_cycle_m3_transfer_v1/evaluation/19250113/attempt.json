@@ -1,0 +1,14 @@
+{
+  "artifact": "evaluation_attempt",
+  "backward_steps": 0,
+  "created_at_utc": "2026-09-02T13:59:54.385931+00:00",
+  "heldout_calib_recordings_opened": 0,
+  "optimizer_steps": 0,
+  "outer_date": "19250113",
+  "parameter_updates": 0,
+  "physical_gpu": 0,
+  "schema": "h1_cal_aug_prefix_cycle_m3_transfer_v1",
+  "status": "ATTEMPT_BEFORE_CUDA_CHECKPOINT_AND_TARGET",
+  "target_bytes_read": 0,
+  "target_recordings_opened": 0
+}

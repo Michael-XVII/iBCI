@@ -1,0 +1,50 @@
+{
+  "authorized_outer_date_only": true,
+  "backward_steps": 0,
+  "checkpoint_selections": 0,
+  "ema_applied": false,
+  "expected_sessions": [
+    "ses-19250108T110520",
+    "ses-19250108T111022",
+    "ses-19250108T111455"
+  ],
+  "files": [
+    {
+      "bytes": 5801669,
+      "filename": "sub-HumanPitt-held-in-calib_ses-19250108T110520.nwb",
+      "session": "ses-19250108T110520",
+      "sha256": "8a09f6ead8a44776d2cee62850ff489bd16b1323799c986cad070dad784a2b83"
+    },
+    {
+      "bytes": 3308274,
+      "filename": "sub-HumanPitt-held-in-calib_ses-19250108T111022.nwb",
+      "session": "ses-19250108T111022",
+      "sha256": "9398f27c6164e84a379c4a0b8d40d8acf642659c175b9411d4573147881c0e68"
+    },
+    {
+      "bytes": 3151141,
+      "filename": "sub-HumanPitt-held-in-calib_ses-19250108T111455.nwb",
+      "session": "ses-19250108T111455",
+      "sha256": "3a093dd558a7c5b3dbb38eaa1bb1699742a4b865066a336e65c5fe3abdfdd861"
+    }
+  ],
+  "heldout_calib_recordings_opened": 0,
+  "optimizer_steps": 0,
+  "outer_date": "19250108",
+  "parameter_updates": 0,
+  "pooled_bin_r2_calculations": 0,
+  "postprocessing_applied": false,
+  "schema": "h1_cal_aug_prefix_cycle_m3_transfer_v1_target_access",
+  "target_bytes_read": 12261084,
+  "target_normalizer_fits": 0,
+  "target_plan_fits": 0,
+  "target_prior_fits": 0,
+  "target_recordings_opened": 3,
+  "target_sessions_opened": [
+    "ses-19250108T110520",
+    "ses-19250108T111022",
+    "ses-19250108T111455"
+  ],
+  "tta_applied": false,
+  "warm_starts": 0
+}
