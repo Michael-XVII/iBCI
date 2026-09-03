@@ -72,6 +72,23 @@ def _load(path: Path, schema: str | None = None) -> tuple[dict[str, Any], str]:
     return body, digest
 
 
+def _verify_legacy_binary_sidecar(path: Path, expected: str) -> dict[str, Any]:
+    """Verify predecessor bytes without mutating Git-restored sidecar mode."""
+    sidecar = path.with_name(path.name + ".sha256")
+    _need(path.is_file() and sidecar.is_file(), f"legacy package/sidecar missing: {path}")
+    fields = sidecar.read_text(encoding="utf-8").strip().split()
+    _need(len(fields) == 2 and fields[1] == path.name, f"legacy package sidecar format drift: {sidecar}")
+    actual = sha256_file(path)
+    _need(fields[0] == actual == expected, f"legacy package SHA drift: {path}")
+    return {
+        "body_mode": oct(path.stat().st_mode & 0o777),
+        "sidecar_mode": oct(sidecar.stat().st_mode & 0o777),
+        "sha256": actual,
+        "sidecar_content_verified": True,
+        "predecessor_files_modified": False,
+    }
+
+
 def verify_predecessor(repo_root: Path, eval_root: Path, train_root: Path, v1_package_root: Path) -> dict[str, Any]:
     import torch
 
@@ -106,7 +123,7 @@ def verify_predecessor(repo_root: Path, eval_root: Path, train_root: Path, v1_pa
         resolved.append({**candidate, "checkpoint_path": str(checkpoint.resolve()), "checkpoint_relative": row["relative"], "global_step": row["global_step"], "selection_receipt_sha256": selection_sha})
 
     template_path = v1_package_root / "packages/c1.pt"
-    _need(verify_sidecar(template_path) == V1_PACKAGE_SHA256, "V1 C1 deployment package SHA drift")
+    template_file_authority = _verify_legacy_binary_sidecar(template_path, V1_PACKAGE_SHA256)
     template = torch.load(template_path, map_location="cpu", weights_only=False)
     _need(template.get("schema") == "h1_cal_aug_all_source_m3_deployment_v1_package", "V1 deployment package schema drift")
     _need(len(template.get("sessions", {})) == 27 and template.get("window_size") == 700 and template.get("prediction_divisor") == 20.0, "V1 deployment surface drift")
@@ -117,6 +134,7 @@ def verify_predecessor(repo_root: Path, eval_root: Path, train_root: Path, v1_pa
         "predecessor_terminal_sha256": terminal_sha,
         "training_terminal_sha256": training_sha,
         "v1_template_package_sha256": V1_PACKAGE_SHA256,
+        "v1_template_file_authority": template_file_authority,
         "source_authority_sha256": template["source_authority_sha256"],
         "calibration_authority_sha256": template["calibration_authority_sha256"],
         "candidates": resolved,
