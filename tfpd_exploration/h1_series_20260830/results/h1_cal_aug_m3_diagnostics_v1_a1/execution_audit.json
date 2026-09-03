@@ -1,0 +1,17 @@
+{
+  "backward_steps": 0,
+  "checkpoint_selection": false,
+  "evalai_submissions": 0,
+  "heldin_calib_model_passes": 26,
+  "heldin_calib_unique_recordings_opened": 13,
+  "heldin_minival_new_recordings_opened": 0,
+  "heldin_minival_source": "sealed prediction/target cache",
+  "heldout_calib_new_recordings_opened": 0,
+  "heldout_calib_source": "sealed prediction/target cache",
+  "model_state_immutable": true,
+  "model_updates": 0,
+  "official_hidden_test_accessed": false,
+  "optimizer_steps": 0,
+  "schema": "h1_cal_aug_m3_diagnostics_v1_a1_execution_audit",
+  "training": false
+}

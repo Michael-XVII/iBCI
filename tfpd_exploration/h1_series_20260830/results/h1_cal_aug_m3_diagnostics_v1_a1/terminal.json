@@ -1,0 +1,19 @@
+{
+  "backward_steps": 0,
+  "checkpoint_selection": false,
+  "evalai_submissions": 0,
+  "finished_at_utc": "2026-09-03T07:59:32.259080+00:00",
+  "heldout_grouped_delta_c1_minus_t0": 0.040841008134894385,
+  "m3_aware_v2_scientifically_motivated": true,
+  "metrics_sha256": "4213116787ce11e4178b35834a6f64ec4ba6aa3b43729125cf85e75966819ac6",
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "reuse_optimism_strict": {
+    "c1": -0.00769265655356377,
+    "t0": -0.012812042724376638
+  },
+  "schema": "h1_cal_aug_m3_diagnostics_v1",
+  "status": "COMPLETE_H1_CAL_AUG_M3_DIAGNOSTICS_V1",
+  "training": false,
+  "v2_started": false
+}

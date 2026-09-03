@@ -1,0 +1,19 @@
+{
+  "automatic_successor_started": false,
+  "c1_minus_t0": {
+    "heldout_calib_official_grouping": 0.040841008134894385,
+    "heldin_same_m3_calibration_trials": 0.021271021526398926,
+    "heldin_strict_post_m3_independent": 0.016151635355585947
+  },
+  "calibration_target_reuse_optimism_detected": false,
+  "interpretation": "Same-M3 calibration-trial scoring was lower, not higher, than strict independent post-M3 scoring for both arms. The C1 advantage remained positive on both surfaces. The diagnostics therefore do not require a V2 to correct reuse optimism.",
+  "m3_aware_v2_optional_as_separate_mechanism_experiment": true,
+  "m3_aware_v2_required": false,
+  "reuse_minus_strict_independent": {
+    "c1": -0.00769265655356377,
+    "t0": -0.012812042724376638
+  },
+  "schema": "h1_cal_aug_m3_diagnostics_v1_a1_decision",
+  "sealed_v1_modified": false,
+  "successor_boundary": "Any M3-aware training must be a separately preregistered V2 and may not alter H1 CAL-AUG V1 checkpoints, protocol, Docker images, or official results."
+}
