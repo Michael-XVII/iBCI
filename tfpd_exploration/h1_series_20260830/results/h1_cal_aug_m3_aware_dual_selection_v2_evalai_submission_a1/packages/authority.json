@@ -1,0 +1,65 @@
+{
+  "backward_steps": 0,
+  "candidate_specific_input": "state_dict and checkpoint/state provenance only",
+  "candidates": [
+    {
+      "calibration_authority_sha256": "b9f39f5751362038c37160e7e22acd5cc74a469c104fd22c416f4c088d0523e5",
+      "checkpoint_sha256": "2264b627c83ec629c122d33b758831d66cae4b4397d49a96aaba9e6c0616e0c9",
+      "epoch_zero_based": 49,
+      "global_step": 206650,
+      "image_tag": "h1-m3aware-v2-c2-e49:a1",
+      "key": "c2_e49",
+      "label": "C2-E49",
+      "model_state_sha256": "6ddcafb60c783cd6d5edcd8c11bb1ec98c3d4dc01da47b5e6202492cefb3495a",
+      "package_sha256": "22bfdda158574815a396d99593794b8d66b7aecf74f3126430401ca49b1ae1bc",
+      "relative": "packages/c2_e49.pt",
+      "session_payloads": 27,
+      "source_authority_sha256": "8ea4bb1174c00ab713843cd7561562d43f81509eaaea6ea12ee80cd4eba95de7"
+    },
+    {
+      "calibration_authority_sha256": "b9f39f5751362038c37160e7e22acd5cc74a469c104fd22c416f4c088d0523e5",
+      "checkpoint_sha256": "83d56e8ce82a41ec711e0b2ec5e57d66488fae18252189123a107d5523d9352f",
+      "epoch_zero_based": 45,
+      "global_step": 190118,
+      "image_tag": "h1-m3aware-v2-c2-hi-e45:a1",
+      "key": "c2_hi_e45",
+      "label": "C2-HI-E45",
+      "model_state_sha256": "bf619e5f33e24e7eabb0ee0488e105316b776a82eaefd4e2c902f73b4501182b",
+      "package_sha256": "5544861570199789e1a6585839abddadbf3ab514edeee83517ed96a4e846124d",
+      "relative": "packages/c2_hi_e45.pt",
+      "session_payloads": 27,
+      "source_authority_sha256": "8ea4bb1174c00ab713843cd7561562d43f81509eaaea6ea12ee80cd4eba95de7"
+    },
+    {
+      "calibration_authority_sha256": "b9f39f5751362038c37160e7e22acd5cc74a469c104fd22c416f4c088d0523e5",
+      "checkpoint_sha256": "ce46267eb220142b8ef1f2e5acf05194650796ac2752594995b40d2ad0950215",
+      "epoch_zero_based": 15,
+      "global_step": 66128,
+      "image_tag": "h1-m3aware-v2-c2-ho-e15:a1",
+      "key": "c2_ho_e15",
+      "label": "C2-HO-E15",
+      "model_state_sha256": "d22988987c307662c6c7caaa4947b153aa215d74c3e3b020d3e2ce681709b70a",
+      "package_sha256": "f0c22090e430e9af7f3e231fbb6bb331ae3cfaf629493a92f87096020739907b",
+      "relative": "packages/c2_ho_e15.pt",
+      "session_payloads": 27,
+      "source_authority_sha256": "8ea4bb1174c00ab713843cd7561562d43f81509eaaea6ea12ee80cd4eba95de7"
+    }
+  ],
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "predecessor_authority_sha256": "707ef0f8ed92e1fd728c49b56e042224f13dab8e5a25c92fb8a8ab1d1dae1029",
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_evalai_submission_a1_packages",
+  "shared_deployment_semantics": [
+    "H1CarrierIdSpint",
+    "frozen all-source H-C authority",
+    "earliest-M3 calibration",
+    "W700",
+    "last-bin",
+    "prediction /20",
+    "27-session mapping",
+    "FALCON H1 remote test"
+  ],
+  "status": "PASS_V2_A1_THREE_FROZEN_PACKAGES",
+  "training": false,
+  "v1_template_package_sha256": "bfd02e51d2c0309a74b5e835668105f5102b55fe41458d519fce8895f1db5411"
+}

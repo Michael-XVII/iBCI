@@ -1,0 +1,18 @@
+{
+  "backward_steps": 0,
+  "candidate": "c2_ho_e15",
+  "checkpoint_changes": 0,
+  "completed_images": [
+    "c2_e49",
+    "c2_hi_e45"
+  ],
+  "evalai_submissions": 0,
+  "failure": "Docker Hub base-image metadata HEAD returned EOF",
+  "image_replacements": 0,
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "package_changes": 0,
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_evalai_submission_a1",
+  "status": "FAIL_DOCKER_REGISTRY_METADATA_EOF",
+  "training": false
+}

@@ -1,0 +1,16 @@
+{
+  "backward_steps": 0,
+  "candidate": "c2_ho_e15",
+  "checkpoint_changes": 0,
+  "docker_recipe_changes": 0,
+  "evalai_submissions": 0,
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "package_changes": 0,
+  "repair": "temporary 127.0.0.1:7897 to 127.0.0.1:17897 proxy forwarder; no Docker restart",
+  "reuse_completed_images_only_after_exact_identity_check": true,
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_evalai_submission_a1_docker_registry_retry_amendment",
+  "selection_changes": 0,
+  "status": "AUTHORIZED_SINGLE_INFRASTRUCTURE_ONLY_RETRY",
+  "training": false
+}

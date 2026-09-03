@@ -1,0 +1,74 @@
+{
+  "challenge_id": 2319,
+  "challenge_phase": "few-shot-test-2319",
+  "challenge_phase_id": 4599,
+  "contrasts": [
+    "C2-E49 - V1-C1-E49",
+    "C2-HI-E45 - C2-E49",
+    "C2-HO-E15 - C2-E49",
+    "C2-HO-E15 - C2-HI-E45",
+    "C2-HO-E15 - V1-C1-E49"
+  ],
+  "created_at_utc": "2026-09-03T15:03:39.634156+00:00",
+  "docker_authority_sha256": "94a5c3962ef7ba8643a8383fc62acda568becbacb19f3b9ecc71e9cc0bbb1b5b",
+  "endpoints": {
+    "primary": "Official Held Out R2 Mean",
+    "secondary": [
+      "Official Held Out R2 Std.",
+      "Official Held In R2 Mean",
+      "Normalized Latency"
+    ]
+  },
+  "immutable_rules": {
+    "automatic_successor": false,
+    "carrier_refitting": false,
+    "checkpoint_reselection": false,
+    "docker_rebuild_after_score": false,
+    "finetuning": false,
+    "hyperparameter_change": false,
+    "inspect_first_score_before_all_submissions": false,
+    "model_updates": false,
+    "training": false
+  },
+  "primary_successor": "C2-HO-E15",
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_evalai_submission_a1_manifest",
+  "status": "SEALED_BEFORE_FIRST_V2_SCORE_ACCESS",
+  "submission_order": [
+    {
+      "checkpoint_sha256": "2264b627c83ec629c122d33b758831d66cae4b4397d49a96aaba9e6c0616e0c9",
+      "epoch_zero_based": 49,
+      "image_id": "sha256:c8939bb0b8de988f7b107d76787116ac11cdf67bcb2bb03e0fac974a0ed81ab8",
+      "image_tag": "h1-m3aware-v2-c2-e49:a1",
+      "key": "c2_e49",
+      "label": "C2-E49",
+      "model_state_sha256": "6ddcafb60c783cd6d5edcd8c11bb1ec98c3d4dc01da47b5e6202492cefb3495a",
+      "ordinal": 1,
+      "package_sha256": "22bfdda158574815a396d99593794b8d66b7aecf74f3126430401ca49b1ae1bc"
+    },
+    {
+      "checkpoint_sha256": "83d56e8ce82a41ec711e0b2ec5e57d66488fae18252189123a107d5523d9352f",
+      "epoch_zero_based": 45,
+      "image_id": "sha256:a52f5e4a7f5b0d81611ac12fc05cd8c29fd7ef875950a10440a7d191bee1971f",
+      "image_tag": "h1-m3aware-v2-c2-hi-e45:a1",
+      "key": "c2_hi_e45",
+      "label": "C2-HI-E45",
+      "model_state_sha256": "bf619e5f33e24e7eabb0ee0488e105316b776a82eaefd4e2c902f73b4501182b",
+      "ordinal": 2,
+      "package_sha256": "5544861570199789e1a6585839abddadbf3ab514edeee83517ed96a4e846124d"
+    },
+    {
+      "checkpoint_sha256": "ce46267eb220142b8ef1f2e5acf05194650796ac2752594995b40d2ad0950215",
+      "epoch_zero_based": 15,
+      "image_id": "sha256:6cc2f028cb0e7416e0dc9dedabce708d7e6be05de6ad0300ba2559baf5ba352f",
+      "image_tag": "h1-m3aware-v2-c2-ho-e15:a1",
+      "key": "c2_ho_e15",
+      "label": "C2-HO-E15",
+      "model_state_sha256": "d22988987c307662c6c7caaa4947b153aa215d74c3e3b020d3e2ce681709b70a",
+      "ordinal": 3,
+      "package_sha256": "f0c22090e430e9af7f3e231fbb6bb331ae3cfaf629493a92f87096020739907b"
+    }
+  ],
+  "submission_settings_identical": true,
+  "submission_visibility": "private",
+  "v1_c1_official_held_out_r2_mean": 0.28413945277226266
+}

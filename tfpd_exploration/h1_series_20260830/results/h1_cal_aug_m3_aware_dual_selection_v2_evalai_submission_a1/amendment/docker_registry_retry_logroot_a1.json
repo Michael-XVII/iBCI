@@ -1,0 +1,12 @@
+{
+  "checkpoint_changes": 0,
+  "docker_recipe_changes": 0,
+  "evalai_submissions": 0,
+  "log_subroot": "registry_retry",
+  "model_updates": 0,
+  "package_changes": 0,
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_evalai_submission_a1_docker_registry_retry_logroot_amendment",
+  "selection_changes": 0,
+  "status": "CONTINUE_SAME_INFRASTRUCTURE_RETRY_WITH_FRESH_LOG_SUBROOT",
+  "training": false
+}

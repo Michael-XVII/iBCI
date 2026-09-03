@@ -1,0 +1,12 @@
+{
+  "backward_steps": 0,
+  "docker_images": 0,
+  "error": "C2-E49 CPU batch-size 1/8 predictions were not bitwise identical",
+  "evalai_submissions": 0,
+  "gpu_inference_reached": false,
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_evalai_submission_a1",
+  "status": "FAIL_HOST_SMOKE_BATCH_SHAPE_BITWISE_ASSERTION",
+  "training": false
+}

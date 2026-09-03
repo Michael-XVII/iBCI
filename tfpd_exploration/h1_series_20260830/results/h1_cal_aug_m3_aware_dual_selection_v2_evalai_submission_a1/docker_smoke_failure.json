@@ -1,0 +1,16 @@
+{
+  "backward_steps": 0,
+  "candidate": "c2_e49",
+  "checkpoint_sha256": "2264b627c83ec629c122d33b758831d66cae4b4397d49a96aaba9e6c0616e0c9",
+  "container_cpu_gpu_smoke_passed": true,
+  "docker_images_complete": 1,
+  "evalai_submissions": 0,
+  "failure": "host torch2.12 vs container torch2.5 CPU predictions not bitwise identical; difference within frozen tolerance",
+  "image_id": "sha256:c8939bb0b8de988f7b107d76787116ac11cdf67bcb2bb03e0fac974a0ed81ab8",
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "package_sha256": "22bfdda158574815a396d99593794b8d66b7aecf74f3126430401ca49b1ae1bc",
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_evalai_submission_a1",
+  "status": "FAIL_DOCKER_HOST_CROSS_RUNTIME_BITWISE_ASSERTION",
+  "training": false
+}

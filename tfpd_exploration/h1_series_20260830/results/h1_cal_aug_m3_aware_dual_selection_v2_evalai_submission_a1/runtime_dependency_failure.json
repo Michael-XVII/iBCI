@@ -1,0 +1,12 @@
+{
+  "backward_steps": 0,
+  "docker_images": 0,
+  "error": "falcon runtime lacked Lightning imported transitively by receipt helper",
+  "evalai_submissions": 0,
+  "gpu_inference_reached": false,
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_evalai_submission_a1",
+  "status": "FAIL_HOST_SMOKE_UNNECESSARY_LIGHTNING_IMPORT",
+  "training": false
+}

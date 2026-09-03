@@ -1,0 +1,10 @@
+{
+  "cuda_initializations": 0,
+  "docker_commands": 0,
+  "evalai_submissions": 0,
+  "log_sha256": "e980af8fd0cc09f0ce44892c87bacaa5a1c6d959dea7e0b6cfeeb154bd58d62a",
+  "returncode": 0,
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_evalai_submission_a1_cpu_gate",
+  "status": "PASS_V2_A1_CPU_GATE",
+  "training": false
+}

@@ -1,0 +1,12 @@
+{
+  "checkpoint_changes": 0,
+  "docker_builds_started_in_this_attempt": 0,
+  "evalai_submissions": 0,
+  "failure": "existing smoke_cpu_c2_e49_repair.log refused overwrite",
+  "image_changes": 0,
+  "model_updates": 0,
+  "package_changes": 0,
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_evalai_submission_a1",
+  "status": "FAIL_BEFORE_INFRA_RETRY_IMMUTABLE_LOG_COLLISION",
+  "training": false
+}
