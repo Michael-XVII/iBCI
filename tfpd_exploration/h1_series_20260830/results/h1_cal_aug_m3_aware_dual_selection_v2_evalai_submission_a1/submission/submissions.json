@@ -1,0 +1,48 @@
+{
+  "backward_steps": 0,
+  "challenge_phase_id": 4599,
+  "docker_images": 3,
+  "evalai_submissions": 3,
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_evalai_submission_a1_submissions",
+  "scores_accessed_before_all_three_submitted": false,
+  "status": "THREE_SUBMISSIONS_CREATED_BEFORE_SCORE_ACCESS",
+  "submission_manifest_sha256": "2131776f2467ee7052813a2c8641d7454be86f0c22b28784db85921f3a94050f",
+  "submissions": [
+    {
+      "checkpoint_sha256": "2264b627c83ec629c122d33b758831d66cae4b4397d49a96aaba9e6c0616e0c9",
+      "image_id": "sha256:c8939bb0b8de988f7b107d76787116ac11cdf67bcb2bb03e0fac974a0ed81ab8",
+      "image_tag": "h1-m3aware-v2-c2-e49:a1",
+      "key": "c2_e49",
+      "label": "C2-E49",
+      "ordinal": 1,
+      "package_sha256": "22bfdda158574815a396d99593794b8d66b7aecf74f3126430401ca49b1ae1bc",
+      "status": "submitted_score_not_accessed",
+      "submission_id": 581812
+    },
+    {
+      "checkpoint_sha256": "83d56e8ce82a41ec711e0b2ec5e57d66488fae18252189123a107d5523d9352f",
+      "image_id": "sha256:a52f5e4a7f5b0d81611ac12fc05cd8c29fd7ef875950a10440a7d191bee1971f",
+      "image_tag": "h1-m3aware-v2-c2-hi-e45:a1",
+      "key": "c2_hi_e45",
+      "label": "C2-HI-E45",
+      "ordinal": 2,
+      "package_sha256": "5544861570199789e1a6585839abddadbf3ab514edeee83517ed96a4e846124d",
+      "status": "submitted_score_not_accessed",
+      "submission_id": 581813
+    },
+    {
+      "checkpoint_sha256": "ce46267eb220142b8ef1f2e5acf05194650796ac2752594995b40d2ad0950215",
+      "image_id": "sha256:6cc2f028cb0e7416e0dc9dedabce708d7e6be05de6ad0300ba2559baf5ba352f",
+      "image_tag": "h1-m3aware-v2-c2-ho-e15:a1",
+      "key": "c2_ho_e15",
+      "label": "C2-HO-E15",
+      "ordinal": 3,
+      "package_sha256": "f0c22090e430e9af7f3e231fbb6bb331ae3cfaf629493a92f87096020739907b",
+      "status": "submitted_score_not_accessed",
+      "submission_id": 581814
+    }
+  ],
+  "training": false
+}

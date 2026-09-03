@@ -1,0 +1,22 @@
+{
+  "backward_steps": 0,
+  "checkpoint_changes": 0,
+  "fixed_submission_order_preserved": true,
+  "image_changes": 0,
+  "manifest_changes": 0,
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "package_changes": 0,
+  "reason": "registry emitted final digest status without legacy aux event",
+  "remote_digests_match_local_image_ids": true,
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_evalai_submission_a1_registry_aux_compat_amendment",
+  "scores_accessed_before_all_three": false,
+  "selection_changes": 0,
+  "status": "COMPLETE_MANUAL_CREATE_AFTER_DIGEST_VERIFICATION",
+  "submission_ids": [
+    581812,
+    581813,
+    581814
+  ],
+  "training": false
+}

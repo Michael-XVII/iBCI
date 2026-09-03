@@ -1,0 +1,17 @@
+{
+  "backward_steps": 0,
+  "checkpoint_changes": 0,
+  "fresh_log_subroot": "submission_retry",
+  "image_changes": 0,
+  "manifest_changes": 0,
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "package_changes": 0,
+  "repair": "NO_PROXY for eval.ai/pypi.org and skip nonessential PyPI CLI update check",
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_evalai_submission_a1_evalai_connectivity_retry_amendment",
+  "scores_accessed_before_all_three": false,
+  "selection_changes": 0,
+  "status": "AUTHORIZED_INFRASTRUCTURE_ONLY_SUBMISSION_RETRY",
+  "submission_order_changes": 0,
+  "training": false
+}

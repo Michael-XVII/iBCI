@@ -1,0 +1,18 @@
+{
+  "candidate": "c2_e49",
+  "log_sha256": "e06b9955348d62ea953a709f8368c862dfd2846d122f47ade77f6842038f2543",
+  "model_updates": 0,
+  "new_submission_created": false,
+  "remote_phase_submission_ids_before_retry": [
+    581748,
+    581747,
+    577587,
+    576101,
+    576078,
+    577588
+  ],
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_evalai_submission_a1",
+  "scores_accessed": false,
+  "status": "FAIL_EVALAI_CONNECTIVITY_BEFORE_SUBMISSION_ID",
+  "training": false
+}
