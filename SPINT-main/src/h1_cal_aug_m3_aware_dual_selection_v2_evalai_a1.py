@@ -2,18 +2,20 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+import hashlib
 import io
 import json
 import os
 from pathlib import Path
 import re
 import shutil
+import stat
 import subprocess
+import uuid
 from typing import Any, Mapping
 
 import numpy as np
 
-from src.h1_hc_date_lodo_regen_v1 import _publish_bytes, publish_json, publish_text, verify_sidecar
 from src.h1_m4_cce_contract import sha256_file, state_hash
 
 
@@ -53,6 +55,49 @@ CANDIDATES: tuple[dict[str, Any], ...] = (
 
 class SubmissionA1Error(RuntimeError):
     pass
+
+
+def _publish_file(path: Path, data: bytes) -> None:
+    output = path.resolve()
+    if output.exists():
+        raise SubmissionA1Error(f"refuse to overwrite immutable artifact: {output}")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    temporary = output.parent / f".{output.name}.{uuid.uuid4().hex}.tmp"
+    try:
+        descriptor = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(descriptor, "wb") as handle:
+            handle.write(data); handle.flush(); os.fsync(handle.fileno())
+        os.chmod(temporary, 0o444)
+        os.link(temporary, output)
+    finally:
+        if temporary.exists():
+            temporary.unlink()
+    _need(stat.S_IMODE(output.stat().st_mode) == 0o444, f"artifact mode drift: {output}")
+
+
+def _publish_bytes(path: Path, data: bytes) -> str:
+    digest = hashlib.sha256(data).hexdigest()
+    _publish_file(path, data)
+    _publish_file(path.with_name(path.name + ".sha256"), f"{digest}  {path.name}\n".encode("utf-8"))
+    return digest
+
+
+def publish_json(path: Path, value: Mapping[str, Any]) -> str:
+    return _publish_bytes(path, (json.dumps(value, indent=2, sort_keys=True, allow_nan=False) + "\n").encode("utf-8"))
+
+
+def publish_text(path: Path, value: str) -> str:
+    return _publish_bytes(path, value.encode("utf-8"))
+
+
+def verify_sidecar(path: Path) -> str:
+    candidate = path.resolve(); sidecar = candidate.with_name(candidate.name + ".sha256")
+    _need(candidate.is_file() and sidecar.is_file(), f"artifact/sidecar missing: {candidate}")
+    _need(stat.S_IMODE(candidate.stat().st_mode) == stat.S_IMODE(sidecar.stat().st_mode) == 0o444, f"artifact/sidecar is not mode 0444: {candidate}")
+    fields = sidecar.read_text(encoding="utf-8").strip().split()
+    actual = sha256_file(candidate)
+    _need(len(fields) == 2 and fields[0] == actual and fields[1] == candidate.name, f"sidecar mismatch: {candidate}")
+    return actual
 
 
 def _need(condition: bool, message: str) -> None:

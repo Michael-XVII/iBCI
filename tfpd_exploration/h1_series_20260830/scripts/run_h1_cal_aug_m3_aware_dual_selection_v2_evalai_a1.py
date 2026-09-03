@@ -17,10 +17,9 @@ if str(SPINT_ROOT) not in sys.path:
 
 from src.h1_cal_aug_m3_aware_dual_selection_v2_evalai_a1 import (  # noqa: E402
     SCHEMA, build_and_smoke_images, collect_results, create_attempt,
-    create_submission_manifest, host_smoke, prepare_packages, submit_all,
-    verify_predecessor, verify_terminal,
+    create_submission_manifest, host_smoke, prepare_packages, publish_json, publish_text,
+    submit_all, verify_predecessor, verify_sidecar, verify_terminal,
 )
-from src.h1_hc_date_lodo_regen_v1 import publish_json, publish_text, verify_sidecar  # noqa: E402
 from src.h1_m4_cce_contract import canonical_sha256, sha256_file  # noqa: E402
 
 
@@ -35,6 +34,7 @@ WORK_ORDER = REPO_ROOT / "tfpd_exploration/h1_series_20260830/docs/WORKORDER_H1_
 MODULE = SPINT_ROOT / "src/h1_cal_aug_m3_aware_dual_selection_v2_evalai_a1.py"
 TEST = SPINT_ROOT / "tests/test_h1_cal_aug_m3_aware_dual_selection_v2_evalai_a1.py"
 AMENDMENT = REPO_ROOT / "tfpd_exploration/h1_series_20260830/docs/AMENDMENT_H1_CAL_AUG_M3_AWARE_DUAL_SELECTION_V2_EVALAI_A1_HOST_SMOKE.md"
+AMENDMENT_RUNTIME = REPO_ROOT / "tfpd_exploration/h1_series_20260830/docs/AMENDMENT_H1_CAL_AUG_M3_AWARE_DUAL_SELECTION_V2_EVALAI_A1_RUNTIME_DEPENDENCY.md"
 
 
 def git_head() -> str:
@@ -43,7 +43,7 @@ def git_head() -> str:
 
 def closure() -> dict[str, str]:
     files = (
-        WORK_ORDER, AMENDMENT, MODULE, TEST, Path(__file__).resolve(),
+        WORK_ORDER, AMENDMENT, AMENDMENT_RUNTIME, MODULE, TEST, Path(__file__).resolve(),
         SPINT_ROOT / "third_party/falcon_challenge/h1_carrier_id_spint_decoder.py",
         SPINT_ROOT / "third_party/falcon_challenge/h1_carrier_id_spint_sample.py",
         SPINT_ROOT / "third_party/falcon_challenge/h1_carrier_id_spint_sample.Dockerfile",
@@ -56,9 +56,15 @@ def assert_attempt(result_root: Path) -> dict:
     attempt = json.loads((result_root / "attempt.json").read_text(encoding="utf-8"))
     verify_sidecar(result_root / "attempt.json")
     if attempt["code_closure"] != closure() or attempt["git_head"] != git_head():
-        amendment = json.loads((result_root / "amendment/host_smoke_a1.json").read_text(encoding="utf-8"))
-        verify_sidecar(result_root / "amendment/host_smoke_a1.json")
-        if amendment["code_closure"] != closure() or amendment["git_head"] != git_head():
+        matched = False
+        for relative in ("amendment/runtime_dependency_a1.json", "amendment/host_smoke_a1.json"):
+            path = result_root / relative
+            if path.exists():
+                amendment = json.loads(path.read_text(encoding="utf-8")); verify_sidecar(path)
+                matched = amendment["code_closure"] == closure() and amendment["git_head"] == git_head()
+                if matched:
+                    break
+        if not matched:
             raise RuntimeError("immutable attempt/amendment code closure or Git HEAD drift")
     return attempt
 
@@ -103,6 +109,25 @@ def amend_host_smoke(args) -> None:
     })
 
 
+def amend_runtime_dependency(args) -> None:
+    if (args.result_root / "host_smoke.json").exists() or (args.result_root / "docker/authority.json").exists():
+        raise RuntimeError("host/Docker authority already exists; runtime amendment is not applicable")
+    publish_json(args.result_root / "runtime_dependency_failure.json", {
+        "schema": SCHEMA, "status": "FAIL_HOST_SMOKE_UNNECESSARY_LIGHTNING_IMPORT",
+        "error": "falcon runtime lacked Lightning imported transitively by receipt helper",
+        "gpu_inference_reached": False, "docker_images": 0, "evalai_submissions": 0,
+        "training": False, "optimizer_steps": 0, "backward_steps": 0, "model_updates": 0,
+    })
+    publish_json(args.result_root / "amendment/runtime_dependency_a1.json", {
+        "schema": f"{SCHEMA}_runtime_dependency_amendment", "status": "ADDITIVE_RUNTIME_DEPENDENCY_REPAIR",
+        "git_head": git_head(), "code_closure": closure(), "code_closure_sha256": canonical_sha256(closure()),
+        "change": "local immutable receipt helpers remove training-only Lightning import",
+        "package_changes": 0, "checkpoint_changes": 0, "selection_changes": 0,
+        "training": False, "optimizer_steps": 0, "backward_steps": 0, "model_updates": 0,
+        "docker_images": 0, "evalai_submissions": 0,
+    })
+
+
 def dry_run() -> dict:
     return {
         "schema": SCHEMA, "status": "DRY_RUN_NO_WRITE_NO_CUDA_NO_DOCKER_NO_EVALAI",
@@ -118,6 +143,7 @@ def parser() -> argparse.ArgumentParser:
     phases.add_argument("--dry-run", action="store_true")
     phases.add_argument("--initialize", action="store_true")
     phases.add_argument("--amend-host-smoke", action="store_true")
+    phases.add_argument("--amend-runtime-dependency", action="store_true")
     phases.add_argument("--prepare-packages", action="store_true")
     phases.add_argument("--host-smoke", action="store_true")
     phases.add_argument("--build-docker", action="store_true")
@@ -132,13 +158,15 @@ def parser() -> argparse.ArgumentParser:
 
 def main(argv=None) -> int:
     args = parser().parse_args(argv)
-    if not any((args.initialize, args.amend_host_smoke, args.prepare_packages, args.host_smoke, args.build_docker, args.seal_manifest, args.submit_all, args.collect_results, args.verify_terminal)):
+    if not any((args.initialize, args.amend_host_smoke, args.amend_runtime_dependency, args.prepare_packages, args.host_smoke, args.build_docker, args.seal_manifest, args.submit_all, args.collect_results, args.verify_terminal)):
         print(json.dumps(dry_run(), indent=2, sort_keys=True)); return 0
     os.environ["TQDM_DISABLE"] = "1"
     if args.initialize:
         initialize(args); return 0
     if args.amend_host_smoke:
         amend_host_smoke(args); return 0
+    if args.amend_runtime_dependency:
+        amend_runtime_dependency(args); return 0
     assert_attempt(args.result_root)
     if args.prepare_packages:
         prepare_packages(args.result_root, V1_PACKAGE_ROOT)

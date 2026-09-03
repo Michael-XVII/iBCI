@@ -73,3 +73,9 @@ def test_host_smoke_amendment_keeps_exact_repeats_and_tolerant_cross_batch() -> 
     assert "np.array_equal(first, second)" in module
     assert "np.allclose(cpu1, cpu8" in module and "np.allclose(gpu1, gpu8" in module
     assert "Packages, checkpoints" in amendment
+
+
+def test_runtime_amendment_removes_training_dependency() -> None:
+    module = (ROOT / "SPINT-main/src/h1_cal_aug_m3_aware_dual_selection_v2_evalai_a1.py").read_text()
+    assert "h1_hc_date_lodo_regen_v1" not in module
+    assert "def verify_sidecar" in module and "def publish_json" in module
