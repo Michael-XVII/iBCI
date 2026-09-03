@@ -1,0 +1,35 @@
+{
+  "artifact": "attempt",
+  "checkpoint_selection_during_training": false,
+  "closure": {
+    "SPINT-main/src/data/h1_m4_eb_pilot.py": "8f459b7a06c1b18865fc602b10e46876b4bb1dbf7ecba0fdf8e8f654737c86cb",
+    "SPINT-main/src/h1_cal_aug_all_source_m3_deployment_v1_contract.py": "a4b9728152ffa8cc97e968c6b5059684f1cd288531178f4089fa256a763fdf7f",
+    "SPINT-main/src/h1_cal_aug_all_source_m3_deployment_v1_exec.py": "dd2e6b89313aceb351ce9ca358acc13ad1146a84c5cdd90a34f379035a4e3124",
+    "SPINT-main/src/h1_cal_aug_m3_aware_dual_selection_v2_contract.py": "52395d942e0fc699481d5ace081afc31d5ab6019acc201e066de2b850453389e",
+    "SPINT-main/src/h1_cal_aug_m3_aware_dual_selection_v2_exec.py": "a98525e0727cb4ba5c20d2d39eda143878dd56e09d41935a5fffc6b00c75bf25",
+    "SPINT-main/src/h1_cal_aug_prefix_cycle_v1.py": "5fff58c44e7d926ce429803ae31ca78b7c1a41a9572732730178bd5a9c583278",
+    "SPINT-main/src/h1_hc_date_lodo_regen_v1.py": "7e8a3000270b7eb7c703889a62fbd473738b0a5f3f272d9cbc57b46db1495a4e",
+    "SPINT-main/src/models/components/h1_carrierid_spint.py": "fcea04965e8fd80bf84ca290ad3d22971b37df3050f9d178e0ac1c3dc91b4618",
+    "SPINT-main/tests/test_h1_cal_aug_m3_aware_dual_selection_v2.py": "6f5f36a585823f41703536bb4f47a72d3d5f826fc35c2af62bfbc5851ae50c2c",
+    "SPINT-main/third_party/falcon_challenge/h1_carrier_id_spint_decoder.py": "ab7ec7cb644c9c992378863abf387d70e4f07c7cd24fffe909bb19f9fab05c63",
+    "tfpd_exploration/h1_series_20260830/H1_CAL_AUG_M3_AWARE_DUAL_SELECTION_V2_WORK_ORDER.md": "b23c5fb1b2ba5a1eea2f62516e8463894c63e28db197682818af9a8716970423",
+    "tfpd_exploration/h1_series_20260830/scripts/run_h1_cal_aug_m3_aware_dual_selection_v2.py": "7ccd7bd803869d188055bcd1135b0581eabde34b1f4ec8cd86204b8c1f807ab4"
+  },
+  "code_closure_sha256": "4b0606578373841f675ecd3331ec59d4f7003b3b6aba15124772486258207b7c",
+  "created_at_utc": "2026-09-03T10:17:15.821037+00:00",
+  "cuda_initialized": false,
+  "docker_builds": 0,
+  "evalai_submissions": 0,
+  "git_head": "9a5b475a9edd9bee83fa71ca927200c59697be84",
+  "heldin_calib_opened": 0,
+  "heldin_minival_opened": 0,
+  "heldout_calib_opened": 0,
+  "interleaved_validation": false,
+  "predecessor_commit": "84c7aaecb656be812d046317fec07783fa6701a4",
+  "predecessor_root": "/home/ial-mohd/workspace/iBCI/tfpd_exploration/h1_series_20260830/results/h1_cal_aug_all_source_m3_deployment_v1",
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2",
+  "status": "ATTEMPT_BEFORE_DATA_AND_CUDA",
+  "training_arms": [
+    "c2"
+  ]
+}

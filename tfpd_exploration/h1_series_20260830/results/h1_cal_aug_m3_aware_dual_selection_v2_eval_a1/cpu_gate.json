@@ -1,0 +1,10 @@
+{
+  "cuda_initialized": false,
+  "evalai_submissions": 0,
+  "log_sha256": "5c10fe8b393f029da49699ed7398e242c7486f9fe5d6ddb656d9a498e8502165",
+  "nwb_files_opened": 0,
+  "returncode": 0,
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_eval_a1_cpu_gate",
+  "status": "PASS_CPU_NO_DATA_GATE",
+  "training": false
+}

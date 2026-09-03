@@ -1,0 +1,12 @@
+{
+  "backward_steps": 0,
+  "candidate_count_per_surface": 51,
+  "heldin_calib_opened_for_m3": 13,
+  "heldin_minival_recordings_per_candidate": 13,
+  "heldout_calib_opened_for_m3": 14,
+  "heldout_calib_recordings_per_candidate": 14,
+  "ho_role": "development/model-selection; not untouched held-out generalization",
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_eval_a1_target_access"
+}

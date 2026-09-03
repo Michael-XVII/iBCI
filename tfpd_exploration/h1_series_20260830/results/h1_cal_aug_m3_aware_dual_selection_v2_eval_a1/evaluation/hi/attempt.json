@@ -1,0 +1,10 @@
+{
+  "backward_steps": 0,
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "physical_gpu": 0,
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_eval_a1",
+  "status": "SURFACE_ATTEMPT_BEFORE_CUDA_AND_TARGET",
+  "surface": "hi",
+  "training": false
+}

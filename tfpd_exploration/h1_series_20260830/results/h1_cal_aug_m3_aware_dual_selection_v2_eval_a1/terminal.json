@@ -1,0 +1,17 @@
+{
+  "automatic_successor": false,
+  "backward_steps": 0,
+  "c2_hi_epoch": 45,
+  "c2_hi_selection_sha256": "9cd14a432302d549cfa99f81e2a002ade54fadda9ad354f5e6ef8dbe809b6493",
+  "c2_ho_epoch": 15,
+  "c2_ho_selection_sha256": "73e2666b1121685ab0d953a72073c4c8b0bc48fbac9d0ca63b0461985a1bdfdc",
+  "docker_builds": 0,
+  "dual_selection_sha256": "c73d63a56209f007144cc58fc2c78b297d5961770d2100e19352f90204d26433",
+  "evalai_submissions": 0,
+  "finished_at_utc": "2026-09-03T14:15:44.998481+00:00",
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_eval_a1",
+  "status": "COMPLETE_H1_CAL_AUG_M3_AWARE_DUAL_SELECTION_V2_EVAL_A1_NO_SUBMISSION",
+  "stop_boundary": "local dual selection complete; no Docker or EvalAI"
+}

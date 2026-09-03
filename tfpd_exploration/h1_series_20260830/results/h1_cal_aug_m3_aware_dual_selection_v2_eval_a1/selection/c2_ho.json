@@ -1,0 +1,47 @@
+{
+  "retraining": false,
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_eval_a1_selection",
+  "secondary_not_used": "val_ho_m3_spint14/r2_mean",
+  "selected": {
+    "checkpoint_sha256": "ce46267eb220142b8ef1f2e5acf05194650796ac2752594995b40d2ad0950215",
+    "epoch_zero_based": 15,
+    "per_recording_r2": {
+      "S10_set_1": 0.47851338047919434,
+      "S10_set_2": 0.29366275502466416,
+      "S11_set_1": 0.47193973523937494,
+      "S11_set_2": 0.7138004945955161,
+      "S12_set_1": 0.4968078949575544,
+      "S12_set_2": 0.4227053351595791,
+      "S6_set_1": 0.5146853206927835,
+      "S6_set_2": 0.5129315272102443,
+      "S7_set_1": 0.4260400376440469,
+      "S7_set_2": 0.16870080238124788,
+      "S8_set_1": 0.3475678452940866,
+      "S8_set_2": 0.20489603895930766,
+      "S9_set_1": 0.4043968007280022,
+      "S9_set_2": 0.2311611312104387
+    },
+    "per_session_r2": {
+      "S10": 0.3865914332196803,
+      "S11": 0.5906549778122908,
+      "S12": 0.46033924167117346,
+      "S6": 0.5139005723197556,
+      "S7": 0.292971450574288,
+      "S8": 0.27792672991541684,
+      "S9": 0.316856912791892
+    },
+    "session_std_population": 0.11096528304631516,
+    "val_ho_m3_grouped/r2_mean": 0.4056059026149282,
+    "val_ho_m3_spint14/r2_mean": 0.4062720785411457,
+    "worst_session_r2": 0.27792672991541684
+  },
+  "selection_metric": "val_ho_m3_grouped/r2_mean",
+  "status": "SEALED_C2_HO_SELECTION",
+  "surface": "HO-M3 development/model-selection",
+  "tie_break": [
+    "higher mean",
+    "higher worst-session",
+    "lower population std",
+    "earlier epoch"
+  ]
+}

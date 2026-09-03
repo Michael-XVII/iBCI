@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/home/ial-mohd/workspace/envs/spint/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "/home/ial-mohd/workspace/iBCI/SPINT-main/tests/test_h1_cal_aug_m3_aware_dual_selection_v2.py"
+  ],
+  "cuda_initialized": false,
+  "docker_builds": 0,
+  "evalai_submissions": 0,
+  "log_sha256": "50fd3e3a5f872f6ae24b23ce8579772dec75f44cb8d704feb269d3ca383d6d49",
+  "nwb_files_opened": 0,
+  "returncode": 0,
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_cpu_gate",
+  "status": "PASS_CPU_NO_DATA_GATE"
+}

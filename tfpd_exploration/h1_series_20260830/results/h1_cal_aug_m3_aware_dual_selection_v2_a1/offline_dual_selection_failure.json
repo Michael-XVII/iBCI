@@ -1,0 +1,10 @@
+{
+  "automatic_retry": false,
+  "docker_builds": 0,
+  "error": "strict M=4 support/query requires at least five eval-valid TrialNum trials",
+  "error_type": "PilotDataError",
+  "evalai_submissions": 0,
+  "phase": "offline_dual_selection",
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2",
+  "status": "FAIL_IMMUTABLE_NO_AUTOMATIC_RETRY"
+}

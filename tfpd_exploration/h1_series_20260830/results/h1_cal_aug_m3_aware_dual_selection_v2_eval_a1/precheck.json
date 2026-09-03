@@ -1,0 +1,22 @@
+{
+  "disk_free_bytes": 38333382656,
+  "gpu_resource_polling": false,
+  "gpus": [
+    {
+      "free_mib": 11334,
+      "name": "NVIDIA GeForce RTX 5090",
+      "physical_gpu": 0,
+      "total_mib": 32607,
+      "uuid": "GPU-4939047f-448c-ca8f-1297-84432dc27d0b"
+    },
+    {
+      "free_mib": 24317,
+      "name": "NVIDIA GeForce RTX 5090",
+      "physical_gpu": 1,
+      "total_mib": 32607,
+      "uuid": "GPU-e2821dd7-a910-e611-5f5d-306b5f793db7"
+    }
+  ],
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_eval_a1_precheck",
+  "status": "PASS_ONE_TIME_DUAL_GPU_PRECHECK"
+}

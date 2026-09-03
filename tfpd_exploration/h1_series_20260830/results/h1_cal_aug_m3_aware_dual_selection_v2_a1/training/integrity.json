@@ -1,0 +1,21 @@
+{
+  "all_epoch_checkpoints_verified": true,
+  "backward_steps_on_target": 0,
+  "batch_order_bound": true,
+  "c2_terminal_sha256": "4441daeeeecb3bb0e3b27f7611e54a8cfd8400d9de52da9c80103b76fe2cd713",
+  "checkpoint_count": 50,
+  "dropout_probability_sequence_matched": true,
+  "global_step": 206650,
+  "initial_state_identical": true,
+  "interleaved_validation_runs": 0,
+  "m4_carrier_bound": true,
+  "m7_schedule_bound": true,
+  "model_updates_on_target": 0,
+  "optimizer_steps_on_target": 0,
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_training_integrity",
+  "source_authority_bound": true,
+  "source_tensor_surface_bound": true,
+  "status": "PASS_H1_M3_AWARE_V2_TRAINING_INTEGRITY",
+  "v1_c1_checkpoint_sha256": "0f406a8e69fdb57cf6a5480149f04ab3500e7fad849d36db38042edbadb2cd06",
+  "v1_c1_terminal_sha256": "873c431fdb3194787c9f46a24c3389db3a40365e7e13926300265dfbd9583082"
+}

@@ -1,0 +1,43 @@
+{
+  "retraining": false,
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_eval_a1_selection",
+  "selected": {
+    "checkpoint_sha256": "83d56e8ce82a41ec711e0b2ec5e57d66488fae18252189123a107d5523d9352f",
+    "epoch_zero_based": 45,
+    "per_recording_r2": {
+      "S0_set_1": 0.974070596610949,
+      "S0_set_2": 0.9581300566717112,
+      "S1_set_1": 0.9619661178612819,
+      "S1_set_2": 0.9718889491948921,
+      "S1_set_3": 0.9763846330099428,
+      "S2_set_1": 0.9696581840958196,
+      "S2_set_2": 0.9729861416598651,
+      "S3_set_1": 0.9580895066109655,
+      "S3_set_2": 0.9743659816561566,
+      "S4_set_1": 0.9609289496070144,
+      "S4_set_2": 0.9619089755711672,
+      "S5_set_1": 0.9721440013836544,
+      "S5_set_2": 0.9615584772694193
+    },
+    "per_session_r2": {
+      "S0": 0.9676429139007673,
+      "S1": 0.9704675712997886,
+      "S2": 0.9714087485802795,
+      "S3": 0.9673695709708903,
+      "S4": 0.9614962277108844,
+      "S5": 0.9665739612608493
+    },
+    "session_std_population": 0.0031891686532005063,
+    "val_hi_m3_official/r2_mean": 0.9674931656205765,
+    "val_ho_m3_spint14/r2_mean": null,
+    "worst_session_r2": 0.9614962277108844
+  },
+  "status": "SEALED_C2_HI_SELECTION",
+  "surface": "HI-M3",
+  "tie_break": [
+    "higher mean",
+    "higher worst-session",
+    "lower population std",
+    "earlier epoch"
+  ]
+}

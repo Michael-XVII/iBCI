@@ -1,0 +1,31 @@
+{
+  "backward_steps": 0,
+  "checkpoint_selection_during_training": false,
+  "closure": {
+    "SPINT-main/src/data/h1_m4_eb_pilot.py": "8f459b7a06c1b18865fc602b10e46876b4bb1dbf7ecba0fdf8e8f654737c86cb",
+    "SPINT-main/src/h1_cal_aug_all_source_m3_deployment_v1_contract.py": "a4b9728152ffa8cc97e968c6b5059684f1cd288531178f4089fa256a763fdf7f",
+    "SPINT-main/src/h1_cal_aug_all_source_m3_deployment_v1_exec.py": "dd2e6b89313aceb351ce9ca358acc13ad1146a84c5cdd90a34f379035a4e3124",
+    "SPINT-main/src/h1_cal_aug_m3_aware_dual_selection_v2_contract.py": "52395d942e0fc699481d5ace081afc31d5ab6019acc201e066de2b850453389e",
+    "SPINT-main/src/h1_cal_aug_m3_aware_dual_selection_v2_eval_a1.py": "7c4f76385865b0d3bbcfc62b8bf11d076409f895d1b1c5b263eb263d07d24bc4",
+    "SPINT-main/src/h1_cal_aug_m3_aware_dual_selection_v2_exec.py": "a98525e0727cb4ba5c20d2d39eda143878dd56e09d41935a5fffc6b00c75bf25",
+    "SPINT-main/src/h1_hc_date_lodo_regen_v1.py": "7e8a3000270b7eb7c703889a62fbd473738b0a5f3f272d9cbc57b46db1495a4e",
+    "SPINT-main/src/models/components/h1_carrierid_spint.py": "fcea04965e8fd80bf84ca290ad3d22971b37df3050f9d178e0ac1c3dc91b4618",
+    "SPINT-main/tests/test_h1_cal_aug_m3_aware_dual_selection_v2.py": "6f5f36a585823f41703536bb4f47a72d3d5f826fc35c2af62bfbc5851ae50c2c",
+    "SPINT-main/tests/test_h1_cal_aug_m3_aware_dual_selection_v2_eval_a1.py": "adb61be45d89ff6df96108ff91fda741ae233bc3fda65d3ec42cc075f52a2a1f",
+    "SPINT-main/third_party/falcon_challenge/h1_carrier_id_spint_decoder.py": "ab7ec7cb644c9c992378863abf387d70e4f07c7cd24fffe909bb19f9fab05c63",
+    "tfpd_exploration/h1_series_20260830/H1_CAL_AUG_M3_AWARE_DUAL_SELECTION_V2_WORK_ORDER.md": "b23c5fb1b2ba5a1eea2f62516e8463894c63e28db197682818af9a8716970423",
+    "tfpd_exploration/h1_series_20260830/docs/AMENDMENT_H1_CAL_AUG_M3_AWARE_DUAL_SELECTION_V2_EVAL_A1.md": "8704a8e545bc38ac2075bd80d57336603aae75a76091dc0ad84566e11ddfb843",
+    "tfpd_exploration/h1_series_20260830/scripts/run_h1_cal_aug_m3_aware_dual_selection_v2_eval_a1.py": "01839ce5e54d95d24ac392043a2ad545993181a043d429e4a0181196ae9253d8"
+  },
+  "code_closure_sha256": "404e37e5af8fb3c25bdcd197d66393dd2444874c4be3c8f61dad638881e92fbe",
+  "created_at_utc": "2026-09-03T14:06:47.356835+00:00",
+  "docker_builds": 0,
+  "evalai_submissions": 0,
+  "git_head": "48395e269e14ddbb5b09222a41e173a46963d69a",
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_eval_a1",
+  "status": "ATTEMPT_EVALUATION_ONLY_BEFORE_DATA_AND_CUDA",
+  "training": false,
+  "training_root": "/home/ial-mohd/workspace/iBCI/tfpd_exploration/h1_series_20260830/results/h1_cal_aug_m3_aware_dual_selection_v2_a1"
+}
