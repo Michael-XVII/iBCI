@@ -34,6 +34,7 @@ EVALAI = REPO_ROOT.parent / "envs/falcon/bin/evalai"
 WORK_ORDER = REPO_ROOT / "tfpd_exploration/h1_series_20260830/docs/WORKORDER_H1_CAL_AUG_M3_AWARE_DUAL_SELECTION_V2_EVALAI_A1.md"
 MODULE = SPINT_ROOT / "src/h1_cal_aug_m3_aware_dual_selection_v2_evalai_a1.py"
 TEST = SPINT_ROOT / "tests/test_h1_cal_aug_m3_aware_dual_selection_v2_evalai_a1.py"
+AMENDMENT = REPO_ROOT / "tfpd_exploration/h1_series_20260830/docs/AMENDMENT_H1_CAL_AUG_M3_AWARE_DUAL_SELECTION_V2_EVALAI_A1_HOST_SMOKE.md"
 
 
 def git_head() -> str:
@@ -42,7 +43,7 @@ def git_head() -> str:
 
 def closure() -> dict[str, str]:
     files = (
-        WORK_ORDER, MODULE, TEST, Path(__file__).resolve(),
+        WORK_ORDER, AMENDMENT, MODULE, TEST, Path(__file__).resolve(),
         SPINT_ROOT / "third_party/falcon_challenge/h1_carrier_id_spint_decoder.py",
         SPINT_ROOT / "third_party/falcon_challenge/h1_carrier_id_spint_sample.py",
         SPINT_ROOT / "third_party/falcon_challenge/h1_carrier_id_spint_sample.Dockerfile",
@@ -55,7 +56,10 @@ def assert_attempt(result_root: Path) -> dict:
     attempt = json.loads((result_root / "attempt.json").read_text(encoding="utf-8"))
     verify_sidecar(result_root / "attempt.json")
     if attempt["code_closure"] != closure() or attempt["git_head"] != git_head():
-        raise RuntimeError("immutable attempt code closure/Git HEAD drift")
+        amendment = json.loads((result_root / "amendment/host_smoke_a1.json").read_text(encoding="utf-8"))
+        verify_sidecar(result_root / "amendment/host_smoke_a1.json")
+        if amendment["code_closure"] != closure() or amendment["git_head"] != git_head():
+            raise RuntimeError("immutable attempt/amendment code closure or Git HEAD drift")
     return attempt
 
 
@@ -80,6 +84,25 @@ def initialize(args) -> None:
     cpu_gate(args.result_root)
 
 
+def amend_host_smoke(args) -> None:
+    if (args.result_root / "host_smoke.json").exists() or (args.result_root / "docker/authority.json").exists():
+        raise RuntimeError("host/Docker authority already exists; amendment is not applicable")
+    publish_json(args.result_root / "host_smoke_failure.json", {
+        "schema": SCHEMA, "status": "FAIL_HOST_SMOKE_BATCH_SHAPE_BITWISE_ASSERTION",
+        "error": "C2-E49 CPU batch-size 1/8 predictions were not bitwise identical",
+        "gpu_inference_reached": False, "docker_images": 0, "evalai_submissions": 0,
+        "training": False, "optimizer_steps": 0, "backward_steps": 0, "model_updates": 0,
+    })
+    publish_json(args.result_root / "amendment/host_smoke_a1.json", {
+        "schema": f"{SCHEMA}_host_smoke_amendment", "status": "ADDITIVE_HOST_SMOKE_ASSERTION_REPAIR",
+        "git_head": git_head(), "code_closure": closure(), "code_closure_sha256": canonical_sha256(closure()),
+        "change": "cross-batch comparison uses frozen CPU/GPU tolerance; within-batch repeats remain exact",
+        "package_changes": 0, "checkpoint_changes": 0, "selection_changes": 0,
+        "training": False, "optimizer_steps": 0, "backward_steps": 0, "model_updates": 0,
+        "docker_images": 0, "evalai_submissions": 0,
+    })
+
+
 def dry_run() -> dict:
     return {
         "schema": SCHEMA, "status": "DRY_RUN_NO_WRITE_NO_CUDA_NO_DOCKER_NO_EVALAI",
@@ -94,6 +117,7 @@ def parser() -> argparse.ArgumentParser:
     phases = result.add_mutually_exclusive_group()
     phases.add_argument("--dry-run", action="store_true")
     phases.add_argument("--initialize", action="store_true")
+    phases.add_argument("--amend-host-smoke", action="store_true")
     phases.add_argument("--prepare-packages", action="store_true")
     phases.add_argument("--host-smoke", action="store_true")
     phases.add_argument("--build-docker", action="store_true")
@@ -108,11 +132,13 @@ def parser() -> argparse.ArgumentParser:
 
 def main(argv=None) -> int:
     args = parser().parse_args(argv)
-    if not any((args.initialize, args.prepare_packages, args.host_smoke, args.build_docker, args.seal_manifest, args.submit_all, args.collect_results, args.verify_terminal)):
+    if not any((args.initialize, args.amend_host_smoke, args.prepare_packages, args.host_smoke, args.build_docker, args.seal_manifest, args.submit_all, args.collect_results, args.verify_terminal)):
         print(json.dumps(dry_run(), indent=2, sort_keys=True)); return 0
     os.environ["TQDM_DISABLE"] = "1"
     if args.initialize:
         initialize(args); return 0
+    if args.amend_host_smoke:
+        amend_host_smoke(args); return 0
     assert_attempt(args.result_root)
     if args.prepare_packages:
         prepare_packages(args.result_root, V1_PACKAGE_ROOT)

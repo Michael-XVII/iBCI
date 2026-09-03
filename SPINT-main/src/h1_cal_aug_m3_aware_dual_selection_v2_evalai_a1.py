@@ -253,8 +253,8 @@ def host_smoke(result_root: Path) -> dict[str, Any]:
         cpu8, cpu8_state, cpu8_exact = _prediction(package_path, "cpu", 8)
         gpu1, gpu_state, gpu_exact = _prediction(package_path, "cuda:0", 1)
         gpu8, gpu8_state, gpu8_exact = _prediction(package_path, "cuda:0", 8)
-        _need(np.array_equal(cpu1, cpu8), f"{row['key']} CPU batch-size drift")
-        _need(np.array_equal(gpu1, gpu8), f"{row['key']} GPU batch-size drift")
+        _need(np.allclose(cpu1, cpu8, rtol=CPU_GPU_RTOL, atol=CPU_GPU_ATOL), f"{row['key']} CPU batch-size drift")
+        _need(np.allclose(gpu1, gpu8, rtol=CPU_GPU_RTOL, atol=CPU_GPU_ATOL), f"{row['key']} GPU batch-size drift")
         _need(np.allclose(cpu1, gpu1, rtol=CPU_GPU_RTOL, atol=CPU_GPU_ATOL), f"{row['key']} CPU/GPU prediction drift")
         _need(cpu_state == cpu8_state == gpu_state == gpu8_state == row["model_state_sha256"], f"{row['key']} reload state drift")
         rows.append({

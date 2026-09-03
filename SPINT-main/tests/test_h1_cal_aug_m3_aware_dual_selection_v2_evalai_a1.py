@@ -65,3 +65,11 @@ def test_no_training_or_checkpoint_selection_code_path() -> None:
     for forbidden in ("optimizer.step", ".backward(", "load_state_dict(checkpoint", "early_stopping"):
         assert forbidden not in module
     assert '"training": False' in module and '"post_selection_retraining": False' in module
+
+
+def test_host_smoke_amendment_keeps_exact_repeats_and_tolerant_cross_batch() -> None:
+    module = (ROOT / "SPINT-main/src/h1_cal_aug_m3_aware_dual_selection_v2_evalai_a1.py").read_text()
+    amendment = (ROOT / "tfpd_exploration/h1_series_20260830/docs/AMENDMENT_H1_CAL_AUG_M3_AWARE_DUAL_SELECTION_V2_EVALAI_A1_HOST_SMOKE.md").read_text()
+    assert "np.array_equal(first, second)" in module
+    assert "np.allclose(cpu1, cpu8" in module and "np.allclose(gpu1, gpu8" in module
+    assert "Packages, checkpoints" in amendment
