@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/home/ial-mohd/workspace/envs/spint/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "/home/ial-mohd/workspace/iBCI/SPINT-main/tests/test_h1_cal_aug_all_source_m3_spint_style_heldout_calib_r2_v1.py"
+  ],
+  "cuda_visible_devices": "",
+  "evalai_submissions": 0,
+  "log_sha256": "5540e7a2ea3968196cebe4b70360994489f7900406d68a1a5b17aea9f25d5c96",
+  "nwb_files_opened": 0,
+  "returncode": 0,
+  "schema": "h1_cal_aug_all_source_m3_spint_style_heldout_calib_r2_v1_cpu_gate",
+  "status": "PASS_H1_M3_SPINT_STYLE_HELDOUT_CALIB_CPU_GATE",
+  "training": false
+}

@@ -1,0 +1,226 @@
+{
+  "arms": [
+    {
+      "arm": "t0",
+      "bytes_read": 19082810,
+      "files": [
+        {
+          "bytes": 1472872,
+          "falcon_key": "S6_set_1",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250126T113454.nwb",
+          "session": "ses-19250126T113454",
+          "sha256": "6fcdb0441ee732bf0b7ac633312b8feac426e5d461218b30b99ac8de6477d553"
+        },
+        {
+          "bytes": 1431320,
+          "falcon_key": "S6_set_2",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250126T114029.nwb",
+          "session": "ses-19250126T114029",
+          "sha256": "82a75e51605598fbb81997c2f0c2847ee22c0b578c8a4029401bbc02422e5946"
+        },
+        {
+          "bytes": 1505958,
+          "falcon_key": "S7_set_1",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250127T120333.nwb",
+          "session": "ses-19250127T120333",
+          "sha256": "c0f2c2bf9589ef138e3cb5aa96b123d7146db6ab994d9a228f17824a9a900068"
+        },
+        {
+          "bytes": 1415291,
+          "falcon_key": "S7_set_2",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250127T120826.nwb",
+          "session": "ses-19250127T120826",
+          "sha256": "e6f5c4763776eca2a8a807cbfa45219e1492915151d54f531cc13d1884ceff92"
+        },
+        {
+          "bytes": 1351985,
+          "falcon_key": "S8_set_1",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250129T112555.nwb",
+          "session": "ses-19250129T112555",
+          "sha256": "e8b7c769b6b5296273cece03b1a2ad57d1ff166f5b9875acce46345912838109"
+        },
+        {
+          "bytes": 1254631,
+          "falcon_key": "S8_set_2",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250129T113059.nwb",
+          "session": "ses-19250129T113059",
+          "sha256": "f8eb0cdcd5105448411028b348de89c899e9598898667161356a5fd3103600a5"
+        },
+        {
+          "bytes": 1381886,
+          "falcon_key": "S9_set_1",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250202T113958.nwb",
+          "session": "ses-19250202T113958",
+          "sha256": "eb76704aa5828f91e500879e912b4a22f65ec80a1a1fa6eea2ab0af0260f9560"
+        },
+        {
+          "bytes": 1271944,
+          "falcon_key": "S9_set_2",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250202T114452.nwb",
+          "session": "ses-19250202T114452",
+          "sha256": "07aec96a8acdb6e9c89e724f9a9ed7ffb9fafec4bc8d331be59dc7770e6c27b0"
+        },
+        {
+          "bytes": 1206269,
+          "falcon_key": "S10_set_1",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250203T113515.nwb",
+          "session": "ses-19250203T113515",
+          "sha256": "354813371b8d6d8ea933a15895570646c62406ee31e705a881b57758da0d2d51"
+        },
+        {
+          "bytes": 1172811,
+          "falcon_key": "S10_set_2",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250203T114018.nwb",
+          "session": "ses-19250203T114018",
+          "sha256": "745d0b9ec3487f6f68d85e826215574cf7f133314c54e3a7485e0022492fd4ef"
+        },
+        {
+          "bytes": 1363294,
+          "falcon_key": "S11_set_1",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250206T112219.nwb",
+          "session": "ses-19250206T112219",
+          "sha256": "ab254456922d99b54237f9634c1985e8f59900f94befc6c8f31f426cbba9e3ea"
+        },
+        {
+          "bytes": 1360362,
+          "falcon_key": "S11_set_2",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250206T112712.nwb",
+          "session": "ses-19250206T112712",
+          "sha256": "94b2341973c2bdfacdd8e791883ceb0914600ccb4d7e280758a358072b4018ef"
+        },
+        {
+          "bytes": 1509485,
+          "falcon_key": "S12_set_1",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250209T111826.nwb",
+          "session": "ses-19250209T111826",
+          "sha256": "301d6bd105c3e86f25d95557693dd38bbb39a8341e358087cdcfb4d3342eb761"
+        },
+        {
+          "bytes": 1384702,
+          "falcon_key": "S12_set_2",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250209T112327.nwb",
+          "session": "ses-19250209T112327",
+          "sha256": "48acb759e00a07615b4a7929d58637e625af6b5cefd423a7f6be5e179d4ac937"
+        }
+      ],
+      "recordings_opened": 14
+    },
+    {
+      "arm": "c1",
+      "bytes_read": 19082810,
+      "files": [
+        {
+          "bytes": 1472872,
+          "falcon_key": "S6_set_1",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250126T113454.nwb",
+          "session": "ses-19250126T113454",
+          "sha256": "6fcdb0441ee732bf0b7ac633312b8feac426e5d461218b30b99ac8de6477d553"
+        },
+        {
+          "bytes": 1431320,
+          "falcon_key": "S6_set_2",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250126T114029.nwb",
+          "session": "ses-19250126T114029",
+          "sha256": "82a75e51605598fbb81997c2f0c2847ee22c0b578c8a4029401bbc02422e5946"
+        },
+        {
+          "bytes": 1505958,
+          "falcon_key": "S7_set_1",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250127T120333.nwb",
+          "session": "ses-19250127T120333",
+          "sha256": "c0f2c2bf9589ef138e3cb5aa96b123d7146db6ab994d9a228f17824a9a900068"
+        },
+        {
+          "bytes": 1415291,
+          "falcon_key": "S7_set_2",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250127T120826.nwb",
+          "session": "ses-19250127T120826",
+          "sha256": "e6f5c4763776eca2a8a807cbfa45219e1492915151d54f531cc13d1884ceff92"
+        },
+        {
+          "bytes": 1351985,
+          "falcon_key": "S8_set_1",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250129T112555.nwb",
+          "session": "ses-19250129T112555",
+          "sha256": "e8b7c769b6b5296273cece03b1a2ad57d1ff166f5b9875acce46345912838109"
+        },
+        {
+          "bytes": 1254631,
+          "falcon_key": "S8_set_2",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250129T113059.nwb",
+          "session": "ses-19250129T113059",
+          "sha256": "f8eb0cdcd5105448411028b348de89c899e9598898667161356a5fd3103600a5"
+        },
+        {
+          "bytes": 1381886,
+          "falcon_key": "S9_set_1",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250202T113958.nwb",
+          "session": "ses-19250202T113958",
+          "sha256": "eb76704aa5828f91e500879e912b4a22f65ec80a1a1fa6eea2ab0af0260f9560"
+        },
+        {
+          "bytes": 1271944,
+          "falcon_key": "S9_set_2",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250202T114452.nwb",
+          "session": "ses-19250202T114452",
+          "sha256": "07aec96a8acdb6e9c89e724f9a9ed7ffb9fafec4bc8d331be59dc7770e6c27b0"
+        },
+        {
+          "bytes": 1206269,
+          "falcon_key": "S10_set_1",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250203T113515.nwb",
+          "session": "ses-19250203T113515",
+          "sha256": "354813371b8d6d8ea933a15895570646c62406ee31e705a881b57758da0d2d51"
+        },
+        {
+          "bytes": 1172811,
+          "falcon_key": "S10_set_2",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250203T114018.nwb",
+          "session": "ses-19250203T114018",
+          "sha256": "745d0b9ec3487f6f68d85e826215574cf7f133314c54e3a7485e0022492fd4ef"
+        },
+        {
+          "bytes": 1363294,
+          "falcon_key": "S11_set_1",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250206T112219.nwb",
+          "session": "ses-19250206T112219",
+          "sha256": "ab254456922d99b54237f9634c1985e8f59900f94befc6c8f31f426cbba9e3ea"
+        },
+        {
+          "bytes": 1360362,
+          "falcon_key": "S11_set_2",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250206T112712.nwb",
+          "session": "ses-19250206T112712",
+          "sha256": "94b2341973c2bdfacdd8e791883ceb0914600ccb4d7e280758a358072b4018ef"
+        },
+        {
+          "bytes": 1509485,
+          "falcon_key": "S12_set_1",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250209T111826.nwb",
+          "session": "ses-19250209T111826",
+          "sha256": "301d6bd105c3e86f25d95557693dd38bbb39a8341e358087cdcfb4d3342eb761"
+        },
+        {
+          "bytes": 1384702,
+          "falcon_key": "S12_set_2",
+          "filename": "sub-HumanPitt-held-out-calib_ses-19250209T112327.nwb",
+          "session": "ses-19250209T112327",
+          "sha256": "48acb759e00a07615b4a7929d58637e625af6b5cefd423a7f6be5e179d4ac937"
+        }
+      ],
+      "recordings_opened": 14
+    }
+  ],
+  "backward_steps": 0,
+  "calibration_trials_reused_for_scoring": true,
+  "evalai_submissions": 0,
+  "evalai_test_recordings_opened": 0,
+  "independent_postcalibration_stream": false,
+  "model_updates": 0,
+  "official_heldout_score_accessed": false,
+  "optimizer_steps": 0,
+  "schema": "h1_cal_aug_all_source_m3_spint_style_heldout_calib_r2_v1_target_access",
+  "scope": "14 public held-out-calib NWBs reused for frozen M3 calibration and local validation scoring",
+  "total_recordings_opened": 28,
+  "unique_recordings_opened": 14
+}
