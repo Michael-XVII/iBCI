@@ -1,0 +1,30 @@
+{
+  "automatic_successor": false,
+  "backward_steps": 0,
+  "docker_authority_sha256": "94a5c3962ef7ba8643a8383fc62acda568becbacb19f3b9ecc71e9cc0bbb1b5b",
+  "docker_images": 3,
+  "evalai_submissions": 3,
+  "finished_at_utc": "2026-09-03T17:23:55.817722+00:00",
+  "model_updates": 0,
+  "official_results_sha256": "7811c5540b565ca963020c2de612fe577723ea9674f056e7a5c0c81790158745",
+  "optimizer_steps": 0,
+  "post_selection_retraining": false,
+  "preregistered_contrasts": {
+    "C2-E49 - V1-C1-E49": 0.020901819851533554,
+    "C2-HI-E45 - C2-E49": 0.018999807935404345,
+    "C2-HO-E15 - C2-E49": 0.0709478080422215,
+    "C2-HO-E15 - C2-HI-E45": 0.05194800010681716,
+    "C2-HO-E15 - V1-C1-E49": 0.09184962789375506
+  },
+  "primary_successor": "C2-HO-E15",
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_evalai_submission_a1",
+  "status": "COMPLETE_H1_M3_AWARE_DUAL_SELECTION_V2_EVALAI_OFFICIAL_A1",
+  "submission_ids": [
+    581812,
+    581813,
+    581814
+  ],
+  "submission_manifest_sha256": "2131776f2467ee7052813a2c8641d7454be86f0c22b28784db85921f3a94050f",
+  "submissions_sha256": "ea28b7071436ae9aefdfa329a5d565b4702b418ca5473158b580a9d7979d97dc",
+  "training": false
+}

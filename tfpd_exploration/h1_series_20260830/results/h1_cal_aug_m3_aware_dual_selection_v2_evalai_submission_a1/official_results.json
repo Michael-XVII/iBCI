@@ -1,0 +1,75 @@
+{
+  "challenge_id": 2319,
+  "challenge_phase": "few-shot-test-2319",
+  "challenge_phase_id": 4599,
+  "finished_at_utc": "2026-09-03T17:23:15.442467+00:00",
+  "preregistered_contrasts": {
+    "C2-E49 - V1-C1-E49": 0.020901819851533554,
+    "C2-HI-E45 - C2-E49": 0.018999807935404345,
+    "C2-HO-E15 - C2-E49": 0.0709478080422215,
+    "C2-HO-E15 - C2-HI-E45": 0.05194800010681716,
+    "C2-HO-E15 - V1-C1-E49": 0.09184962789375506
+  },
+  "primary_endpoint": "Held Out R2 Mean",
+  "primary_successor": "C2-HO-E15",
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_evalai_submission_a1_official_results",
+  "status": "SEALED_THREE_OFFICIAL_H1_RESULTS",
+  "submissions": [
+    {
+      "checkpoint_sha256": "2264b627c83ec629c122d33b758831d66cae4b4397d49a96aaba9e6c0616e0c9",
+      "image_id": "sha256:c8939bb0b8de988f7b107d76787116ac11cdf67bcb2bb03e0fac974a0ed81ab8",
+      "image_tag": "h1-m3aware-v2-c2-e49:a1",
+      "key": "c2_e49",
+      "label": "C2-E49",
+      "metrics": {
+        "Held In R2 Mean": 0.48473568339423706,
+        "Held In R2 Std.": 0.02868504117308934,
+        "Held Out R2 Mean": 0.3050412726237962,
+        "Held Out R2 Std.": 0.13051413182057994,
+        "Normalized Latency": 0.01768240789222146
+      },
+      "ordinal": 1,
+      "package_sha256": "22bfdda158574815a396d99593794b8d66b7aecf74f3126430401ca49b1ae1bc",
+      "status": "finished",
+      "submission_id": 581812
+    },
+    {
+      "checkpoint_sha256": "83d56e8ce82a41ec711e0b2ec5e57d66488fae18252189123a107d5523d9352f",
+      "image_id": "sha256:a52f5e4a7f5b0d81611ac12fc05cd8c29fd7ef875950a10440a7d191bee1971f",
+      "image_tag": "h1-m3aware-v2-c2-hi-e45:a1",
+      "key": "c2_hi_e45",
+      "label": "C2-HI-E45",
+      "metrics": {
+        "Held In R2 Mean": 0.49262565603060854,
+        "Held In R2 Std.": 0.03056759551238394,
+        "Held Out R2 Mean": 0.32404108055920056,
+        "Held Out R2 Std.": 0.12521751537130021,
+        "Normalized Latency": 0.018199594390464036
+      },
+      "ordinal": 2,
+      "package_sha256": "5544861570199789e1a6585839abddadbf3ab514edeee83517ed96a4e846124d",
+      "status": "finished",
+      "submission_id": 581813
+    },
+    {
+      "checkpoint_sha256": "ce46267eb220142b8ef1f2e5acf05194650796ac2752594995b40d2ad0950215",
+      "image_id": "sha256:6cc2f028cb0e7416e0dc9dedabce708d7e6be05de6ad0300ba2559baf5ba352f",
+      "image_tag": "h1-m3aware-v2-c2-ho-e15:a1",
+      "key": "c2_ho_e15",
+      "label": "C2-HO-E15",
+      "metrics": {
+        "Held In R2 Mean": 0.5111673340604533,
+        "Held In R2 Std.": 0.030089206642280975,
+        "Held Out R2 Mean": 0.3759890806660177,
+        "Held Out R2 Std.": 0.12575990582890534,
+        "Normalized Latency": 0.018257073735214655
+      },
+      "ordinal": 3,
+      "package_sha256": "f0c22090e430e9af7f3e231fbb6bb331ae3cfaf629493a92f87096020739907b",
+      "status": "finished",
+      "submission_id": 581814
+    }
+  ],
+  "submissions_sha256": "ea28b7071436ae9aefdfa329a5d565b4702b418ca5473158b580a9d7979d97dc",
+  "v1_c1_official_held_out_r2_mean": 0.28413945277226266
+}
