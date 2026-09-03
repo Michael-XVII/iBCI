@@ -67,6 +67,12 @@ def load_cache(path: Path, expected_sha: str) -> dict[str,np.ndarray]:
     _need(verify_sidecar(path)==expected_sha, f"cache SHA drift: {path}")
     with np.load(path,allow_pickle=False) as z: return {k:np.asarray(z[k]) for k in z.files}
 
+def align_trial_num_to_batched_timeline(trial_num: np.ndarray, timeline_length: int) -> np.ndarray:
+    """Mirror FalconEvaluator's right padding; padded bins can never score."""
+    trial=np.asarray(trial_num,np.float64).reshape(-1)
+    _need(len(trial)<=int(timeline_length),"TrialNum longer than evaluator timeline")
+    return np.pad(trial,(0,int(timeline_length)-len(trial)),constant_values=np.nan)
+
 def create_attempt(root: Path, head: str) -> None:
     _need(not root.exists(),"result root exists")
     publish_json(root/"attempt.json",{"schema":SCHEMA,"status":"ATTEMPT_BEFORE_DATA_OR_CUDA","created_at_utc":utc_now(),"git_head":head,"training":False,"checkpoint_selection":False,"optimizer_steps":0,"backward_steps":0,"model_updates":0,"evalai_submissions":0})
@@ -101,6 +107,7 @@ def heldin_calib_inference(data_root: Path, package_root: Path, result_root: Pat
         for i,((session,key),nwb_path) in enumerate(zip(HELDIN_SESSION_TO_FALCON_KEY,paths,strict=True)):
           p=np.asarray(pred[key],np.float32); t=np.asarray(tgt[key],np.float32); m=np.asarray(masks[key],bool).reshape(-1)
           with NWBHDF5IO(str(nwb_path),"r") as io: trial=np.asarray(io.read().acquisition["TrialNum"].data[:],np.float64)
+          trial=align_trial_num_to_batched_timeline(trial,len(p))
           reuse=m & np.isin(trial,supports[key]); _need(int(reuse.sum())>1 and len(trial)==len(p),f"reuse mask drift {key}")
           prefix=f"{arm}_{i}"; arrays[f"{prefix}_prediction"]=p; arrays[f"{prefix}_target"]=t; arrays[f"{prefix}_eval_mask"]=m; arrays[f"{prefix}_reuse_score_mask"]=reuse
     finally: evaluator_module.tqdm=old_tqdm

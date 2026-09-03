@@ -1,0 +1,13 @@
+{
+  "backward_steps": 0,
+  "evalai_submissions": 0,
+  "heldout_cache_sha256": "d67d5dfa016983f9c3a3dfbc8d202392aa3ee1139a11fbcfe620c65aa02a78b1",
+  "minival_cache_sha256": "73227a61fadd58b98ae1520431abf26457cdb2fe07346a3e8f516a85380f88ed",
+  "model_updates": 0,
+  "official_terminal_sha256": "189608c3c20a2485ba6eba3e08e590bf6f0a55b95dcb557657e8e8b836895eed",
+  "optimizer_steps": 0,
+  "package_terminal_sha256": "4137495462a299e948beb58be578c739cc211330de4769992c03e743d7c7bf26",
+  "schema": "h1_cal_aug_m3_diagnostics_v1_predecessor",
+  "status": "PASS_FROZEN_PREDECESSORS",
+  "training": false
+}

@@ -1,0 +1,12 @@
+{
+  "backward_steps": 0,
+  "checkpoint_selection": false,
+  "created_at_utc": "2026-09-03T07:54:28.981946+00:00",
+  "evalai_submissions": 0,
+  "git_head": "0571dd7d00f54bfcc441877511d3ff4efd382e74",
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "schema": "h1_cal_aug_m3_diagnostics_v1",
+  "status": "ATTEMPT_BEFORE_DATA_OR_CUDA",
+  "training": false
+}

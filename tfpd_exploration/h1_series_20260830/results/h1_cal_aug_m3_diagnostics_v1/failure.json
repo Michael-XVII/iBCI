@@ -1,0 +1,15 @@
+{
+  "automatic_retry": false,
+  "backward_steps": 0,
+  "checkpoint_selection": false,
+  "error": "FALCON batch padding made prediction/eval-mask longer than raw TrialNum; no metrics produced",
+  "error_type": "ValueError",
+  "evalai_submissions": 0,
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "phase": "heldin_calib_inference",
+  "schema": "h1_cal_aug_m3_diagnostics_v1",
+  "status": "FAIL_TIMELINE_PADDING_ALIGNMENT_NO_METRICS",
+  "successor_required": "A1 additive result root",
+  "training": false
+}
