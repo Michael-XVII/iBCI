@@ -79,3 +79,10 @@ def test_runtime_amendment_removes_training_dependency() -> None:
     module = (ROOT / "SPINT-main/src/h1_cal_aug_m3_aware_dual_selection_v2_evalai_a1.py").read_text()
     assert "h1_hc_date_lodo_regen_v1" not in module
     assert "def verify_sidecar" in module and "def publish_json" in module
+
+
+def test_docker_cross_runtime_amendment_reuses_only_identical_image() -> None:
+    module = (ROOT / "SPINT-main/src/h1_cal_aug_m3_aware_dual_selection_v2_evalai_a1.py").read_text()
+    assert "np.allclose(host_cpu, container_cpu" in module
+    assert "existing image identity drift" in module
+    assert "image_reused_after_identity_check" in module

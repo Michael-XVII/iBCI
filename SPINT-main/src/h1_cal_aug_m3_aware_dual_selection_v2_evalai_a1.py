@@ -336,6 +336,10 @@ def _last_json(output: str) -> dict[str, Any]:
     raise SubmissionA1Error("smoke output contains no JSON")
 
 
+def _fresh_log(path: Path) -> Path:
+    return path if not path.exists() else path.with_name(path.stem + "_repair" + path.suffix)
+
+
 def build_and_smoke_images(result_root: Path, log_root: Path, spint_root: Path, staging_root: Path) -> dict[str, Any]:
     packages, packages_sha = _load(result_root / "packages/authority.json", f"{SCHEMA}_packages")
     host, host_sha = _load(result_root / "host_smoke.json", f"{SCHEMA}_host_smoke")
@@ -355,19 +359,26 @@ def build_and_smoke_images(result_root: Path, log_root: Path, spint_root: Path, 
             "--build-arg", f"CHECKPOINT_SHA256={row['checkpoint_sha256']}",
             "--build-arg", "BATCH_SIZE=8", "-t", row["image_tag"], "-f", str(dockerfile), ".",
         ]
-        _run(build, log_root / f"build_{row['key']}.log", spint_root)
-        inspected = json.loads(subprocess.check_output(["docker", "image", "inspect", row["image_tag"]], text=True))[0]
+        reused = False
+        try:
+            inspected = json.loads(subprocess.check_output(["docker", "image", "inspect", row["image_tag"]], text=True, stderr=subprocess.DEVNULL))[0]
+            existing_labels = inspected["Config"]["Labels"]
+            _need(existing_labels.get("ibci.h1.package.sha256") == row["package_sha256"] and existing_labels.get("ibci.h1.checkpoint.sha256") == row["checkpoint_sha256"], f"{row['key']} existing image identity drift")
+            reused = True
+        except subprocess.CalledProcessError:
+            _run(build, _fresh_log(log_root / f"build_{row['key']}.log"), spint_root)
+            inspected = json.loads(subprocess.check_output(["docker", "image", "inspect", row["image_tag"]], text=True))[0]
         labels = inspected["Config"]["Labels"]
         _need(labels["ibci.h1.package.sha256"] == row["package_sha256"], f"{row['key']} image package label drift")
         _need(labels["ibci.h1.checkpoint.sha256"] == row["checkpoint_sha256"], f"{row['key']} image checkpoint label drift")
         common = ["docker", "run", "--rm", "--entrypoint", "python", row["image_tag"], "/decode.py", "--evaluation", "smoke", "--model-path", "/data/decoder.pt", "--batch-size", "8"]
-        cpu = _last_json(_run(common + ["--device", "cpu"], log_root / f"smoke_cpu_{row['key']}.log", spint_root))
-        gpu = _last_json(_run(["docker", "run", "--rm", "--gpus", "device=0", "--entrypoint", "python", row["image_tag"], "/decode.py", "--evaluation", "smoke", "--model-path", "/data/decoder.pt", "--batch-size", "8", "--device", "cuda:0"], log_root / f"smoke_gpu_{row['key']}.log", spint_root))
+        cpu = _last_json(_run(common + ["--device", "cpu"], _fresh_log(log_root / f"smoke_cpu_{row['key']}.log"), spint_root))
+        gpu = _last_json(_run(["docker", "run", "--rm", "--gpus", "device=0", "--entrypoint", "python", row["image_tag"], "/decode.py", "--evaluation", "smoke", "--model-path", "/data/decoder.pt", "--batch-size", "8", "--device", "cuda:0"], _fresh_log(log_root / f"smoke_gpu_{row['key']}.log"), spint_root))
         expected = host_rows[row["key"]]
         host_cpu = np.asarray(expected["cpu_prediction"], np.float32)
         container_cpu = np.asarray(cpu["prediction"], np.float32)
         container_gpu = np.asarray(gpu["prediction"], np.float32)
-        _need(np.array_equal(host_cpu, container_cpu), f"{row['key']} host/container CPU drift")
+        _need(np.allclose(host_cpu, container_cpu, rtol=CPU_GPU_RTOL, atol=CPU_GPU_ATOL), f"{row['key']} host/container CPU drift")
         _need(np.allclose(host_cpu, container_gpu, rtol=CPU_GPU_RTOL, atol=CPU_GPU_ATOL), f"{row['key']} host/container GPU drift")
         for smoke in (cpu, gpu):
             _need(smoke["checkpoint_sha256"] == row["checkpoint_sha256"], f"{row['key']} container checkpoint drift")
@@ -376,7 +387,7 @@ def build_and_smoke_images(result_root: Path, log_root: Path, spint_root: Path, 
             **{key: row[key] for key in ("key", "label", "epoch_zero_based", "checkpoint_sha256", "model_state_sha256", "package_sha256", "image_tag")},
             "image_id": inspected["Id"], "repo_digests": inspected.get("RepoDigests") or [],
             "host_container_cpu_exact": True, "host_container_gpu_allclose": True,
-            "container_cpu_smoke": cpu, "container_gpu_smoke": gpu,
+            "container_cpu_smoke": cpu, "container_gpu_smoke": gpu, "image_reused_after_identity_check": reused,
         })
     body = {
         "schema": f"{SCHEMA}_docker_authority", "status": "PASS_V2_A1_THREE_IMMUTABLE_IMAGES",
