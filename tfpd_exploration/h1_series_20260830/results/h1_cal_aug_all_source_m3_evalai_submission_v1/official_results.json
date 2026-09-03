@@ -1,0 +1,47 @@
+{
+  "challenge_id": 2319,
+  "challenge_phase": "few-shot-test-2319",
+  "challenge_phase_id": 4599,
+  "comparison": {
+    "held_in_r2_mean_delta_c1_minus_t0": 0.10299029782366736,
+    "held_out_r2_mean_delta_c1_minus_t0": 0.0430288510264443,
+    "held_out_r2_mean_relative_change_percent": 17.846104947224937,
+    "normalized_latency_delta_c1_minus_t0": -0.00035722342722971714
+  },
+  "finished_at_utc": "2026-09-03T06:59:12Z",
+  "schema": "h1_cal_aug_all_source_m3_evalai_submission_v1_results",
+  "submission_manifest_sha256": "82a90e72966a5bc8fb8c212a1f86896aaff7f2cd35ebadf12933da6ab36efa16",
+  "submissions": [
+    {
+      "arm": "t0",
+      "execution_time_seconds": 0.072999,
+      "image_id": "sha256:fd157ec6c45bfb17823715d2bd63ea55d9b83f675ea9f6c43069d5cc851975f6",
+      "image_tag": "h1-cal-aug-m3-t0:epoch49",
+      "metrics": {
+        "Held In R2 Mean": 0.35571839028928115,
+        "Held In R2 Std.": 0.01975445705786422,
+        "Held Out R2 Mean": 0.24111060174581836,
+        "Held Out R2 Std.": 0.11568858108488034,
+        "Normalized Latency": 0.01865312858552244
+      },
+      "status": "finished",
+      "submission_id": 581747
+    },
+    {
+      "arm": "c1",
+      "execution_time_seconds": 0.103742,
+      "image_id": "sha256:95561929048211e8d468eb87a272d970b62c4df4de8379eaaf6999eabcc76f21",
+      "image_tag": "h1-cal-aug-m3-c1:epoch49",
+      "metrics": {
+        "Held In R2 Mean": 0.4587086881129485,
+        "Held In R2 Std.": 0.040059557528179975,
+        "Held Out R2 Mean": 0.28413945277226266,
+        "Held Out R2 Std.": 0.13480572502335886,
+        "Normalized Latency": 0.018295905158292724
+      },
+      "status": "finished",
+      "submission_id": 581748
+    }
+  ],
+  "verdict": "COMPLETE_H1_M3_EVALAI_OFFICIAL_C1_IMPROVES_T0"
+}

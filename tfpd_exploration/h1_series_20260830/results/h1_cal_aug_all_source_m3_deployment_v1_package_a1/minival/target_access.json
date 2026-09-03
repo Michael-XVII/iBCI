@@ -1,0 +1,210 @@
+{
+  "arms": [
+    {
+      "arm": "t0",
+      "bytes_read": 13421320,
+      "files": [
+        {
+          "bytes": 925980,
+          "falcon_key": "S0_set_1",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250101T111740.nwb",
+          "session": "ses-19250101T111740",
+          "sha256": "a95585515b1a12a61603fb3170843351d2fb6551ba6e0456c483570b085e68f3"
+        },
+        {
+          "bytes": 1015480,
+          "falcon_key": "S0_set_2",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250101T112404.nwb",
+          "session": "ses-19250101T112404",
+          "sha256": "e3177a65ffad2d5472c05737e6ff71ef98879bfb744c55608bda18afb11efe60"
+        },
+        {
+          "bytes": 1024284,
+          "falcon_key": "S1_set_1",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250108T110520.nwb",
+          "session": "ses-19250108T110520",
+          "sha256": "99fb1997035c4f9b0dd0a97be093042f9b7cf10af55cb2a3dc83eea7e35b4d0e"
+        },
+        {
+          "bytes": 1067820,
+          "falcon_key": "S1_set_2",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250108T111022.nwb",
+          "session": "ses-19250108T111022",
+          "sha256": "0831e7fb7f262faabc1520237bf8dfeea47dd02211642fac75c5257a24d5bc3f"
+        },
+        {
+          "bytes": 1019604,
+          "falcon_key": "S1_set_3",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250108T111455.nwb",
+          "session": "ses-19250108T111455",
+          "sha256": "052423d5963899ebfc669d56ada6bc7ab4c060f023616a870c804c1b24f1418e"
+        },
+        {
+          "bytes": 984848,
+          "falcon_key": "S2_set_1",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250113T120811.nwb",
+          "session": "ses-19250113T120811",
+          "sha256": "8fcaf8bf0030556ccccd1ff8133b45728409b4972ab8fcf0f554b9ad8befc41e"
+        },
+        {
+          "bytes": 922184,
+          "falcon_key": "S2_set_2",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250113T121303.nwb",
+          "session": "ses-19250113T121303",
+          "sha256": "8842d94cda42a92e71fb6d611cb97534263887441458086261110f9c3f363b5a"
+        },
+        {
+          "bytes": 1106836,
+          "falcon_key": "S3_set_1",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250115T110633.nwb",
+          "session": "ses-19250115T110633",
+          "sha256": "d4616e5bca7d1b4581bfca0796e7a6b2c0fc1d2f2b0f1b24171d63818922fec7"
+        },
+        {
+          "bytes": 1111248,
+          "falcon_key": "S3_set_2",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250115T111328.nwb",
+          "session": "ses-19250115T111328",
+          "sha256": "dd320a6352e312cdbd89eed3a0a8f0729b49c5c6f24101fd00d3fc334d91671c"
+        },
+        {
+          "bytes": 1067268,
+          "falcon_key": "S4_set_1",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250119T113543.nwb",
+          "session": "ses-19250119T113543",
+          "sha256": "5c5ce0f17fdacfb89d0361eec46bc00ef8472fb8bd1018a124fe28ae8ab8fb54"
+        },
+        {
+          "bytes": 1021356,
+          "falcon_key": "S4_set_2",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250119T114045.nwb",
+          "session": "ses-19250119T114045",
+          "sha256": "da99134321f3fbd0702791cc76deb46e468260fa24568bc297fb7ba7b7c7ee2e"
+        },
+        {
+          "bytes": 1109660,
+          "falcon_key": "S5_set_1",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250120T115044.nwb",
+          "session": "ses-19250120T115044",
+          "sha256": "9b4420f19793bcbe8ed2bb242e1fdc55e223dc20ad6c8c5ed49a4a61fbb11dc4"
+        },
+        {
+          "bytes": 1044752,
+          "falcon_key": "S5_set_2",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250120T115537.nwb",
+          "session": "ses-19250120T115537",
+          "sha256": "666047a942c82919bbb6b7bb6dda6c7222091c2051cbe12213b1a493610ae179"
+        }
+      ],
+      "recordings_opened": 13
+    },
+    {
+      "arm": "c1",
+      "bytes_read": 13421320,
+      "files": [
+        {
+          "bytes": 925980,
+          "falcon_key": "S0_set_1",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250101T111740.nwb",
+          "session": "ses-19250101T111740",
+          "sha256": "a95585515b1a12a61603fb3170843351d2fb6551ba6e0456c483570b085e68f3"
+        },
+        {
+          "bytes": 1015480,
+          "falcon_key": "S0_set_2",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250101T112404.nwb",
+          "session": "ses-19250101T112404",
+          "sha256": "e3177a65ffad2d5472c05737e6ff71ef98879bfb744c55608bda18afb11efe60"
+        },
+        {
+          "bytes": 1024284,
+          "falcon_key": "S1_set_1",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250108T110520.nwb",
+          "session": "ses-19250108T110520",
+          "sha256": "99fb1997035c4f9b0dd0a97be093042f9b7cf10af55cb2a3dc83eea7e35b4d0e"
+        },
+        {
+          "bytes": 1067820,
+          "falcon_key": "S1_set_2",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250108T111022.nwb",
+          "session": "ses-19250108T111022",
+          "sha256": "0831e7fb7f262faabc1520237bf8dfeea47dd02211642fac75c5257a24d5bc3f"
+        },
+        {
+          "bytes": 1019604,
+          "falcon_key": "S1_set_3",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250108T111455.nwb",
+          "session": "ses-19250108T111455",
+          "sha256": "052423d5963899ebfc669d56ada6bc7ab4c060f023616a870c804c1b24f1418e"
+        },
+        {
+          "bytes": 984848,
+          "falcon_key": "S2_set_1",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250113T120811.nwb",
+          "session": "ses-19250113T120811",
+          "sha256": "8fcaf8bf0030556ccccd1ff8133b45728409b4972ab8fcf0f554b9ad8befc41e"
+        },
+        {
+          "bytes": 922184,
+          "falcon_key": "S2_set_2",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250113T121303.nwb",
+          "session": "ses-19250113T121303",
+          "sha256": "8842d94cda42a92e71fb6d611cb97534263887441458086261110f9c3f363b5a"
+        },
+        {
+          "bytes": 1106836,
+          "falcon_key": "S3_set_1",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250115T110633.nwb",
+          "session": "ses-19250115T110633",
+          "sha256": "d4616e5bca7d1b4581bfca0796e7a6b2c0fc1d2f2b0f1b24171d63818922fec7"
+        },
+        {
+          "bytes": 1111248,
+          "falcon_key": "S3_set_2",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250115T111328.nwb",
+          "session": "ses-19250115T111328",
+          "sha256": "dd320a6352e312cdbd89eed3a0a8f0729b49c5c6f24101fd00d3fc334d91671c"
+        },
+        {
+          "bytes": 1067268,
+          "falcon_key": "S4_set_1",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250119T113543.nwb",
+          "session": "ses-19250119T113543",
+          "sha256": "5c5ce0f17fdacfb89d0361eec46bc00ef8472fb8bd1018a124fe28ae8ab8fb54"
+        },
+        {
+          "bytes": 1021356,
+          "falcon_key": "S4_set_2",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250119T114045.nwb",
+          "session": "ses-19250119T114045",
+          "sha256": "da99134321f3fbd0702791cc76deb46e468260fa24568bc297fb7ba7b7c7ee2e"
+        },
+        {
+          "bytes": 1109660,
+          "falcon_key": "S5_set_1",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250120T115044.nwb",
+          "session": "ses-19250120T115044",
+          "sha256": "9b4420f19793bcbe8ed2bb242e1fdc55e223dc20ad6c8c5ed49a4a61fbb11dc4"
+        },
+        {
+          "bytes": 1044752,
+          "falcon_key": "S5_set_2",
+          "filename": "sub-HumanPitt-held-in-minival_ses-19250120T115537.nwb",
+          "session": "ses-19250120T115537",
+          "sha256": "666047a942c82919bbb6b7bb6dda6c7222091c2051cbe12213b1a493610ae179"
+        }
+      ],
+      "recordings_opened": 13
+    }
+  ],
+  "backward_steps": 0,
+  "evalai_submissions": 0,
+  "evalai_test_recordings_opened": 0,
+  "heldout_calib_scoring_recordings_opened": 0,
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "schema": "h1_cal_aug_all_source_m3_deployment_v1_minival_access",
+  "scope": "held-in-minival only",
+  "target_driven_selection": false,
+  "total_recordings_opened": 26
+}

@@ -1,0 +1,12 @@
+{
+  "arm": "t0",
+  "artifact": "arm_attempt",
+  "created_at_utc": "2026-09-02T15:06:15.268671+00:00",
+  "evalai_test_recordings_opened": 0,
+  "heldin_minival_recordings_opened": 0,
+  "heldout_calib_recordings_opened": 0,
+  "physical_gpu": 0,
+  "schema": "h1_cal_aug_all_source_m3_deployment_v1",
+  "smoke": true,
+  "warm_start": false
+}

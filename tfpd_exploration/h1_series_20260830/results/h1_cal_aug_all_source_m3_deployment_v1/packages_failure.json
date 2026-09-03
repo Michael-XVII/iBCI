@@ -1,0 +1,8 @@
+{
+  "error": "strict M=4 support/query requires at least five eval-valid TrialNum trials",
+  "error_type": "PilotDataError",
+  "evalai_submissions": 0,
+  "phase": "packages",
+  "schema": "h1_cal_aug_all_source_m3_deployment_v1",
+  "status": "FAIL_IMMUTABLE_NO_AUTOMATIC_RETRY"
+}

@@ -1,0 +1,215 @@
+{
+  "backward_steps": 0,
+  "checkpoint_selection": false,
+  "container_cpu_gpu_smoke": true,
+  "dataset_files_opened": 0,
+  "docker_pushes": 0,
+  "evalai_credentials_accessed": false,
+  "evalai_submissions": 0,
+  "heldout_scores_computed": 0,
+  "images": [
+    {
+      "arm": "t0",
+      "checkpoint_sha256": "6d4d14226b706951274982438b588527beb442200aad2f50f9d18b68e54a9648",
+      "cpu_smoke": {
+        "arm": "t0",
+        "batch_size": 8,
+        "checkpoint_sha256": "6d4d14226b706951274982438b588527beb442200aad2f50f9d18b68e54a9648",
+        "device": "cpu",
+        "model_state_immutable": true,
+        "model_state_sha256": "3a801d5546bc108020c5dc83e40fdda0a5ee23709c9819a68eb4fb9a7144e0d9",
+        "prediction": [
+          [
+            -0.0006770516047254205,
+            -0.0004781652824021876,
+            -0.00021201252820901573,
+            -0.00026957778027281165,
+            -0.00394544517621398,
+            -0.0019428189843893051,
+            -0.0005636911955662072
+          ],
+          [
+            -0.0006770516047254205,
+            -0.0004781652824021876,
+            -0.00021201252820901573,
+            -0.00026957778027281165,
+            -0.00394544517621398,
+            -0.0019428189843893051,
+            -0.0005636911955662072
+          ],
+          [
+            -0.0006770516047254205,
+            -0.0004781652824021876,
+            -0.00021201252820901573,
+            -0.00026957778027281165,
+            -0.00394544517621398,
+            -0.0019428189843893051,
+            -0.0005636911955662072
+          ]
+        ],
+        "prediction_sha256": "9ea7758da21390f6e7dd7c52506b5588ba097447e395064f1ee621bcbfbb26f0",
+        "status": "PASS_H1_CARRIER_ID_SPINT_CONTAINER_SMOKE"
+      },
+      "gpu_smoke": {
+        "arm": "t0",
+        "batch_size": 8,
+        "checkpoint_sha256": "6d4d14226b706951274982438b588527beb442200aad2f50f9d18b68e54a9648",
+        "device": "cuda:0",
+        "model_state_immutable": true,
+        "model_state_sha256": "3a801d5546bc108020c5dc83e40fdda0a5ee23709c9819a68eb4fb9a7144e0d9",
+        "prediction": [
+          [
+            -0.0006770510226488113,
+            -0.00047816484584473073,
+            -0.00021201293566264212,
+            -0.00026957676163874567,
+            -0.003945446573197842,
+            -0.0019428178202360868,
+            -0.0005636911955662072
+          ],
+          [
+            -0.0006770510226488113,
+            -0.00047816484584473073,
+            -0.00021201293566264212,
+            -0.00026957676163874567,
+            -0.003945446573197842,
+            -0.0019428178202360868,
+            -0.0005636911955662072
+          ],
+          [
+            -0.0006770510226488113,
+            -0.00047816484584473073,
+            -0.00021201293566264212,
+            -0.00026957676163874567,
+            -0.003945446573197842,
+            -0.0019428178202360868,
+            -0.0005636911955662072
+          ]
+        ],
+        "prediction_sha256": "12465d028f1ed90aac77a7df11592e723b56b69df2622b9f33ea09d7b6112bee",
+        "status": "PASS_H1_CARRIER_ID_SPINT_CONTAINER_SMOKE"
+      },
+      "host_container_cpu_exact": true,
+      "host_container_gpu_allclose": true,
+      "image_id": "sha256:fd157ec6c45bfb17823715d2bd63ea55d9b83f675ea9f6c43069d5cc851975f6",
+      "image_repo_digests": [
+        "h1-cal-aug-m3-t0@sha256:fd157ec6c45bfb17823715d2bd63ea55d9b83f675ea9f6c43069d5cc851975f6"
+      ],
+      "image_tag": "h1-cal-aug-m3-t0:epoch49",
+      "model_state_immutable": true,
+      "model_state_sha256": "3a801d5546bc108020c5dc83e40fdda0a5ee23709c9819a68eb4fb9a7144e0d9",
+      "package_sha256": "d2ad4beacbe5dd1bc26ec8764fcdb7745df83e795d743d9af5600f525860d760",
+      "runtime": {
+        "batch_size": 8,
+        "evaluation": "remote",
+        "phase": "test",
+        "task": "h1"
+      }
+    },
+    {
+      "arm": "c1",
+      "checkpoint_sha256": "0f406a8e69fdb57cf6a5480149f04ab3500e7fad849d36db38042edbadb2cd06",
+      "cpu_smoke": {
+        "arm": "c1",
+        "batch_size": 8,
+        "checkpoint_sha256": "0f406a8e69fdb57cf6a5480149f04ab3500e7fad849d36db38042edbadb2cd06",
+        "device": "cpu",
+        "model_state_immutable": true,
+        "model_state_sha256": "bdaf7dbcbae75ea307f20356aaf80066586f7d9afa273712a5e34708b903eb85",
+        "prediction": [
+          [
+            -0.0003232055460102856,
+            0.00019103739759884775,
+            -9.712272003525868e-05,
+            -0.0006324032437987626,
+            -0.006741388235241175,
+            -0.004312201403081417,
+            -0.0001312039967160672
+          ],
+          [
+            -0.0003232055460102856,
+            0.00019103739759884775,
+            -9.712272003525868e-05,
+            -0.0006324032437987626,
+            -0.006741388235241175,
+            -0.004312201403081417,
+            -0.0001312039967160672
+          ],
+          [
+            -0.0003232055460102856,
+            0.00019103739759884775,
+            -9.712272003525868e-05,
+            -0.0006324032437987626,
+            -0.006741388235241175,
+            -0.004312201403081417,
+            -0.0001312039967160672
+          ]
+        ],
+        "prediction_sha256": "f170082cd295c5a7900b0e2deb9249dfa87529c482a16161d00298c65cdaf6f2",
+        "status": "PASS_H1_CARRIER_ID_SPINT_CONTAINER_SMOKE"
+      },
+      "gpu_smoke": {
+        "arm": "c1",
+        "batch_size": 8,
+        "checkpoint_sha256": "0f406a8e69fdb57cf6a5480149f04ab3500e7fad849d36db38042edbadb2cd06",
+        "device": "cuda:0",
+        "model_state_immutable": true,
+        "model_state_sha256": "bdaf7dbcbae75ea307f20356aaf80066586f7d9afa273712a5e34708b903eb85",
+        "prediction": [
+          [
+            -0.0003232051385566592,
+            0.00019103792146779597,
+            -9.712320752441883e-05,
+            -0.0006324024288915098,
+            -0.0067413910292088985,
+            -0.004312200006097555,
+            -0.0001312042586505413
+          ],
+          [
+            -0.0003232051385566592,
+            0.00019103792146779597,
+            -9.712320752441883e-05,
+            -0.0006324024288915098,
+            -0.0067413910292088985,
+            -0.004312200006097555,
+            -0.0001312042586505413
+          ],
+          [
+            -0.0003232051385566592,
+            0.00019103792146779597,
+            -9.712320752441883e-05,
+            -0.0006324024288915098,
+            -0.0067413910292088985,
+            -0.004312200006097555,
+            -0.0001312042586505413
+          ]
+        ],
+        "prediction_sha256": "46e5ffbd994b81c219d245c129d26410d05dd7e4f329cf6bb3fdc8f4a3c186ae",
+        "status": "PASS_H1_CARRIER_ID_SPINT_CONTAINER_SMOKE"
+      },
+      "host_container_cpu_exact": true,
+      "host_container_gpu_allclose": true,
+      "image_id": "sha256:95561929048211e8d468eb87a272d970b62c4df4de8379eaaf6999eabcc76f21",
+      "image_repo_digests": [
+        "h1-cal-aug-m3-c1@sha256:95561929048211e8d468eb87a272d970b62c4df4de8379eaaf6999eabcc76f21"
+      ],
+      "image_tag": "h1-cal-aug-m3-c1:epoch49",
+      "model_state_immutable": true,
+      "model_state_sha256": "bdaf7dbcbae75ea307f20356aaf80066586f7d9afa273712a5e34708b903eb85",
+      "package_sha256": "bfd02e51d2c0309a74b5e835668105f5102b55fe41458d519fce8895f1db5411",
+      "runtime": {
+        "batch_size": 8,
+        "evaluation": "remote",
+        "phase": "test",
+        "task": "h1"
+      }
+    }
+  ],
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "package_reload_numerical_equivalence": true,
+  "prepared_packages_sha256": "8d34a20e974e9b9a39420d29e8f430beaba84e75a258d7d51858d334d010d146",
+  "schema": "h1_cal_aug_all_source_m3_evalai_package_v1_docker",
+  "status": "PASS_H1_M3_EVALAI_DOCKER_SMOKE",
+  "training": false
+}

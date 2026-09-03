@@ -1,0 +1,54 @@
+{
+  "arm": "c1",
+  "batch_order_sha256": "390a648f85da9b4ca558d84d752b5035fe0a2330e064962b5aea545ef2db4bc1",
+  "carrier_cache_sha256": "9a3ecd8223bffa016ff64a4d682a441db96f6f11af5356263b4e82373abef98c",
+  "checkpoint": null,
+  "common_config_sha256": "99d883e411f5bbc3249620de7b8745f57feb9370ab454eea65cf6271a0368fd2",
+  "config_sha256": "c35237ad3b0a211a72f5462248951ed90ddf8b90e054812d95f68fbcb7e7421d",
+  "dropout_probability_count": 12,
+  "dropout_probability_sha256": "a51ea7330ab483256b962ad0711b0f4a0cf2c0fc3780b57e5d8168be4afa1aa6",
+  "elapsed_seconds": 15.639332447986817,
+  "epoch_zero_based": 0,
+  "epochs": [
+    {
+      "epoch_zero_based": 0,
+      "mean_loss": 0.0014732382902972556,
+      "steps": 12
+    }
+  ],
+  "evalai_submissions": 0,
+  "evalai_test_recordings_opened": 0,
+  "finished_at_utc": "2026-09-02T15:06:30.934883+00:00",
+  "global_step": 12,
+  "gpu": {
+    "memory_total_bytes": 33671348224,
+    "name": "NVIDIA GeForce RTX 5090",
+    "physical_index": 1,
+    "uuid": "GPU-e2821dd7-a910-e611-5f5d-306b5f793db7",
+    "visible_index": 0
+  },
+  "heldin_minival_recordings_opened": 0,
+  "heldout_calib_recordings_opened": 0,
+  "initial_state_sha256": "bc6dc8a0543c760811f770206c7ee22ae35eaf970c6dad0ec259a84172e4d04b",
+  "loss_first": 0.00016454710566904396,
+  "loss_last": 0.002878815634176135,
+  "m7_schedule_sha256": "ed22dd1ae7680fb72110c85a1b890ceff230f10b0366363f26639897ec27eacf",
+  "normalized_carrier_sha256": "2fbf3d946598d2ef859f474e9ba7278dba8a8c43908cef1fb8b127d81961cf8e",
+  "peak_memory_reserved_bytes": 853540864,
+  "prefix_step_counts": {
+    "4": 4,
+    "5": 4,
+    "7": 4
+  },
+  "schedule_sha256": "91ff1ac5d5d72dfe4833d9dc7dad726adfbb913afb0a75970d36bbb569e58bd4",
+  "schema": "h1_cal_aug_all_source_m3_deployment_v1",
+  "smoke": true,
+  "source_authority_sha256": "8ea4bb1174c00ab713843cd7561562d43f81509eaaea6ea12ee80cd4eba95de7",
+  "source_tensor_surface_sha256": "5fd41c76db209fdde035636bab0197911effb6d0a4929dee5b2602f657a95bd9",
+  "status": "PASS_H1_ALL_SOURCE_M3_DEPLOYMENT_PAIRED_SMOKE",
+  "target_backward_steps": 0,
+  "target_model_updates": 0,
+  "target_optimizer_steps": 0,
+  "terminal_state_sha256": "abfea5f60b610ce193cdbc67b211ad68aa8d6903d2c179046e6698861f63d992",
+  "training_elapsed_seconds": 6.835076666990062
+}

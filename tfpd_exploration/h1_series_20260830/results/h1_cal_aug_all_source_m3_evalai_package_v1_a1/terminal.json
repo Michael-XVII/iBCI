@@ -1,0 +1,45 @@
+{
+  "attempt_sha256": "ea09dd704a873ffdce9371ec5f84ba1d52690aa5b75c856e6d02cfc6a6493562",
+  "backward_steps": 0,
+  "calibration_authority_sha256": "b9f39f5751362038c37160e7e22acd5cc74a469c104fd22c416f4c088d0523e5",
+  "checkpoint_selection": false,
+  "container_cpu_gpu_smoke": true,
+  "dataset_files_opened": 0,
+  "docker_authority_sha256": "48e421b0db4b4fad27409c0b306b472f6a4cc15a2ef4b96dc2fea39751f614f1",
+  "docker_pushes": 0,
+  "evalai_credentials_accessed": false,
+  "evalai_submissions": 0,
+  "finished_at_utc": "2026-09-03T06:03:26.055512+00:00",
+  "git_head": "de2c9afd7cd1b079bfabaa08b183323ee2265bc7",
+  "heldout_scores_computed": 0,
+  "images": [
+    {
+      "arm": "t0",
+      "checkpoint_sha256": "6d4d14226b706951274982438b588527beb442200aad2f50f9d18b68e54a9648",
+      "image_id": "sha256:fd157ec6c45bfb17823715d2bd63ea55d9b83f675ea9f6c43069d5cc851975f6",
+      "image_tag": "h1-cal-aug-m3-t0:epoch49",
+      "model_state_sha256": "3a801d5546bc108020c5dc83e40fdda0a5ee23709c9819a68eb4fb9a7144e0d9",
+      "package_sha256": "d2ad4beacbe5dd1bc26ec8764fcdb7745df83e795d743d9af5600f525860d760"
+    },
+    {
+      "arm": "c1",
+      "checkpoint_sha256": "0f406a8e69fdb57cf6a5480149f04ab3500e7fad849d36db38042edbadb2cd06",
+      "image_id": "sha256:95561929048211e8d468eb87a272d970b62c4df4de8379eaaf6999eabcc76f21",
+      "image_tag": "h1-cal-aug-m3-c1:epoch49",
+      "model_state_sha256": "bdaf7dbcbae75ea307f20356aaf80066586f7d9afa273712a5e34708b903eb85",
+      "package_sha256": "bfd02e51d2c0309a74b5e835668105f5102b55fe41458d519fce8895f1db5411"
+    }
+  ],
+  "model_updates": 0,
+  "official_hidden_test_accessed": false,
+  "optimizer_steps": 0,
+  "package_reload_numerical_equivalence": true,
+  "prepared_packages_sha256": "8d34a20e974e9b9a39420d29e8f430beaba84e75a258d7d51858d334d010d146",
+  "schema": "h1_cal_aug_all_source_m3_evalai_package_v1",
+  "selected_lambda": 10.0,
+  "selected_q": 12,
+  "source_authority_sha256": "8ea4bb1174c00ab713843cd7561562d43f81509eaaea6ea12ee80cd4eba95de7",
+  "status": "COMPLETE_H1_M3_EVALAI_SUBMISSION_READY_NO_SUBMISSION",
+  "submission_ready_without_model_change": true,
+  "training": false
+}

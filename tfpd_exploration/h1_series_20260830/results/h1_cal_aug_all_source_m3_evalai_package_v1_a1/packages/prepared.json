@@ -1,0 +1,38 @@
+{
+  "backward_steps": 0,
+  "calibration_authority_sha256": "b9f39f5751362038c37160e7e22acd5cc74a469c104fd22c416f4c088d0523e5",
+  "checkpoint_selection": false,
+  "dataset_files_opened": 0,
+  "docker_pushes": 0,
+  "evalai_submissions": 0,
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "package_a1_terminal_sha256": "4137495462a299e948beb58be578c739cc211330de4769992c03e743d7c7bf26",
+  "package_authority_sha256": "49fbcf45fb96f86efc9874470491593b0b9c56d8ab2afa8205b5b3b59c17d3db",
+  "packages": [
+    {
+      "arm": "t0",
+      "checkpoint_sha256": "6d4d14226b706951274982438b588527beb442200aad2f50f9d18b68e54a9648",
+      "heldout_m3_payloads": 14,
+      "model_state_sha256": "3a801d5546bc108020c5dc83e40fdda0a5ee23709c9819a68eb4fb9a7144e0d9",
+      "package_sha256": "d2ad4beacbe5dd1bc26ec8764fcdb7745df83e795d743d9af5600f525860d760",
+      "session_payloads": 27,
+      "staged_path": "/home/ial-mohd/workspace/iBCI/SPINT-main/local_data/h1_m3_evalai_v1/t0.pt"
+    },
+    {
+      "arm": "c1",
+      "checkpoint_sha256": "0f406a8e69fdb57cf6a5480149f04ab3500e7fad849d36db38042edbadb2cd06",
+      "heldout_m3_payloads": 14,
+      "model_state_sha256": "bdaf7dbcbae75ea307f20356aaf80066586f7d9afa273712a5e34708b903eb85",
+      "package_sha256": "bfd02e51d2c0309a74b5e835668105f5102b55fe41458d519fce8895f1db5411",
+      "session_payloads": 27,
+      "staged_path": "/home/ial-mohd/workspace/iBCI/SPINT-main/local_data/h1_m3_evalai_v1/c1.pt"
+    }
+  ],
+  "schema": "h1_cal_aug_all_source_m3_evalai_package_v1_prepared_packages",
+  "selected_lambda": 10.0,
+  "selected_q": 12,
+  "source_authority_sha256": "8ea4bb1174c00ab713843cd7561562d43f81509eaaea6ea12ee80cd4eba95de7",
+  "status": "PASS_H1_M3_EVALAI_PACKAGES_PREPARED",
+  "training": false
+}

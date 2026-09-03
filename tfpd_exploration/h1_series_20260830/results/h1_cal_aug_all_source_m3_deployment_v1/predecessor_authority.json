@@ -1,0 +1,30 @@
+{
+  "evalai_submissions": 0,
+  "evalai_test_recordings_opened": 0,
+  "heldin_calib_recordings_opened": 0,
+  "heldin_minival_recordings_opened": 0,
+  "heldout_calib_recordings_opened": 0,
+  "m3_interpretation": "STRONG_M3_PREFIX_EXTRAPOLATION",
+  "predecessors": [
+    {
+      "name": "experiment4_m4",
+      "relative": "tfpd_exploration/h1_series_20260830/results/h1_cal_aug_prefix_cycle_v1_eval_a1/terminal.json",
+      "sha256": "dc9e7ab44954d3d193f67f9bf8936aafdaf2b05be9968d5e0091c0b0ecf092fd",
+      "status": "PASS_H1_CAL_AUG_PREFIX_CYCLE_TRANSFER"
+    },
+    {
+      "name": "m4_feasibility_stop",
+      "relative": "tfpd_exploration/h1_series_20260830/results/h1_cal_aug_all_source_heldout_v1/terminal.json",
+      "sha256": "3ff971dc576958b13ace990bcca8aea2e8b999e2af2ed50f418296d05f8d5cfc",
+      "status": "STOP_H1_ALL_SOURCE_HELDOUT_M4_PROTOCOL_INFEASIBLE"
+    },
+    {
+      "name": "m3_secondary_diagnostic",
+      "relative": "tfpd_exploration/h1_series_20260830/results/h1_cal_aug_prefix_cycle_m3_transfer_v1/terminal.json",
+      "sha256": "199a2fec864d7ae40d33ec911e43cd32e8623e5687ed9d44c5c9ac946a964429",
+      "status": "COMPLETE_H1_CAL_AUG_PREFIX_CYCLE_M3_TRANSFER_V1"
+    }
+  ],
+  "schema": "h1_cal_aug_all_source_m3_deployment_v1_predecessor_authority",
+  "status": "PASS_SEALED_PREDECESSOR_AUTHORITIES"
+}

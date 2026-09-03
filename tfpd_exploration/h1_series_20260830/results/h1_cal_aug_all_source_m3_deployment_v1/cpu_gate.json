@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/home/ial-mohd/workspace/envs/spint/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "/home/ial-mohd/workspace/iBCI/SPINT-main/tests/test_h1_cal_aug_all_source_m3_deployment_v1_contract.py",
+    "/home/ial-mohd/workspace/iBCI/SPINT-main/tests/test_h1_cal_aug_all_source_m3_deployment_v1_exec.py"
+  ],
+  "cuda_initialized": false,
+  "cuda_visible_devices": "",
+  "evalai_submissions": 0,
+  "log_sha256": "1786d40152a10c86d279fec5a1587095965cb43db24b5cbce3048bd5f9933c7d",
+  "nwb_files_opened": 0,
+  "returncode": 0,
+  "schema": "h1_cal_aug_all_source_m3_deployment_v1_cpu_gate",
+  "status": "PASS_CPU_NO_DATA_GATE"
+}

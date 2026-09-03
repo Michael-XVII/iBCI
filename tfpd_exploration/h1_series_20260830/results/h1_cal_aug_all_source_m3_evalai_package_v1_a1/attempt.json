@@ -1,0 +1,30 @@
+{
+  "artifact": "attempt",
+  "backward_steps": 0,
+  "checkpoint_selection": false,
+  "closure": {
+    "SPINT-main/environment.yaml": "67752e340c20e5aeefc98fb78bc2d0bcbc5d69b81d14bbfcb3cc830b1d612848",
+    "SPINT-main/src/h1_cal_aug_all_source_m3_evalai_package_v1.py": "0c6e3041db46d982c96939cfc8fefd05a98cfd3498e8d54368e617d2928520a5",
+    "SPINT-main/src/models/components/h1_carrierid_spint.py": "fcea04965e8fd80bf84ca290ad3d22971b37df3050f9d178e0ac1c3dc91b4618",
+    "SPINT-main/tests/test_h1_cal_aug_all_source_m3_evalai_package_v1_a1.py": "5afd4a8289985b72a327e92880ae3b372727561b62d94db325169de29630e5a6",
+    "SPINT-main/third_party/falcon_challenge/h1_carrier_id_spint_decoder.py": "ab7ec7cb644c9c992378863abf387d70e4f07c7cd24fffe909bb19f9fab05c63",
+    "SPINT-main/third_party/falcon_challenge/h1_carrier_id_spint_sample.Dockerfile": "58b1f6890d3f86d9e91a4479d3b708157013bc05dca44f2038133c9f318c3dc7",
+    "SPINT-main/third_party/falcon_challenge/h1_carrier_id_spint_sample.py": "65c162decf62fb5516e2714226b37ca7646aa2c4965c07058fe98b0112310a2d",
+    "tfpd_exploration/h1_series_20260830/docs/AMENDMENT_H1_CAL_AUG_ALL_SOURCE_M3_EVALAI_PACKAGE_V1_A1.md": "d67f6d8ae70fd8f1f4e1a600abeb98b607bf9131b77980b58e717a3ce0cb742b",
+    "tfpd_exploration/h1_series_20260830/docs/WORKORDER_H1_CAL_AUG_ALL_SOURCE_M3_EVALAI_PACKAGE_V1.md": "4f0a59cc1aee1390bbec5a0bb3c5a3fc289adb2c6bf927b9dce63dbc82dbb386",
+    "tfpd_exploration/h1_series_20260830/scripts/run_h1_cal_aug_all_source_m3_evalai_package_v1.py": "111d2f49bf0379c0d6b57e0fcda465d5725b51f77272ab1dcd77e43b85b27a9d",
+    "tfpd_exploration/h1_series_20260830/scripts/run_h1_cal_aug_all_source_m3_evalai_package_v1_a1.py": "bc1dd663a842db3a8da3eb3033603f2dd5ee76e17e9c79aff0050e6f20a4529f"
+  },
+  "created_at_utc": "2026-09-03T05:44:11.906960+00:00",
+  "dataset_files_opened": 0,
+  "docker_pushes": 0,
+  "evalai_credentials_accessed": false,
+  "evalai_submissions": 0,
+  "git_head": "de2c9afd7cd1b079bfabaa08b183323ee2265bc7",
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "package_root": "/home/ial-mohd/workspace/iBCI/tfpd_exploration/h1_series_20260830/results/h1_cal_aug_all_source_m3_deployment_v1_package_a1",
+  "schema": "h1_cal_aug_all_source_m3_evalai_package_v1",
+  "status": "ATTEMPT_BEFORE_PACKAGE_COPY_DOCKER_OR_CUDA",
+  "training": false
+}

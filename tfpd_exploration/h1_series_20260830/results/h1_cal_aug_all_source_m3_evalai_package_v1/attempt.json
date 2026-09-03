@@ -1,0 +1,28 @@
+{
+  "artifact": "attempt",
+  "backward_steps": 0,
+  "checkpoint_selection": false,
+  "closure": {
+    "SPINT-main/environment.yaml": "67752e340c20e5aeefc98fb78bc2d0bcbc5d69b81d14bbfcb3cc830b1d612848",
+    "SPINT-main/src/h1_cal_aug_all_source_m3_evalai_package_v1.py": "0c6e3041db46d982c96939cfc8fefd05a98cfd3498e8d54368e617d2928520a5",
+    "SPINT-main/src/models/components/h1_carrierid_spint.py": "fcea04965e8fd80bf84ca290ad3d22971b37df3050f9d178e0ac1c3dc91b4618",
+    "SPINT-main/tests/test_h1_cal_aug_all_source_m3_evalai_package_v1.py": "ee9d75016b0cd07050b988182ca2a6de3481f46ce7552445ec3b6f127c93ff2d",
+    "SPINT-main/third_party/falcon_challenge/h1_carrier_id_spint_decoder.py": "ab7ec7cb644c9c992378863abf387d70e4f07c7cd24fffe909bb19f9fab05c63",
+    "SPINT-main/third_party/falcon_challenge/h1_carrier_id_spint_sample.Dockerfile": "58b1f6890d3f86d9e91a4479d3b708157013bc05dca44f2038133c9f318c3dc7",
+    "SPINT-main/third_party/falcon_challenge/h1_carrier_id_spint_sample.py": "65c162decf62fb5516e2714226b37ca7646aa2c4965c07058fe98b0112310a2d",
+    "tfpd_exploration/h1_series_20260830/docs/WORKORDER_H1_CAL_AUG_ALL_SOURCE_M3_EVALAI_PACKAGE_V1.md": "4f0a59cc1aee1390bbec5a0bb3c5a3fc289adb2c6bf927b9dce63dbc82dbb386",
+    "tfpd_exploration/h1_series_20260830/scripts/run_h1_cal_aug_all_source_m3_evalai_package_v1.py": "111d2f49bf0379c0d6b57e0fcda465d5725b51f77272ab1dcd77e43b85b27a9d"
+  },
+  "created_at_utc": "2026-09-03T05:39:30.505235+00:00",
+  "dataset_files_opened": 0,
+  "docker_pushes": 0,
+  "evalai_credentials_accessed": false,
+  "evalai_submissions": 0,
+  "git_head": "36193ff8f1d373f80ceb7cbd346946508b8d5f26",
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "package_root": "/home/ial-mohd/workspace/iBCI/tfpd_exploration/h1_series_20260830/results/h1_cal_aug_all_source_m3_deployment_v1_package_a1",
+  "schema": "h1_cal_aug_all_source_m3_evalai_package_v1",
+  "status": "ATTEMPT_BEFORE_PACKAGE_COPY_DOCKER_OR_CUDA",
+  "training": false
+}

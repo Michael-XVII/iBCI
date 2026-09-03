@@ -1,0 +1,34 @@
+{
+  "backward_steps": 0,
+  "evalai_submissions": 0,
+  "evalai_test_recordings_opened": 0,
+  "failure_sha256": "71a6915f7f1273d2dd78b71b47c5456957acaf020f26de6fc2c33c0c2511576a",
+  "heldin_calib_recordings_opened": 0,
+  "heldin_minival_recordings_opened": 0,
+  "heldout_calib_recordings_opened": 0,
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "pair_integrity_sha256": "b2a4fd570b152028e3e3ab99bbf1bbb11b6ed49d6907cc26772974d0ef4a7e9d",
+  "retraining": false,
+  "schema": "h1_cal_aug_all_source_m3_deployment_v1_package_a1_predecessor_authority",
+  "source_authority_sha256": "8ea4bb1174c00ab713843cd7561562d43f81509eaaea6ea12ee80cd4eba95de7",
+  "status": "PASS_PACKAGE_A1_PREDECESSOR",
+  "training": [
+    {
+      "arm": "t0",
+      "checkpoint_sha256": "6d4d14226b706951274982438b588527beb442200aad2f50f9d18b68e54a9648",
+      "global_step": 206650,
+      "terminal_sha256": "aa394599084ff789aa85613d792b5ad438188326694c73c33c9d7864d666ae1b",
+      "terminal_state_sha256": "3a801d5546bc108020c5dc83e40fdda0a5ee23709c9819a68eb4fb9a7144e0d9",
+      "training_elapsed_seconds": 10922.680367754016
+    },
+    {
+      "arm": "c1",
+      "checkpoint_sha256": "0f406a8e69fdb57cf6a5480149f04ab3500e7fad849d36db38042edbadb2cd06",
+      "global_step": 206650,
+      "terminal_sha256": "873c431fdb3194787c9f46a24c3389db3a40365e7e13926300265dfbd9583082",
+      "terminal_state_sha256": "bdaf7dbcbae75ea307f20356aaf80066586f7d9afa273712a5e34708b903eb85",
+      "training_elapsed_seconds": 10486.816989802988
+    }
+  ]
+}

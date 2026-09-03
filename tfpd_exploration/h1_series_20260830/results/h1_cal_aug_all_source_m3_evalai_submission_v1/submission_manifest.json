@@ -1,0 +1,48 @@
+{
+  "challenge_id": 2319,
+  "challenge_phase": "few-shot-test-2319",
+  "created_at_utc": "2026-09-03T06:16:59Z",
+  "docker_push_visibility": "private",
+  "frozen_predecessor": {
+    "docker_authority_sha256": "48e421b0db4b4fad27409c0b306b472f6a4cc15a2ef4b96dc2fea39751f614f1",
+    "git_head": "de2c9afd7cd1b079bfabaa08b183323ee2265bc7",
+    "status": "COMPLETE_H1_M3_EVALAI_SUBMISSION_READY_NO_SUBMISSION",
+    "terminal_sha256": "1eb2cf6463c4d04220b01f8ab80fb88d5bb2b695abb6de144e5f20397256bca6"
+  },
+  "immutable_rules": {
+    "checkpoint_selection": false,
+    "docker_rebuild": false,
+    "hyperparameter_modification": false,
+    "m3_m4_budget_modification": false,
+    "modify_second_arm_after_first_score": false,
+    "q_lambda_modification": false,
+    "retraining": false,
+    "successor_experiment": false
+  },
+  "runtime_settings": {
+    "batch_size": 8,
+    "evaluation": "remote",
+    "phase": "test",
+    "split": "h1"
+  },
+  "schema": "h1_cal_aug_all_source_m3_evalai_submission_v1_manifest",
+  "submission_order": [
+    {
+      "arm": "t0",
+      "checkpoint_sha256": "6d4d14226b706951274982438b588527beb442200aad2f50f9d18b68e54a9648",
+      "image_id": "sha256:fd157ec6c45bfb17823715d2bd63ea55d9b83f675ea9f6c43069d5cc851975f6",
+      "image_tag": "h1-cal-aug-m3-t0:epoch49",
+      "ordinal": 1,
+      "package_sha256": "d2ad4beacbe5dd1bc26ec8764fcdb7745df83e795d743d9af5600f525860d760"
+    },
+    {
+      "arm": "c1",
+      "checkpoint_sha256": "0f406a8e69fdb57cf6a5480149f04ab3500e7fad849d36db38042edbadb2cd06",
+      "image_id": "sha256:95561929048211e8d468eb87a272d970b62c4df4de8379eaaf6999eabcc76f21",
+      "image_tag": "h1-cal-aug-m3-c1:epoch49",
+      "ordinal": 2,
+      "package_sha256": "bfd02e51d2c0309a74b5e835668105f5102b55fe41458d519fce8895f1db5411"
+    }
+  ],
+  "submission_settings_identical_between_arms": true
+}

@@ -1,0 +1,10 @@
+{
+  "docker_pushes": 0,
+  "error": "command failed (1): docker build --build-arg ARM=t0 --build-arg PACKAGE_SHA256=d2ad4beacbe5dd1bc26ec8764fcdb7745df83e795d743d9af5600f525860d760 --build-arg CHECKPOINT_SHA256=6d4d14226b706951274982438b588527beb442200aad2f50f9d18b68e54a9648 --build-arg BATCH_SIZE=8 -t h1-cal-aug-m3-t0:epoch49 -f /home/ial-mohd/workspace/iBCI/SPINT-main/third_party/falcon_challenge/h1_carrier_id_spint_sample.Dockerfile .; log=/home/ial-mohd/workspace/iBCI/logs/h1_cal_aug_all_source_m3_evalai_package_v1/build_t0.log",
+  "error_type": "EvalAIPackageError",
+  "evalai_submissions": 0,
+  "phase": "docker_build_and_smoke",
+  "schema": "h1_cal_aug_all_source_m3_evalai_package_v1",
+  "status": "FAIL_H1_M3_EVALAI_PACKAGE_NO_AUTOMATIC_RETRY",
+  "training": false
+}

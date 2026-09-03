@@ -1,0 +1,60 @@
+{
+  "arm": "c1",
+  "batch_size": 32,
+  "c1_identity_cycle": [
+    7,
+    5,
+    4
+  ],
+  "checkpoint_epoch_zero_based": 49,
+  "common_config_sha256": "99d883e411f5bbc3249620de7b8745f57feb9370ab454eea65cf6271a0368fd2",
+  "deployment_trials": 3,
+  "early_stopping": false,
+  "epochs": 50,
+  "model": {
+    "batch_size": 32,
+    "deterministic": false,
+    "epochs": 50,
+    "loss": "last-bin MSE after prediction/20",
+    "model": "src.models.components.h1_carrierid_spint.H1CarrierIdSpint",
+    "model_kwargs": {
+      "carrier_dim": 4,
+      "carrier_hidden_dim": 32,
+      "carrier_trial_length": 1024,
+      "dropout_rate": 0.0,
+      "dynamic_dropout": true,
+      "dynamic_dropout_high": 1.0,
+      "dynamic_dropout_low": 0.0,
+      "learnable_id_type": "mlp",
+      "learnable_rep": true,
+      "model_dim": 1024,
+      "num_covariates": 7,
+      "num_heads": 64,
+      "num_id_layers": 3,
+      "num_layers": 1,
+      "readin_layer_type": "mlp",
+      "tf_drop_rate": 0.1,
+      "use_learnable_id": true,
+      "window_size": 700,
+      "zero_carrier": false
+    },
+    "optimizer": {
+      "lr": 5e-05,
+      "name": "torch.optim.Adam",
+      "weight_decay": 0.0
+    },
+    "precision": "float32",
+    "schema": "h1_hc_date_lodo_regen_v1_resolved_config",
+    "seed": 42,
+    "terminal_epoch_zero_based": 49,
+    "warm_start": false
+  },
+  "model_parameters": 10947836,
+  "prediction_divisor": 20.0,
+  "schema": "h1_cal_aug_all_source_m3_deployment_v1_common_config",
+  "t0_identity_prefix": 7,
+  "target_fitting": false,
+  "training_carrier_trials": 4,
+  "validation_selection": false,
+  "warm_start": false
+}

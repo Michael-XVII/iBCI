@@ -1,0 +1,36 @@
+{
+  "challenge_id": 2319,
+  "challenge_phase": "few-shot-test-2319",
+  "challenge_phase_id": 4599,
+  "checkpoint_selection": false,
+  "docker_rebuilds": 0,
+  "finished_at_utc": "2026-09-03T06:59:12Z",
+  "held_in_r2_mean_delta_c1_minus_t0": 0.10299029782366736,
+  "held_out_r2_mean_delta_c1_minus_t0": 0.0430288510264443,
+  "hyperparameter_modifications": 0,
+  "image_ids_verified": true,
+  "model_updates": 0,
+  "official_results_sha256": "0b59035f7204f223dd04d9a64b8041891f6307b04b3991349244846ea4b72c00",
+  "q_lambda_modifications": 0,
+  "schema": "h1_cal_aug_all_source_m3_evalai_submission_v1_terminal",
+  "status": "COMPLETE_H1_M3_EVALAI_OFFICIAL_C1_IMPROVES_T0",
+  "submission_manifest_sha256": "82a90e72966a5bc8fb8c212a1f86896aaff7f2cd35ebadf12933da6ab36efa16",
+  "submissions": [
+    {
+      "arm": "t0",
+      "held_out_r2_mean": 0.24111060174581836,
+      "image_id": "sha256:fd157ec6c45bfb17823715d2bd63ea55d9b83f675ea9f6c43069d5cc851975f6",
+      "status": "finished",
+      "submission_id": 581747
+    },
+    {
+      "arm": "c1",
+      "held_out_r2_mean": 0.28413945277226266,
+      "image_id": "sha256:95561929048211e8d468eb87a272d970b62c4df4de8379eaaf6999eabcc76f21",
+      "status": "finished",
+      "submission_id": 581748
+    }
+  ],
+  "successor_experiments_started": 0,
+  "training": false
+}

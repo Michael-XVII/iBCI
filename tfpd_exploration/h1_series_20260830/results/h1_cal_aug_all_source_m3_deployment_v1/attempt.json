@@ -1,0 +1,29 @@
+{
+  "artifact": "attempt",
+  "closure": {
+    "SPINT-main/src/data/h1_m4_eb_pilot.py": "8f459b7a06c1b18865fc602b10e46876b4bb1dbf7ecba0fdf8e8f654737c86cb",
+    "SPINT-main/src/h1_cal_aug_all_source_m3_deployment_v1_contract.py": "a4b9728152ffa8cc97e968c6b5059684f1cd288531178f4089fa256a763fdf7f",
+    "SPINT-main/src/h1_cal_aug_all_source_m3_deployment_v1_exec.py": "dd2e6b89313aceb351ce9ca358acc13ad1146a84c5cdd90a34f379035a4e3124",
+    "SPINT-main/src/h1_cal_aug_prefix_cycle_v1.py": "5fff58c44e7d926ce429803ae31ca78b7c1a41a9572732730178bd5a9c583278",
+    "SPINT-main/src/h1_hc_date_lodo_regen_v1.py": "7e8a3000270b7eb7c703889a62fbd473738b0a5f3f272d9cbc57b46db1495a4e",
+    "SPINT-main/src/h1_m4_cce_contract.py": "6793090642b819436995dd20f1db74c51d8d5f787836904afcda6cc2a5a2b293",
+    "SPINT-main/src/models/components/h1_carrierid_spint.py": "fcea04965e8fd80bf84ca290ad3d22971b37df3050f9d178e0ac1c3dc91b4618",
+    "SPINT-main/tests/test_h1_cal_aug_all_source_m3_deployment_v1_contract.py": "3ab1a1a3b1163eb4aeeb7f18a2a9e3e6f63811f09be8da09f57893c2a328754f",
+    "SPINT-main/tests/test_h1_cal_aug_all_source_m3_deployment_v1_exec.py": "98f1660af75b5689499e1a4eedeecf1af63a33fb629e28db4cc4b4c89f2fdafc",
+    "SPINT-main/third_party/falcon_challenge/h1_carrier_id_spint_decoder.py": "ab7ec7cb644c9c992378863abf387d70e4f07c7cd24fffe909bb19f9fab05c63",
+    "tfpd_exploration/h1_series_20260830/H1_CAL_AUG_ALL_SOURCE_M3_DEPLOYMENT_V1_WORK_ORDER.md": "7db659651964bfd1871d5b6861d02cc2fae1168461c93fd1954dc82b89225138",
+    "tfpd_exploration/h1_series_20260830/docs/AMENDMENT_H1_CAL_AUG_ALL_SOURCE_M3_DEPLOYMENT_V1_EXECUTION.md": "879cecf5bc53e495e85ac2678217011d34881a5b3b4c670d3fcb642b545dc7cf",
+    "tfpd_exploration/h1_series_20260830/scripts/run_h1_cal_aug_all_source_m3_deployment_v1_exec.py": "7a71cfa6f632bc9733b7c558b2c129054834c19ce6cc992e03c9e7d5e2587f0d"
+  },
+  "code_closure_sha256": "e56fbcbaeb26e10f9d55df5d806d624071fcc6eefc7346d3303b60b74331baed",
+  "created_at_utc": "2026-09-02T15:05:02.827218+00:00",
+  "cuda_initialized": false,
+  "evalai_submissions": 0,
+  "evalai_test_recordings_opened": 0,
+  "head": "9b3135c369f99d25da7b8bbb9dac306f3f54e49a",
+  "heldin_calib_recordings_opened": 0,
+  "heldin_minival_recordings_opened": 0,
+  "heldout_calib_recordings_opened": 0,
+  "schema": "h1_cal_aug_all_source_m3_deployment_v1",
+  "status": "ATTEMPT_BEFORE_NWB_DATA_AND_CUDA"
+}

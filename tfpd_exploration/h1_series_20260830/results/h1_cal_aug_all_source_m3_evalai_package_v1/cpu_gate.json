@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/home/ial-mohd/workspace/envs/spint/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "/home/ial-mohd/workspace/iBCI/SPINT-main/tests/test_h1_cal_aug_all_source_m3_evalai_package_v1.py"
+  ],
+  "cuda_visible_devices": "",
+  "dataset_files_opened": 0,
+  "docker_commands": 0,
+  "evalai_submissions": 0,
+  "log_sha256": "9a4db7c5ff73dad87a7597528874d6be6aa3b162f61c7c400cbf0bc9c57021e9",
+  "returncode": 0,
+  "schema": "h1_cal_aug_all_source_m3_evalai_package_v1_cpu_gate",
+  "status": "PASS_H1_M3_EVALAI_PACKAGE_CPU_GATE",
+  "training": false
+}

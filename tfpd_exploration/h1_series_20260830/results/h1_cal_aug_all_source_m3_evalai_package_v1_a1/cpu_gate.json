@@ -1,0 +1,10 @@
+{
+  "docker_commands": 0,
+  "evalai_submissions": 0,
+  "log_sha256": "bea5a77cc68582c0c66ca0fc860c9b8f449e679bec8d6a9178605ee7b7dc69a3",
+  "nwb_files_opened": 0,
+  "returncode": 0,
+  "schema": "h1_cal_aug_all_source_m3_evalai_package_v1_a1_cpu_gate",
+  "status": "PASS_H1_M3_EVALAI_PACKAGE_A1_CPU_GATE",
+  "training": false
+}

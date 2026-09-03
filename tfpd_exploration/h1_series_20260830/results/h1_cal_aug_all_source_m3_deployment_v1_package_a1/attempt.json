@@ -1,0 +1,31 @@
+{
+  "artifact": "attempt",
+  "backward_steps": 0,
+  "closure": {
+    "SPINT-main/src/data/h1_m4_eb_pilot.py": "8f459b7a06c1b18865fc602b10e46876b4bb1dbf7ecba0fdf8e8f654737c86cb",
+    "SPINT-main/src/h1_cal_aug_all_source_m3_deployment_v1_contract.py": "a4b9728152ffa8cc97e968c6b5059684f1cd288531178f4089fa256a763fdf7f",
+    "SPINT-main/src/h1_cal_aug_all_source_m3_deployment_v1_exec.py": "dd2e6b89313aceb351ce9ca358acc13ad1146a84c5cdd90a34f379035a4e3124",
+    "SPINT-main/src/h1_cal_aug_all_source_m3_deployment_v1_package_a1.py": "8e2edfa909f915732421026d30cb0efb5184e7299e3b50469b535a96f29cb0dc",
+    "SPINT-main/src/h1_m4_cce_contract.py": "6793090642b819436995dd20f1db74c51d8d5f787836904afcda6cc2a5a2b293",
+    "SPINT-main/src/models/components/h1_carrierid_spint.py": "fcea04965e8fd80bf84ca290ad3d22971b37df3050f9d178e0ac1c3dc91b4618",
+    "SPINT-main/tests/test_h1_cal_aug_all_source_m3_deployment_v1_package_a1.py": "884a0ae93c121367e5faad9288bcfc143b0e79432356e37a5fe07cdfd182f745",
+    "SPINT-main/third_party/falcon_challenge/h1_carrier_id_spint_decoder.py": "ab7ec7cb644c9c992378863abf387d70e4f07c7cd24fffe909bb19f9fab05c63",
+    "tfpd_exploration/h1_series_20260830/docs/AMENDMENT_H1_CAL_AUG_ALL_SOURCE_M3_DEPLOYMENT_V1_PACKAGE_A1.md": "441cc10efe3cfd1b8028e3d8a198c7932a0802ef03d7487e37e816902d733a89",
+    "tfpd_exploration/h1_series_20260830/scripts/run_h1_cal_aug_all_source_m3_deployment_v1_package_a1.py": "b8a4bd0b7ca8723ab9ccc75343c76ffa0ad127d1de5e16796febef3c9957489c"
+  },
+  "code_closure_sha256": "2203cee903285a19dee7b65fac7675b9a7425956441f87986bedf8c1db991570",
+  "created_at_utc": "2026-09-03T02:09:36.888642+00:00",
+  "cuda_initialized": false,
+  "evalai_submissions": 0,
+  "evalai_test_recordings_opened": 0,
+  "head": "fdd2fe38606c9f6295d0cec5001c452a349fee0b",
+  "heldin_calib_recordings_opened": 0,
+  "heldin_minival_recordings_opened": 0,
+  "heldout_calib_recordings_opened": 0,
+  "model_updates": 0,
+  "optimizer_steps": 0,
+  "predecessor_root": "/home/ial-mohd/workspace/iBCI/tfpd_exploration/h1_series_20260830/results/h1_cal_aug_all_source_m3_deployment_v1",
+  "schema": "h1_cal_aug_all_source_m3_deployment_v1_package_a1",
+  "status": "ATTEMPT_BEFORE_CALIBRATION_DATA_AND_CUDA",
+  "training": false
+}
