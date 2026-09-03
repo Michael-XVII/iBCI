@@ -386,7 +386,7 @@ def build_and_smoke_images(result_root: Path, log_root: Path, spint_root: Path, 
         images.append({
             **{key: row[key] for key in ("key", "label", "epoch_zero_based", "checkpoint_sha256", "model_state_sha256", "package_sha256", "image_tag")},
             "image_id": inspected["Id"], "repo_digests": inspected.get("RepoDigests") or [],
-            "host_container_cpu_exact": True, "host_container_gpu_allclose": True,
+            "host_container_cpu_allclose": True, "host_container_gpu_allclose": True,
             "container_cpu_smoke": cpu, "container_gpu_smoke": gpu, "image_reused_after_identity_check": reused,
         })
     body = {
