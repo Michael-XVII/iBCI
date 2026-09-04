@@ -1,0 +1,10 @@
+{
+  "artifact": "c2_training_attempt",
+  "checkpoint_selection": false,
+  "created_at_utc": "2026-09-03T09:58:40.169147+00:00",
+  "heldin_minival_opened": 0,
+  "heldout_calib_opened": 0,
+  "interleaved_validation": false,
+  "physical_gpu": 0,
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2"
+}

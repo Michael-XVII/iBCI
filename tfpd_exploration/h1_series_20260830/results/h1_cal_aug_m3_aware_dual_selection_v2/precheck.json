@@ -1,0 +1,13 @@
+{
+  "disk_free_bytes": 179124240384,
+  "gpu_free_mib": 22478,
+  "gpu_name": "NVIDIA GeForce RTX 5090",
+  "gpu_total_mib": 32607,
+  "gpu_uuid": "GPU-4939047f-448c-ca8f-1297-84432dc27d0b",
+  "minimum_disk_free_bytes": 4294967296,
+  "minimum_gpu_free_mib": 8192,
+  "physical_gpu": 0,
+  "resource_polling": false,
+  "schema": "h1_cal_aug_m3_aware_dual_selection_v2_precheck",
+  "status": "PASS_ONE_TIME_FAIL_FAST_PRECHECK"
+}
